@@ -21,9 +21,12 @@ import numpy as np
 import pandas as pd
 import gc  # garbage collector
 import time
-from sklearn.metrics import roc_auc_score
+from sklearn.metrics import roc_auc_score, precision_recall_curve
+from sklearn.metrics import roc_curve, average_precision_score
+
 from contextlib import contextmanager
-# from lightgbm import LGBMClassifier
+from lightgbm import LGBMClassifier
+import datetime
 
 from sklearn.model_selection import KFold, StratifiedKFold
 import matplotlib.pyplot as plt
@@ -318,16 +321,16 @@ def credit_card_balance(num_rows=None, nan_as_category=True):
     return cc_agg
 
 # comment out kfold_lightgbm for debugging or until I install LigthGBM
-"""
-def kfold_lightgbm(df, num_folds, stratified=False, debug=False):
-    "Lightgbm GBDT with KFold or Stratified KFold.
+
+def kfold_lightgbm(df, num_rows, num_folds, stratified=False, debug=False):
+    """Lightgbm GBDT with KFold or Stratified KFold.
 
     Parameters
     ----------
     from Tilii kernel:
     #    https://www.kaggle.com/tilii7/olivier-lightgbm-parameters-by-bayesian-opt/code
     # Divide in training/validation and test data
-    "
+    """
     train_df = df[df['TARGET'].notnull()]
     test_df = df[df['TARGET'].isnull()]
     text = "Starting LightGBM. Train shape: {}, test shape: {}"
@@ -341,7 +344,9 @@ def kfold_lightgbm(df, num_folds, stratified=False, debug=False):
     else:
         folds = KFold(n_splits=num_folds, shuffle=True, random_state=1001)
     # Create arrays and dataframes to store results
+    # oof = 'out of fold'
     oof_preds = np.zeros(train_df.shape[0])
+    # sub_preds = submission predictions (i.e., will be submitted to kaggle)
     sub_preds = np.zeros(test_df.shape[0])
     feature_importance_df = pd.DataFrame()
     feats = [f for f in train_df.columns
@@ -350,16 +355,14 @@ def kfold_lightgbm(df, num_folds, stratified=False, debug=False):
 
     xx = folds.split(train_df[feats], train_df['TARGET'])
     for n_fold, (train_idx, valid_idx) in enumerate(xx):
-        train_x, train_y = train_df[feats].iloc[train_idx],
-        train_df['TARGET'].iloc[train_idx]
+        train_x, train_y = train_df[feats].iloc[train_idx], train_df['TARGET'].iloc[train_idx]
 
-        valid_x, valid_y = train_df[feats].iloc[valid_idx],
-        train_df['TARGET'].iloc[valid_idx]
+        valid_x, valid_y = train_df[feats].iloc[valid_idx], train_df['TARGET'].iloc[valid_idx]
 
         # LightGBM parameters found by Bayesian optimization
         clf = LGBMClassifier(
             nthread=4,
-            n_estimators=10000,
+            n_estimators=10000,  # quite a few trees!
             learning_rate=0.02,
             num_leaves=34,
             colsample_bytree=0.9497036,
@@ -379,6 +382,10 @@ def kfold_lightgbm(df, num_folds, stratified=False, debug=False):
         oof_preds[valid_idx] = clf.predict_proba(valid_x,
                                                  num_iteration=\
                                                  clf.best_iteration_)[:, 1]
+        # our submission predicitons are a sum of probabilities for each fold
+        # because each fold finds a different optimal fit (.best_iteration)
+        # based on that fold's data; we do need to weight the probabilities
+        # by 1/n_splits, obviously
         sub_preds += clf.predict_proba(test_df[feats],
                                        num_iteration=
                                        clf.best_iteration_)[:, 1]/folds.n_splits
@@ -389,25 +396,71 @@ def kfold_lightgbm(df, num_folds, stratified=False, debug=False):
         fold_importance_df["fold"] = n_fold + 1
         feature_importance_df = pd.concat([feature_importance_df,
                                            fold_importance_df], axis=0)
-        print('Fold %2d AUC : %.6f' % (n_fold + 1,
-                                       roc_auc_score(valid_y,
-                                                     oof_preds[valid_idx])))
+        print('---------\nFold %2d AUC : %.6f' %
+              (n_fold + 1, roc_auc_score(valid_y, oof_preds[valid_idx])))
+        print('Feature importance df shape:', feature_importance_df.shape)
         del clf, train_x, train_y, valid_x, valid_y
         gc.collect()
+    print('Full AUC score %.6f\n=======' % roc_auc_score(train_df['TARGET'],
+                                                         oof_preds))
+    # plot ROC AUC and precision - sensitivity
 
-    print('Full AUC score %.6f' % roc_auc_score(train_df['TARGET'], oof_preds))
+
     # Write submission file and plot feature importance
     if not debug:
         test_df['TARGET'] = sub_preds
         test_df[['SK_ID_CURR', 'TARGET']].to_csv(submission_file_name,
                                                  index=False)
-    display_importances(feature_importance_df)
-    return feature_importance_df
+    folds_idx = [(trn_idx, val_idx) for trn_idx, val_idx in xx]
+    display_importances(feature_importance_df, num_rows)
+    display_roc_curve(train_df['TARGET'], oof_preds, folds_idx)
+    display_precision_recall(train_df['TARGET'], oof_preds, folds_idx)
+    return feature_importance_df, oof_preds, train_df['TARGET']
 
-"""
+
+def display_roc_curve(y_, oof_preds_, folds_idx_):
+    # Plot ROC curve
+    plt.figure(figsize=(6, 6))
+    plt.plot([0, 1], [0, 1], linestyle='--', lw=2, color='r', label='Luck',
+             alpha=.8)
+    fpr, tpr, thresholds = roc_curve(y_, oof_preds_)
+    score = roc_auc_score(y_, oof_preds_)
+    plt.plot(fpr, tpr, color='b',
+             label='Avg ROC (AUC = %0.4f)' % score,
+             lw=2, alpha=.8)
+
+    plt.xlim([-0.05, 1.05])
+    plt.ylim([-0.05, 1.05])
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('LightGBM ROC Curve')
+    plt.legend(loc="lower right")
+    plt.tight_layout()
+
+    plt.savefig('roc_curve-01.png')
 
 
-def display_importances(feature_importance_df_):
+def display_precision_recall(y_, oof_preds_, folds_idx_):
+    # Plot ROC curve
+    plt.figure(figsize=(6, 6))
+    precision, recall, thresholds = precision_recall_curve(y_, oof_preds_)
+    score = average_precision_score(y_, oof_preds_)
+    plt.plot(precision, recall, color='b',
+             label='Avg precision = %0.4f' % score,
+             lw=2, alpha=.8)
+
+    plt.xlim([-0.05, 1.05])
+    plt.ylim([-0.05, 1.05])
+    plt.xlabel('Recall')
+    plt.ylabel('Precision')
+    plt.title('LightGBM Recall / Precision')
+    plt.legend(loc="best")
+    plt.tight_layout()
+
+    plt.savefig('recall_precision_curve-01.png')
+
+
+def display_importances(feature_importance_df_, num_rows):
     """Display/plot feature importance, top 40."""
     cols = feature_importance_df_[["feature", "importance"]]
     # Take mean and groupby feature because there is a different
@@ -427,7 +480,10 @@ def display_importances(feature_importance_df_):
     # of importance that that category has in the data, since there are
     # multiple folds for each feature in best_features df
     plt.tight_layout()
-    plt.savefig('lgbm_importances01.png')
+    now = datetime.datetime.now()
+    filename = 'lgbm_importances' + '_' + str(now.strftime('%Y-%m-%d')) \
+        + '_' + str(num_rows/1000) + 'K_rows.png'
+    plt.savefig(filename)
 
 
 def main(debug=False):
@@ -485,16 +541,16 @@ def main(debug=False):
         print("df shape:", df.shape, '- Joined cc balance')
         del cc
         gc.collect()
-"""
-#    with timer("Run LightGBM with kfold"):
-#        feat_importance = kfold_lightgbm(df, num_folds=10, stratified=False,
-#                                         debug=debug)
-#   return feat_importance
-"""
+
+    with timer("Run LightGBM with kfold"):
+        feature_importance_df, oof_preds, y = kfold_lightgbm(df, num_rows, num_folds=10, stratified=False, debug=debug)
+
+    return feature_importance_df, oof_preds, y
+
 # %% MAIN
 
 
 if __name__ == "__main__":
     submission_file_name = "submission_kernel02.csv"
     with timer("Full model run"):
-        main()
+        feature_importance_df, oof_preds, y = main(debug=True)
