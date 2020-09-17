@@ -243,6 +243,8 @@ plt.title("Validation ROC AUC versus Iteration")
 random_hyp = process(random)
 opt_hyp = process(opt)
 random_hyp.head()
+print(random_hyp.columns)
+print(opt_hyp.columns)
 
 # %% define the hyperparameter grid
 # that was used (the same ranges applied in both searches).
@@ -389,15 +391,15 @@ plt.title('Correlation Heatmap')
 # in a supervised regression problem
 
 # Create training data and labels
-opt_hyp = opt_hyp.drop(columns=['metric', 'set', 'verbose'])
-opt_hyp['n_estimators'] = opt_hyp['n_estimators'].astype(np.int32)
-opt_hyp['min_child_samples'] = opt_hyp['min_child_samples'].astype(np.int32)
-opt_hyp['num_leaves'] = opt_hyp['num_leaves'].astype(np.int32)
-opt_hyp['subsample_for_bin'] = opt_hyp['subsample_for_bin'].astype(np.int32)
-opt_hyp = pd.get_dummies(opt_hyp)
+opt_hyp2 = opt_hyp.drop(columns=['metric', 'set', 'verbose'])
+opt_hyp2['n_estimators'] = opt_hyp2['n_estimators'].astype(np.int32)
+opt_hyp2['min_child_samples'] = opt_hyp2['min_child_samples'].astype(np.int32)
+opt_hyp2['num_leaves'] = opt_hyp2['num_leaves'].astype(np.int32)
+opt_hyp2['subsample_for_bin'] = opt_hyp2['subsample_for_bin'].astype(np.int32)
+opt_hyp2 = pd.get_dummies(opt_hyp2)
 
-train_labels = opt_hyp.pop('score')
-train = np.array(opt_hyp.copy())
+train_labels = opt_hyp2.pop('score')
+train = np.array(opt_hyp2.copy())
 
 # Create the lasso regression with cv
 lr = LinearRegression()
