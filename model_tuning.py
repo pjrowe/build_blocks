@@ -163,7 +163,7 @@ def plot_vs_score(h1, h2, h3, h4, data1, data2):
     plt.tight_layout()
 
 
-# %% DATA
+# %% LOAD DATA
 random = pd.read_csv('random_search_simple.csv')
 random = random.sort_values('score', ascending=False).reset_index()
 opt = pd.read_csv('bayesian_trials_simple.csv')
