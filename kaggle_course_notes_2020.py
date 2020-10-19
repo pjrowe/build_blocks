@@ -1,18 +1,17 @@
 """LEARN on kaggle.
-The following are my notes and example code from the
-following Kaggle courses
+The following are notes and code snippets from the following Kaggle courses
 
 COURSES
 - Data Cleaning
 - Intro SQL
 - Advanced SQL
+- Pandas (Data Wrangling)
 
-- Pandas / Data Wrangling
 - Feature Engineering
-- Intro ML
-- Intermediate MLearning
+- Intro Machine Learning
+- Intermediate Machine Learning
+- Machine Learning Explainability
 """
-
 # %% DATA CLEANING
 # - missing values
 # - scaling and normalization
@@ -29,7 +28,6 @@ percent_missing = sf_permits.isnull().sum().sum() \
     / np.product(sf_permits.shape)*100
 sf_permits_with_na_imputed = sf_permits.fillna(method='bfill',
                                                axis=0).fillna(0)
-
 
 def missing_values_table(df):
     mis_val = df.isnull().sum()
@@ -314,7 +312,7 @@ query = """
 dry_run_config = bigquery.QueryJobConfig(dry_run=True)
 # API request - dry run query to estimate costs
 dry_run_query_job = client.query(query, job_config=dry_run_config)
-print("This query will process {} bytes.".format(dry_run_query_job.total_bytes_processed))
+print("Bytes processed: {}".format(dry_run_query_job.total_bytes_processed))
 
 # Only run the query if it's less than 1 GB
 ONE_GB = 1000*1000*1000
@@ -1843,7 +1841,23 @@ rf_val_mae = mean_absolute_error(rf_model.predict(val_X), val_y)
 
 """
 # %% Intro to Machine Learning - AutoML
-"""Notes here
+"""
+7 steps of Machine Learning
+1. Gather data
+2. Prepare the data - Deal with missing values and categorical data.
+(Feature engineering is covered in a separate course.)
+3. Select a model
+4. Train the model - Fit decision trees and random forests to patterns in
+training data.
+5. Evaluate the model - Use a validation set to assess how well a trained
+model performs on unseen data.
+6. Tune parameters - Tune parameters to get better performance from XGBoost
+models.
+7. Get predictions - Generate predictions with a trained model and submit your
+results to a Kaggle competition.
+
+Google Cloud AutoML Tables automates the machine learning process,steps 2-7
+
 
 """
 # %% Intermediate Machine Learning
@@ -2430,4 +2444,455 @@ A5.
     This also doesn't change, and it is available at the time we want to
     make a prediction. So there's no risk of target leakage here.
 
+"""
+
+# %% Machine Learning Explainability
+"""
+Outline
+- Use Cases for Model Insights
+- Permutation Importance
+- Partial dependence Plots
+- SHAP Values
+- Advanced Uses of SHAP Values (aggregating SHAP values, i.e, over more than
+                                a single prediction)
+"""
+
+# %% ML Explainability- Use Cases
+"""
+- help in debugging and human decision-making/intuition
+- inform feature engineering and future data collection
+- build trust with and explain algorithms to team members that are not
+  data scientists
+
+"""
+# %% ML Explainability - Permutation Importance
+
+"""
+Compared to most other approaches to measuring feature importance,
+permutation importance is:
+    fast to calculate,
+    widely used and understood, and
+    consistent with properties we would want a feature importance measure to
+    have.
+- PI is calculated after a model has been fitted
+- Shuffle the values in a single column, make predictions using the
+resulting dataset. Use these predictions and the true target values to
+calculate how much the loss function suffered from shuffling. That
+performance deterioration measures the importance of the variable you
+just shuffled.
+
+PI  = loss function(shuffled) - loss function(unshuffled)
+because loss will be bigger when shuffled (usually), a bigger PI means the loss
+increased a lot
+
+- Return the data to the original order (undoing the shuffle from step 2).
+Now repeat step 2 with the next column in the dataset, until you have
+calculated the importance of each column.
+
+- SOMEx multiple shufflings are done, because somex low importance variables
+provide more accurate predictions AFTER shuffling
+
+CON
+- PI doesn't give a full understanding of variable's impact
+- can be negative for low importance variables, because shuffle yields better
+  results
+example:
+    If a feature has medium permutation importance, that could mean it has
+    a large effect for a few predictions, but no effect in general, or
+    a medium effect for all predictions.
+
+# The width of the effects range is not a reasonable approximation to
+# permutation importance because it can be determined by just a few outliers.
+However if all dots on the graph
+# are widely spread from each other, that is a reasonable indication
+# that permutation importance is high.
+
+# Because the range of effects is so
+# sensitive to outliers, permutation importance is a better measure of
+# what's generally important to the model.
+
+output is simple chart
+
+weight   feature
+------   --------
+0.15     goal scored
+0.05     distance covered
+etc.      ...
+
+"""
+import numpy as np
+import pandas as pd
+import eli5
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from eli5.sklearn import PermutationImportance
+
+data = pd.read_csv('../input/fifa-2018-match-statistics/FIFA 2018 Statistics.csv')
+y = (data['Man of the Match'] == "Yes")  # Convert from "Yes"/"No" to 1/0
+feature_names = [i for i in data.columns if data[i].dtype in [np.int64]]
+X = data[feature_names]
+train_X, val_X, train_y, val_y = train_test_split(X, y, random_state=1)
+my_model = RandomForestClassifier(n_estimators=100,
+                                  random_state=0).fit(train_X, train_y)
+perm = PermutationImportance(my_model, random_state=1).fit(val_X, val_y)
+eli5.show_weights(perm, feature_names=val_X.columns.tolist())
+
+# EXERCISES
+# difference in latitude pickup and dropoff is more important probably because
+# more taxi customers take long distancerides up and down manhattan; long
+# distances on manhattan are not as common
+
+import pandas as pd
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+
+data = pd.read_csv('../input/new-york-city-taxi-fare-prediction/train.csv',
+                   nrows=50000)
+
+# Remove data with extreme outlier coordinates or negative fares
+data = data.query('pickup_latitude > 40.7 and pickup_latitude < 40.8 and ' +
+                  'dropoff_latitude > 40.7 and dropoff_latitude < 40.8 and ' +
+                  'pickup_longitude > -74 and pickup_longitude < -73.9 and ' +
+                  'dropoff_longitude > -74 and dropoff_longitude < -73.9 and '
+                  + 'fare_amount > 0'
+                  )
+y = data.fare_amount
+
+base_features = ['pickup_longitude',
+                 'pickup_latitude',
+                 'dropoff_longitude',
+                 'dropoff_latitude',
+                 'passenger_count']
+
+X = data[base_features]
+
+train_X, val_X, train_y, val_y = train_test_split(X, y, random_state=1)
+first_model = RandomForestRegressor(n_estimators=50, random_state=1).fit(train_X, train_y)
+
+# %% ML Explainability - - Partial dependence Plots
+
+"""
+partial dependence plots show HOW a feature affects predictions.
+- Controlling for all other house features, what impact do longitude and
+latitude have on home prices? To restate this, how would similarly sized houses
+be priced in different areas?
+
+- Are predicted health differences between two groups due to differences in
+their diets, or due to some other factor?
+
+can be interpreted similarly as coefficients in linear or log regression
+models, although partial dependence plots can capture even more complex
+patterns
+
+How?
+- calculated AFTER a model has been fit
+- start with single row of data, and use model to predict outcome on vertical
+as chosen variable along x axis is increased, but all other variables held
+constant
+- repeat for other rows, increasing our variable but holding others constant;
+then average outcome to plot on vertical axis
+- interaction between features may cause plot for a single row to be atypical
+The y axis is interpreted as change in the prediction from what it would
+be predicted at the baseline or leftmost value.
+
+2D partial dependence plots
+- contour plots show interaction of features; what combination of two features
+leads to in prediction
+- for regression,such as taxi fare, contour will be value of fare
+- for logistic regression, values of probability of prediction will be output;
+will be a series of levels across the grid of x,y coords
+"""
+
+from matplotlib import pyplot as plt
+from pdpbox import pdp, get_dataset, info_plots
+
+# Create the data that we will plot
+pdp_goals = pdp.pdp_isolate(model=tree_model,
+                            dataset=val_X,
+                            model_features=feature_names,
+                            feature='Goal Scored')
+# plot it
+pdp.pdp_plot(pdp_goals, 'Goal Scored')
+plt.show()
+# -------
+# Build Random Forest model
+rf_model = RandomForestClassifier(random_state=0).fit(train_X, train_y)
+
+pdp_dist = pdp.pdp_isolate(model=rf_model,
+                           dataset=val_X,
+                           model_features=feature_names,
+                           feature=feature_to_plot)
+
+pdp.pdp_plot(pdp_dist, feature_to_plot)
+plt.show()
+
+# Similar to previous PDP plot except we use pdp_interact instead of pdp_isolate and pdp_interact_plot instead of pdp_isolate_plot
+features_to_plot = ['Goal Scored', 'Distance Covered (Kms)']
+inter1  =  pdp.pdp_interact(model=tree_model, dataset=val_X,
+                            model_features=feature_names,
+                            features=features_to_plot)
+
+pdp.pdp_interact_plot(pdp_interact_out=inter1, feature_names=features_to_plot, plot_type='contour')
+plt.show()
+
+# EXERCISES
+# 1.
+from matplotlib import pyplot as plt
+from pdpbox import pdp, get_dataset, info_plots
+
+feat_name = 'pickup_longitude'
+pdp_dist = pdp.pdp_isolate(model=first_model, dataset=val_X,
+                           model_features=base_features, feature=feat_name)
+
+pdp.pdp_plot(pdp_dist, feat_name)
+plt.show()
+
+# 2.
+features_to_plot = ['pickup_longitude', 'dropoff_longitude']
+inter1  =  pdp.pdp_interact(model=first_model, dataset=val_X,
+                            model_features=base_features,
+                            features=features_to_plot)
+
+pdp.pdp_interact_plot(pdp_interact_out=inter1,
+                      feature_names=features_to_plot, plot_type='contour')
+plt.show()
+
+# 4.  When absolute distance travalled is controlled for with new variable,
+# partial dependence on pickup_longitude has much less impact on fare
+# amount. So we can have seemingly important variable become uninmportant
+# once real variable is found/formulated.  This is where intuition needs
+# to help, because the training of a model can fit outcome to input
+# even though the input is not directly related to output
+
+# 5. Consider a scenario where you have only 2 predictive features, which
+# we will call feat_A and feat_B. Both features have minimum values of -1
+# and maximum values of 1. The partial dependence plot for feat_A increases
+# steeply over its whole range, whereas the partial dependence plot for
+#  feature B increases at a slower rate (less steeply) over its whole range.
+
+# Does this guarantee that feat_A will have a higher permutation
+# importance than feat_B. Why or why not?
+
+# Solution: No. This doesn't guarantee feat_a is more important.
+# For example, feat_a could have a big effect in the cases where it varies,
+# but could have a single value 99% of the time. In that case, permuting
+# feat_a wouldn't matter much, since most values would be unchanged.
+
+# 6. This code creates a x1, x2 which are random in range
+# [-2,2], and y variable that is negative slope
+# from for X1, x2 in -2 to -1, positive -1 to 1, and, negative
+# again for 1-2, and y not defined otherwise;
+# the boolean expressions (x1<-1) and (X1>1) acts to make this a
+# discontinuous function
+
+X1 = 4 * rand(n_samples) - 2
+X2 = 4 * rand(n_samples) - 2
+y = -2 * X1 * (X1<-1) + X1 - 2 * X1 * (X1>1) - X2
+
+""" EX 7
+Create a dataset with 2 features and a target, such that the pdp of the
+ first feature is flat, but its permutation importance is high. We will use a
+ RandomForest for the model.
+"""
+import eli5
+from eli5.sklearn import PermutationImportance
+
+n_samples = 20000
+
+X1 = 4 * rand(n_samples) - 2
+X2 = 4 * rand(n_samples) - 2
+y = (X1>-1)*(X1<1)*X2
+# this way, X1 controls y; y follows X2 in range
+# [-1,1] but has 0 slope against X1. y=0 outside the range
+# logistical regressions are built this way
+
+# create dataframe because pdp_isolate expects a dataFrame as an argument
+my_df = pd.DataFrame({'X1': X1, 'X2': X2, 'y': y})
+predictors_df = my_df.drop(['y'], axis=1)
+
+my_model = RandomForestRegressor(n_estimators=30, random_state=1).fit(predictors_df, my_df.y)
+
+
+pdp_dist = pdp.pdp_isolate(model=my_model, dataset=my_df, model_features=['X1', 'X2'], feature='X1')
+pdp.pdp_plot(pdp_dist, 'X1')
+plt.show()
+
+perm = PermutationImportance(my_model).fit(predictors_df, my_df.y)
+
+# Check your answer
+q_7.check()
+
+# show the weights for the permutation importance you just calculated
+eli5.show_weights(perm, feature_names = ['X1', 'X2'])
+
+# %% ML Explainability - SHAP Values
+"""
+SHAP Values (SHapley Additive exPlanations) break down a prediction to show
+the impact of each feature.
+SHAP values interpret the impact of having a certain value for a given
+feature in comparison to the prediction we'd make if that feature took some
+ baseline value.
+- it's easier to give a concrete, numeric answer if we restate this as:
+  How much was a prediction driven by the fact that the team scored 3 goals,
+  instead of some baseline number of goals.
+
+- A model says a bank shouldn't loan someone money, and the bank is
+legally required to explain the basis for each loan rejection
+- A healthcare provider wants to identify what factors are driving each
+patient's risk of some disease so they can directly address those risk
+factors with targeted health interventions
+
+https://towardsdatascience.com/one-feature-attribution-method-to-supposedly-rule-them-all-shapley-values-f3e04534983d
+"""
+sum(SHAP values for all features) = pred_for_team - pred_for_baseline_values
+
+row_to_show = 5
+data_for_prediction = val_X.iloc[row_to_show]
+# use 1 row of data here. Could use multiple rows if desired
+data_for_prediction_array = data_for_prediction.values.reshape(1, -1)
+
+
+my_model.predict_proba(data_for_prediction_array)
+# array([[0.29, 0.71]])
+# The team is 70% likely to have a player win the award.
+import shap  # package used to calculate Shap values
+
+# Create object that can calculate shap values
+explainer = shap.TreeExplainer(my_model)
+
+# Calculate Shap values
+shap_values = explainer.shap_values(data_for_prediction)
+
+"""
+The shap_values object above is a list with two arrays. The first array
+is the SHAP values for a negative outcome (don't win the award), and the
+second array is the list of SHAP values for the positive outcome
+(wins the award). We typically think about predictions in terms
+of the prediction of a positive outcome, so we'll pull out SHAP values for
+positive outcomes (pulling out shap_values[1]).
+
+Other fnctions:
+
+    shap.DeepExplainer works with Deep Learning models.
+    shap.KernelExplainer works with all models, though it is slower than
+    other Explainers and it offers an approximation rather than exact Shap
+    values.
+
+"""
+shap.initjs()
+shap.force_plot(explainer.expected_value[1], shap_values[1],
+                data_for_prediction)
+# use Kernel SHAP to explain test set predictions
+k_explainer = shap.KernelExplainer(my_model.predict_proba, train_X)
+k_shap_values = k_explainer.shap_values(data_for_prediction)
+shap.force_plot(k_explainer.expected_value[1], k_shap_values[1],
+                data_for_prediction)
+
+# EXERCISES
+# --------------------
+"""1. You have built a simple model, but the doctors say they don't know
+how to evaluate a model, and they'd like you to show them some evidence the
+model is doing something in line with their medical intuition. Create any
+ graphics or tables that will show them a quick overview of what the model
+ is doing?
+
+They are very busy. So they want you to condense your model overview into
+ just 1 or 2 graphics, rather than a long string of graphics.
+
+We'll start after the point where you've built a basic model.
+Just run the following cell to build the model called my_model.
+"""
+# --------------------
+#  Reference code
+# --------------------
+
+# Calculate and show permutation importance:
+
+import eli5
+from eli5.sklearn import PermutationImportance
+
+perm = PermutationImportance(my_model, random_state=1).fit(val_X, val_y)
+eli5.show_weights(perm, feature_names = val_X.columns.tolist())
+
+#Calculate and show partial dependence plot:
+
+from matplotlib import pyplot as plt
+from pdpbox import pdp, get_dataset, info_plots
+
+# Create the data that we will plot
+pdp_goals = pdp.pdp_isolate(model=my_model, dataset=val_X,
+                            model_features=feature_names,
+                            feature='Goal Scored')
+# plot it
+pdp.pdp_plot(pdp_goals, 'Goal Scored')
+plt.show()
+
+# Calculate and show Shap Values for One Prediction:
+
+import shap  # package used to calculate Shap values
+
+data_for_prediction = val_X.iloc[0,:]
+# use 1 row of data here. Could use multiple rows if desired
+
+# Create object that can calculate shap values
+explainer = shap.TreeExplainer(my_model)
+shap_values = explainer.shap_values(data_for_prediction)
+shap.initjs()
+shap.force_plot(explainer.expected_value[0], shap_values[0],
+                data_for_prediction)
+
+# %% ML Explainability - Advanced usage of SHAP Values
+"""
+1. summary plots - give birds eye view of variable's impact, feature on
+   vertical, horizontal is SHAP value (vertical on PDP), color is high/low
+   feature value (horizontal axis on PDP plot)
+2. dependence contribution plots - show variation of output with value of
+    feature, but also importance; each dot is a row of data; spread indicates
+    there is interaction with other features; color can indicate the second
+    variable (feature 1 along x axis, feature 2 is color, y axis is SHAP value
+          for feature 1 on prediction of best player award, for example)
++ SHAP means has positive impact on target variable outcome vs. baseline value
+of feature
+- SHAP means there is negative impact vs. baseline value of feature
+"""
+
+import shap  # package used to calculate Shap values
+
+# Create object that can calculate shap values
+explainer = shap.TreeExplainer(my_model)
+
+# calculate shap values. This is what we will plot.
+# Calculate shap_values for all of val_X rather than a single row, to have more data for plot.
+shap_values = explainer.shap_values(val_X)
+
+# Make plot. Index of [1] is prediction of True; for classification problems,
+# there is an array ofSHAP values for each possible outcome
+
+# NOTE - SHAP values/plots can take a while, XGBoost has optimizations, though.
+shap.summary_plot(shap_values[1], val_X)
+
+# SHAP Dependence Contribution Plots¶
+
+import shap  # package used to calculate Shap values
+
+explainer = shap.TreeExplainer(my_model)
+shap_values = explainer.shap_values(X)
+shap.dependence_plot('Ball Possession %', shap_values[1], X,
+                     interaction_index="Goal Scored")
+
+"""
+EXERCISES
+4.
+The jumbling suggests that sometimes increasing that feature leads to
+ higher predictions, and other times it leads to a lower prediction.
+ Said another way, both high and low values of the feature can have both
+ positive and negative effects on the prediction. The most likely
+ explanation for this "jumbling" of effects is that the variable
+ (in this case num_lab_procedures) has an INTERACTION EFFECT with other
+ variables. For example, there may be some diagnoses for which it is good
+ to have many lab procedures, and other diagnoses where suggests
+ increased risk. We don't yet know what other feature is interacting
+ with num_lab_procedures though we could investigate that with SHAP
+ contribution dependence plots.
 """
