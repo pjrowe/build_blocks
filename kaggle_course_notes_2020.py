@@ -1,16 +1,27 @@
 """LEARN on kaggle.
-The following are notes and code snippets from the following Kaggle courses
+
+The following are notes and code snippets from the following Kaggle courses.
+
+I prefer reading these notes in raw text / script format, as opposed to a
+nicely formatted Jupyter notebook, because I can fit more text on a
+vertical screen with no graphs or output. The layout is not the cleanest, as
+it is for personal use / reference.  I created on Spyder IDE on home
+computer, uploading to kaggle and github merely for backup / documentation of
+my progress in studies.
 
 COURSES
-- Data Cleaning
-- Intro SQL
-- Advanced SQL
-- Pandas (Data Wrangling)
+x - Data Cleaning
+x - Intro SQL
+x - Advanced SQL
+x - Pandas (Data Wrangling)
 
 - Feature Engineering
 - Intro Machine Learning
 - Intermediate Machine Learning
 - Machine Learning Explainability
+
+Lecture notes on linear models
+https://online.stat.psu.edu/stat501/lesson/9
 """
 # %% DATA CLEANING
 # - missing values
@@ -51,7 +62,10 @@ def missing_values_table(df):
 # you want to scale data when you're using methods based on measures of
 # how far apart data points are, like SVMs or k-nearest neighbors (KNN)
 # With these algorithms, a change of "1" in any numeric feature is given the
-# same importance.
+# same importance.  A gradient descent to find optimal coefficients in a
+# linear model can converge more
+# quickly for a given learning rate when the data for the features are scaled
+# similarly
 
 import pandas as pd
 import numpy as np
@@ -64,7 +78,7 @@ np.random.seed(0)
 # generate 1000 data points randomly drawn from an exponential distribution
 original_data = np.random.exponential(size=1000)
 
-# mix-max scale the data between 0 and 1
+# min-max scale the data between 0 and 1
 scaled_data = minmax_scaling(original_data, columns=[0])
 fig, ax = plt.subplots(1, 2)
 sns.distplot(original_data, ax=ax[0])
@@ -82,9 +96,8 @@ ax[1].set_title("Scaled data")
 # NORMALIZATION
 # -------------
 # In Normalization, you're changing the shape of the distribution of your data.
-# Scaling just changes the range of your data. Normalization is a more radical
-# transformation. The point of normalization is to change your observations so
-# that they can be described as a normal distribution.
+# to a normal distribution.
+# Scaling just changes the range of your data.
 
 # In general, you'll normalize your data if you're going to be using a
 # machine learning or statistics technique that assumes your data is normally
@@ -103,7 +116,7 @@ ax[1].set_title("Scaled data")
 # x^-5, x^-4..x^-1, log(x), x^1, ...x^5
 
 # Test only works for positive data. However, Box and Cox did propose a second
-# formula that can be used for negative y-values:
+# formula that can be used for negative y-values
 normalized_data = stats.boxcox(original_data)
 
 fig, ax = plt.subplots(1, 2)
@@ -212,13 +225,15 @@ matches = fuzzywuzzy.process.extract("south korea", countries, limit=10,
                                      scorer=fuzzywuzzy.fuzz.token_sort_ratio)
 matches
 
+
 # function to replace rows in the provided column of the provided dataframe
 # that match the provided string above the provided ratio with the string
 def replace_matches_in_column(df, column, string_to_match, min_ratio=47):
     strings = df[column].unique()
     # top 10 closest matches to our input string
     matches = fuzzywuzzy.process.extract(string_to_match, strings,
-                                         limit=10, scorer=fuzzywuzzy.fuzz.token_sort_ratio)
+                                         limit=10,
+                                         scorer=fuzzywuzzy.fuzz.token_sort_ratio)
     close_matches = [matches[0] for matches in matches
                      if matches[1] >= min_ratio]
     # get the rows of all the close matches in our dataframe
@@ -540,17 +555,19 @@ def expert_finder(topic, client):
 
     return results
 
-# ---------------------------------- ----------------- -----------------
 
+# ---------------------------------- ----------------- -----------------
 # Union concatenates vertically, UNION DISTINCT excludes duplicates
 all_users_query = """
                 SELECT q.owner_user_id
                 FROM `bigquery-public-data.stackoverflow.posts_questions` AS q
-                WHERE q.creation_date >= '2019-01-01' AND q.creation_date < '2019-01-02'
-                    UNION DISTINCT
+                WHERE q.creation_date >= '2019-01-01'
+                    AND q.creation_date < '2019-01-02'
+                UNION DISTINCT
                 SELECT a.owner_user_id
                 FROM `bigquery-public-data.stackoverflow.posts_answers` AS a
-                WHERE a.creation_date >= '2019-01-01' AND a.creation_date < '2019-01-02'
+                WHERE a.creation_date >= '2019-01-01'
+                    AND a.creation_date < '2019-01-02'
                 """
 
 # ---------------------------------- ----------------- -----------------
@@ -625,9 +642,10 @@ avg_num_trips_query = """
                       GROUP BY trip_date
                       ORDER BY trip_date
                       )
-                      SELECT trip_date,
+                      SELECT
+                          trip_date,
                           AVG(num_trips)
-                          OVER (
+                              OVER (
                                ORDER BY trip_date
                                ROWS BETWEEN 15 PRECEDING AND 15 FOLLOWING
                                ) AS avg_num_trips
@@ -636,7 +654,8 @@ avg_num_trips_query = """
 
 # ADVANCED SQL, Analytics Functions, Exercise 2 of 3
 trip_number_query = """
-                    SELECT pickup_community_area,
+                    SELECT
+                        pickup_community_area,
                         trip_start_timestamp,
                         trip_end_timestamp,
                         RANK()
@@ -650,7 +669,8 @@ trip_number_query = """
 
 # ADVANCED SQL, Analytics Functions, Exercise 3 of 3
 break_time_query = """
-                   SELECT taxi_id,
+                   SELECT
+                       taxi_id,
                        trip_start_timestamp,
                        trip_end_timestamp,
                        TIMESTAMP_DIFF(
@@ -889,8 +909,9 @@ reindexed = reviews.rename_axis('wines', axis='rows')
 powerlifting_combined = powerlifting_meets.set_index("MeetID").join(powerlifting_competitors.set_index("MeetID"))
 """
 
-# %% FEATURING ENGINEERING - MAKING FEATURES READY FOR MODELING
+# %% FEATURING ENGINEERING
 """
+Outline
 - MAKING FEATURES READY FOR MODELING with LabelEncoder() or pd.factorize(),
     OneHotEncoder() or pd.get_dummies()
 - Baseline model
@@ -1069,8 +1090,10 @@ encoded = ks[cat_features].apply(encoder.fit_transform)
 
 data_cols = ['goal', 'hour', 'day', 'month', 'year', 'outcome']
 data = ks[data_cols].join(encoded)
+# so data should have 6 + 3 columns, or total of 9; encoded has same index as
+# ks, so the join happens automatically
 
-# %% Feature engineering: Categorical encodings
+# %% FEATURING ENGINEERING - Categorical encodings
 """
     basic encodings - one-hot, labelencoding
     more advanced encodings - count encoding, target encoding,
@@ -1094,7 +1117,7 @@ count_enc = ce.CountEncoder()
 # validation and test datasets
 count_encoded = count_enc.fit_transform(ks[cat_features])
 
-# theoriginal features are included in data; we need to manually remove them
+# the original features are included in data; we need to manually remove them
 # if we don't want them in dataframe
 data = data.join(count_encoded.add_suffix("_count"))
 train, valid, test = get_data_splits(data)
@@ -1248,7 +1271,7 @@ train_encoded = train.join(cb_enc.transform(train[cat_features]).add_suffix('_cb
 valid_encoded = valid.join(cb_enc.transform(valid[cat_features]).add_suffix('_cb'))
 
 """
-# %% Feature engineering: Feature generation
+# %% FEATURING ENGINEERING - Feature generation
 """
 Interactions
 
@@ -1404,7 +1427,84 @@ features need to be scaled such that they have 0 mean and a standard
 deviation of 1. This can be done using sklearn.preprocessing.StandardScaler.
 """
 
-# %% Feature Selection
+# %% FEATURING ENGINEERING - Feature Generation, timeseries / transforms
+import pandas as pd
+from datetime import datetime
+
+data = pd.read_csv('test.csv')
+
+print(data, '\n\ndata type in clicks column BEFORE', type(data.clicks.iloc[0]))
+
+for i in range(len(data)):
+    data.loc[i, 'clicks'] = datetime.strptime(data.loc[i, 'clicks'],
+                                              '%m/%d/%Y %H:%M')
+print(data, '\n\ndata type in clicks column AFTER', type(data.clicks.iloc[0]))
+print('\ndata type of clicks column', type(data.clicks))
+
+# %% time series with windows
+# Implement a function count_past_events that takes a Series of click times
+# (timestamps) and returns another Series with the number of events in the
+# last six hours. Tip: The rolling method is useful for this.
+
+# First, create a Series with a timestamp index; note, the index will have
+# the same name as in data, i.e., 'clicks', while the values of the series
+# will not have a name above it
+mytseries = pd.Series(data.index, index=data.clicks,
+                      name="count_time").sort_index()
+# sort_index() does not do it in place,i.e., does not chanage passed data or
+# index
+print(mytseries.head())
+
+# %%
+# exclude current hour
+count_36_hours = mytseries.rolling('36h').count() - 1
+print(count_36_hours)
+print(count_36_hours.values)  # the number of events in last 36 hours
+print(count_36_hours.index)   # the time stamps
+print(count_36_hours.shape)   # (21,)
+# %%
+# count_36_hours windows is indexed by timestamps, as is mytseries, so
+# replacing the time stamps with the values of mytseries, we get the original
+# index back which can be used to find the categorical variables
+
+count_36_hours.index = mytseries.values
+print(count_36_hours)
+# %%
+x = count_36_hours.sort_index()
+#  this does same as sorting by the index
+y = count_36_hours.reindex(data.index)
+# x and y are equivalent
+
+
+def count_past_events(series):
+    """count_past_events."""
+    series2 = pd.Series(series.index, index=series.values)
+    return series2.rolling('6h').count()-1
+
+# %% timediff transform by group
+
+
+def time_diff(series):
+    """Return a series with the time since the last timestamp.
+
+    in seconds; each entry is difference between entry and previous entry;
+    first value in returned series should be #nan.
+    """
+    return series.diff()
+
+
+def time_diff2(series):
+    return series.diff().dt.total_seconds()
+
+
+x = data.groupby('cat')['clicks'].transform(time_diff)
+print(x)
+print(x.dt.total_seconds())
+
+y = data.groupby('cat')['clicks'].transform(time_diff2)
+print(y)
+
+# %% FEATURING ENGINEERING - Feature Selection
 """
 2 problems with too many features
 1.  overfitting
@@ -1656,84 +1756,8 @@ def select_features_l1(X, y):
 
 """
 
-# %% FEATURE GENERATION - timeseries and transforms practice
-import pandas as pd
-from datetime import datetime
 
-data = pd.read_csv('test.csv')
-
-print(data, '\n\ndata type in clicks column BEFORE', type(data.clicks.iloc[0]))
-
-for i in range(len(data)):
-    data.loc[i, 'clicks'] = datetime.strptime(data.loc[i, 'clicks'],
-                                              '%m/%d/%Y %H:%M')
-print(data, '\n\ndata type in clicks column AFTER', type(data.clicks.iloc[0]))
-print('\ndata type of clicks column', type(data.clicks))
-
-# %% time series with windows
-# Implement a function count_past_events that takes a Series of click times
-# (timestamps) and returns another Series with the number of events in the
-# last six hours. Tip: The rolling method is useful for this.
-
-# First, create a Series with a timestamp index; note, the index will have
-# the same name as in data, i.e., 'clicks', while the values of the series
-# will not have a name above it
-mytseries = pd.Series(data.index, index=data.clicks,
-                      name="count_time").sort_index()
-# sort_index() does not do it in place,i.e., does not chanage passed data or
-# index
-print(mytseries.head())
-
-# %%
-# exclude current hour
-count_36_hours = mytseries.rolling('36h').count() - 1
-print(count_36_hours)
-print(count_36_hours.values)  # the number of events in last 36 hours
-print(count_36_hours.index)   # the time stamps
-print(count_36_hours.shape)   # (21,)
-# %%
-# count_36_hours windows is indexed by timestamps, as is mytseries, so
-# replacing the time stamps with the values of mytseries, we get the original
-# index back which can be used to find the categorical variables
-
-count_36_hours.index = mytseries.values
-print(count_36_hours)
-# %%
-x = count_36_hours.sort_index()
-#  this does same as sorting by the index
-y = count_36_hours.reindex(data.index)
-# x and y are equivalent
-
-
-def count_past_events(series):
-    """count_past_events."""
-    series2 = pd.Series(series.index, index=series.values)
-    return series2.rolling('6h').count()-1
-
-# %% timediff transform by group
-
-
-def time_diff(series):
-    """Return a series with the time since the last timestamp.
-
-    in seconds; each entry is difference between entry and previous entry;
-    first value in returned series should be #nan.
-    """
-    return series.diff()
-
-
-def time_diff2(series):
-    return series.diff().dt.total_seconds()
-
-
-x = data.groupby('cat')['clicks'].transform(time_diff)
-print(x)
-print(x.dt.total_seconds())
-
-y = data.groupby('cat')['clicks'].transform(time_diff2)
-print(y)
-
-# %% Intro to Machine Learning
+# %% INTRO TO MACHINE LEARNING -
 """
 Outline
 - Underfitting / Overfitting
@@ -1766,7 +1790,7 @@ models.
 results to a Kaggle competition.
 
 """
-# %%  Intro to Machine Learning - Under/overfitting
+# %%  INTRO TO MACHINE LEARNING - Under/overfitting
 """
 overfitting can bre controlled by varying max # of leaf nodes (more means
 deeper tree, more likely to overfit, as there are fewer datapoints in each
@@ -1795,7 +1819,7 @@ best_tree_size = min(scores, key=scores.get)
 final_model = DecisionTreeRegressor(max_leaf_nodes=100, random_state=0)
 
 """
-# %% Intro to Machine Learning - Random Forests
+# %% INTRO TO MACHINE LEARNING - Random Forests
 """
 Better predictive accuracy than a single decision tree and it works well
  with default parameters. If you keep modeling, you can learn more models
@@ -1840,7 +1864,7 @@ rf_model.fit(train_X, train_y)
 rf_val_mae = mean_absolute_error(rf_model.predict(val_X), val_y)
 
 """
-# %% Intro to Machine Learning - AutoML
+# %% INTRO TO MACHINE LEARNING - AutoML
 """
 7 steps of Machine Learning
 1. Gather data
@@ -1860,7 +1884,7 @@ Google Cloud AutoML Tables automates the machine learning process,steps 2-7
 
 
 """
-# %% Intermediate Machine Learning
+# %% INTERMEDIATE MACHINE LEARNING -
 """
 Outline
 -------
@@ -1873,7 +1897,7 @@ Outline
 
 """
 
-# %%  Intermediate ML - Missing Values
+# %%  INTERMEDIATE MACHINE LEARNING - Missing Values
 """
 3 Approaches
 ------------
@@ -2125,7 +2149,7 @@ However, we see that dropping columns performs slightly better! While this
 
 
 """
-# %%  Intermediate ML - Categorical variables
+# %%  INTERMEDIATE MACHINE LEARNING -  Categorical variables
 """3 approaches to categorical variables
 1.	Drop them – because they need to be preprocessed by ML models; they are
 not numbers that can be entered directly
@@ -2149,7 +2173,7 @@ d.	setting sparse=False ensures that the encoded columns are returned as a
 numpy array (instead of a sparse matrix).
 
 """
-# %%  Intermediate ML - Pipelines
+# %%  INTERMEDIATE MACHINE LEARNING - Pipelines
 """
 Pipelines are a simple way to keep your data preprocessing and modeling code
 organized. Specifically, a pipeline bundles preprocessing and modeling steps
@@ -2203,7 +2227,7 @@ print('MAE:', score)
 """
 
 
-# %%  Intermediate ML - Cross Validation
+# %%  INTERMEDIATE MACHINE LEARNING -  Cross Validation
 
 """
 Cross valid takes longer, but can yield more accurate models and cleans up
@@ -2266,7 +2290,7 @@ results = {tree:get_score(tree) for tree in trees}
 
 """
 
-# %%  Intermediate ML - data leakage
+# %%  INTERMEDIATE MACHINE LEARNING -  data leakage
 """
 target leakage - when predictors include data that will not be available
 at the time you make predictions. It is important to think about target
@@ -2446,7 +2470,7 @@ A5.
 
 """
 
-# %% Machine Learning Explainability
+# %% MACHINE LEARNING EXPLAINABILITY -
 """
 Outline
 - Use Cases for Model Insights
@@ -2457,7 +2481,7 @@ Outline
                                 a single prediction)
 """
 
-# %% ML Explainability- Use Cases
+# %% MACHINE LEARNING EXPLAINABILITY - Use Cases
 """
 - help in debugging and human decision-making/intuition
 - inform feature engineering and future data collection
@@ -2465,7 +2489,7 @@ Outline
   data scientists
 
 """
-# %% ML Explainability - Permutation Importance
+# %% MACHINE LEARNING EXPLAINABILITY - Permutation Importance
 
 """
 Compared to most other approaches to measuring feature importance,
@@ -2570,7 +2594,7 @@ X = data[base_features]
 train_X, val_X, train_y, val_y = train_test_split(X, y, random_state=1)
 first_model = RandomForestRegressor(n_estimators=50, random_state=1).fit(train_X, train_y)
 
-# %% ML Explainability - - Partial dependence Plots
+# %% MACHINE LEARNING EXPLAINABILITY - Partial dependence Plots
 
 """
 partial dependence plots show HOW a feature affects predictions.
@@ -2726,7 +2750,7 @@ q_7.check()
 # show the weights for the permutation importance you just calculated
 eli5.show_weights(perm, feature_names = ['X1', 'X2'])
 
-# %% ML Explainability - SHAP Values
+# %% MACHINE LEARNING EXPLAINABILITY - SHAP Values
 """
 SHAP Values (SHapley Additive exPlanations) break down a prediction to show
 the impact of each feature.
@@ -2842,7 +2866,7 @@ shap.initjs()
 shap.force_plot(explainer.expected_value[0], shap_values[0],
                 data_for_prediction)
 
-# %% ML Explainability - Advanced usage of SHAP Values
+# %% MACHINE LEARNING EXPLAINABILITY - Advanced usage of SHAP Values
 """
 1. summary plots - give birds eye view of variable's impact, feature on
    vertical, horizontal is SHAP value (vertical on PDP), color is high/low
