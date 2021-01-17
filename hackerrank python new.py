@@ -4,47 +4,45 @@ Reference and progress for hackerrank skills / problems
 
 Four skills
 ------------------
-1. Python 86/115
-    - most of the examples below are for python challenges
-    **end python
-2. SQL 52/58
-    - the challenges are quite simple, so I don't include them here
+1. Python 102/115
+2. SQL 54/58
+    - the challenges are quite simple, so I only more difficult ones
+    included here for reference
     **end sql
-3. Regex 36/47
-    - see below for cells with challenges, title includes Regex
+3. Regex 45/47
 4. Interview Prep 7/69
+    -- see separate file hackerrank_interview_prep.py
 
 """
 # %% PYTHON - 115
 """
 - 7 Introduction x
 - 6 Basic Data Types x
-- 14 Strings
+- 14 Strings - 2 left trivial
 - 13 Sets x
-- 7 Math
+- 7 Math 2
 --- 47
 - 7 Itertools x
 - 8 Collections x
 - 2 Date and Time x
 - 2 Errors and Exceptions x
-- 2 Classes
+- 2 Classes 1
 --- 21
 
 - 6 Built-Ins x
-- 3 Python Functionals
--17 Regex and Parsing
-- 2 XML
-- 2 Closures and Decorators
+- 3 Python Functionals x
+-17 Regex and Parsing 2
+- 2 XML x
+- 2 Closures and Decorators x
 --- 30
 
--15 Numpy
+-15 Numpy 3
 - 2 Debugging x
 --- 17
 ===
-115
+105/115
 
-Finish functionals, regex, xml, decorators
-
+strings, math, classes, regex,nummpy
 """
 
 # %%  PYTHON - BASIC DATA TYPES - Find the Runner-Up Score!
@@ -139,7 +137,37 @@ if __name__ == '__main__':
     for _ in out:
         print(_)
 
+# %% PYTHON - STRINGS - Alphabet Rangoli
+from string import ascii_lowercase
 
+n = int(input())
+rows = ['x']*(n*2-1)
+
+for i in range(n):
+    pattern = ascii_lowercase[n-i-1:n]
+    print(pattern)
+    fullpat = pattern[-1:0:-1] + pattern
+    print(fullpat)
+    rowpat = '-'*(n*2-2-2*i) + '-'.join(fullpat) + '-'*(n*2-2-2*i)
+    print(rowpat)
+    rows[i] = rowpat
+    rows[2*n-2-i] = rowpat
+
+print(*rows, sep='\n')
+
+
+
+# %% PYTHON - STRINGS - Designer Door Mat
+
+n, m = list(map(int, input().split()))
+rows = ['x']*n
+
+for i in range(n//2):
+    pattern = '-'* (m//2-1-3*i) + '.|.'*(2*i + 1) + '-'* (m//2-1-3*i)
+    rows[i]=pattern
+    rows[n-1-i]=pattern
+rows[n//2] = '-'*(m//2-3) + 'WELCOME' + '-'*(m//2-3)
+print(*rows,sep='\n')
 # %% PYTHON - STRINGS - Merge the Tools!
 # worked on all 16 test cases 6/23/2020
 
@@ -230,6 +258,18 @@ for i in range(thickness+1):
 for i in range(thickness):
     print(((c*(thickness-i-1)).rjust(thickness) + c +
            (c*(thickness-i-1)).ljust(thickness)).rjust(thickness*6))
+
+# %% PYTHON - STRINGS - Text wrap
+
+import textwrap
+
+def wrap(string, max_width):
+    return '\n'.join(textwrap.wrap(string, max_width))
+
+if __name__ == '__main__':
+    string, max_width = input(), int(input())
+    result = wrap(string, max_width)
+    print(result)
 
 # %% PYTHON - STRINGS - String validation
 s = input()
@@ -951,7 +991,7 @@ K = int(input())
 
 for row in sorted(rows, key=lambda row: int(row.split()[K])):
     print(row)
-# %% PYTHON - FUNCTIONALS - map and lambda
+# %% PYTHON - PYTHON FUNCTIONALS - map and lambda
 
 def fib(n):
     if n == 0:
@@ -971,11 +1011,90 @@ def fib(n):
 
 print(list(map(lambda x: x**3, fib(5))))
 
-# %%  PYTHON - Python Functionals
+# %% PYTHON - PYTHON FUNCTIONALS - Validating Email Addresses With a Filter
+"""
+You are given an integer followed by
+
+email addresses. Your task is to print a list containing only valid email
+addresses in lexicographical order.
+
+Valid email addresses must follow these rules:
+
+    It must have the username@websitename.extension format type.
+    The username can only contain letters, digits, dashes and underscores.
+    The website name can only have letters and digits.
+    The maximum length of the extension is
+"""
+import re
+
+def fun(s):
+    try:
+        username, siteext = s.split('@')
+        site, ext = siteext.split('.')
+
+        # print(username)
+        # print(site, ext)
+
+        valid_ext = len(ext) <= 3
+        valid_user = False
+        valid_site = False
+        # print(re.search(r'[^a-zA-Z0-9-_]', username))
+        # print(re.search(r'[^a-zA-Z0-9]', site))
+
+        if re.search(r'[^a-zA-Z0-9-_]', username) is None:
+            if len(username) > 0:
+                valid_user = True
+        if re.search(r'[^a-zA-Z0-9]', site) is None:
+            valid_site = True
+
+        # print(valid_ext, valid_user, valid_site)
+        return valid_ext & valid_user & valid_site
+        # return True if s is a valid email, else return False
+
+    except Exception:
+        return False
+
+
+def filter_mail(emails):
+    return list(filter(fun, emails))
+
+
+if __name__ == '__main__':
+    n = int(input())
+    emails = []
+    for _ in range(n):
+        emails.append(input())
+
+filtered_emails = filter_mail(emails)
+filtered_emails.sort()
+print(filtered_emails)
+# %%  PYTHON - PYTHON FUNCTIONALS - Reduce Function
 from functools import reduce
+from fractions import gcd
+import operator
 
-print(reduce(lambda x, y: x + y, [1, 2, 3, 4]))
+# print(reduce(lambda x, y: x + y, [1, 2, 3, 4]))
+# print(reduce(math.gcd,[2,4,8]))
 
+n = int(input())
+nums = []
+dens = []
+for i in range(n):
+    numden = list(map(int, input().split()))
+    nums.append(numden[0])
+    dens.append(numden[1])
+
+numer = math.prod(nums)
+denom = math.prod(dens)
+gc = math.gcd(numer,denom)
+print(int(numer/gc), int(denom/gc))
+
+""" solution
+
+def product(fracs):
+    t = reduce(operator.mul , fracs)
+    return t.numerator, t.denominator
+"""
 # %% PYTHON - REGEX AND PARSING - re.split
 import re
 
@@ -1086,6 +1205,59 @@ single_line_comment = r'<!--(.*)-->'
 multi_line_comment = r''
 data_pattern = r'<\w+>(.*)(?=<[/]\w+>)'
 
+
+# %%  PYTHON - REGEX AND PARSING - Detect HTML Tags, Attributes and
+# Attribute Values
+
+# cannot seem to solve all cases due to comments i.e.,  <!-- -->
+
+# the tough problem is how to exclude
+
+import re
+
+N = int(input())
+html=''
+for i in range(N):
+    html = html + input()
+
+html = input()
+html = re.sub(r'<!.+-->', r'', html, re.DOTALL)
+tags_in_line = re.findall(r"<((\w+).*?)>", html, re.M|re.DOTALL)
+
+for tag in tags_in_line:
+    attrs_contents = re.findall(r'\s(\w+)="([/\w.-]*)"', tag[0])
+    print(tag[1])
+    for item in attrs_contents:
+        print('-> ' + str(item[0]) + ' > ' + str(item[1]))
+"""
+from html.parser import HTMLParser
+
+class MyHTMLParser(HTMLParser):
+    def handle_starttag(self, tag, attrs):
+        print(tag)
+        for attr in attrs:
+            print(f'-> {attr[0]} > {attr[1]}')
+string = ''
+num = int(input())
+for i in range(num):
+    N = input()
+    string = string + N
+parser = MyHTMLParser()
+parser.feed(string)
+"""
+
+
+html= """<!--[if !IE 6]><!-->
+  <link rel="stylesheet" type="text/css" media="screen, projection" href="REGULAR-STYLESHEET.css" />
+<!--<![endif]-->
+
+<!--[if gte IE 7]>
+  <link rel="stylesheet" type="text/css" media="screen, projection" href="REGULAR-STYLESHEET.css" />
+<![endif]-->
+
+<!--[if lte IE 6]>
+  <link rel="stylesheet" type="text/css" media="screen, projection" href="http://universal-ie6-css.googlecode.com/files/ie6.0.3.css" />
+<![endif]-->"""
 
 # %% PYTHON - REGEX AND PARSING - check if input is a float
 import re
@@ -1347,8 +1519,129 @@ for i in range(int(input())):
     else:
         print('NO')
 
+# %% PYTHON - 2 XML
+import sys
+import xml.etree.ElementTree as etree
+
+
+def get_attr_number(node):
+    return etree.tostring(node).count(b'=')    # your code goes here
+
+
+if __name__ == '__main__':
+    # sys.stdin.readline()
+    # xml = sys.stdin.read()
+    xml = input()
+    tree = etree.ElementTree(etree.fromstring(xml))
+    root = tree.getroot()
+
+    print(get_attr_number(root))
+
+# %% PYTHON -  XML2 - Find the Maximum Depth
+import xml.etree.ElementTree as etree
+
+maxdepth = -1
+
+
+def depth(elem, level):
+    global maxdepth
+    if (level == maxdepth):
+        maxdepth += 1
+
+    for child in elem:
+        depth(child, level + 1)
+
+
+if __name__ == '__main__':
+    n = int(raw_input())
+    xml = ""
+    for i in range(n):
+        xml = xml + raw_input() + "\n"
+    tree = etree.ElementTree(etree.fromstring(xml))
+    depth(tree.getroot(), -1)
+    print(maxdepth)
+
+# %% PYTHON - Closures and Decorators - Standardize Mobile Number
+# Using Decorators
+
+
+def wrapper(f):
+    def phone(list_n):
+        f(["+91 "+c[-10:-5]+" "+c[-5:] for c in list_n])
+    return phone
+
+
+@wrapper
+def sort_phone(list_nums):
+    print(*sorted(list_nums), sep='\n')
+
+
+if __name__ == '__main__':
+    li = [input() for _ in range(int(input()))]
+    sort_phone(li)
+
+# %% PYTHON - Closures and Decorators - Decorators 2 - Name Directory
+
+
+def person_lister(f):
+    def inner(people):
+        # complete the function
+        return map(f, sorted(people, key=lambda x: int(x[2])))
+    return inner
+
+
+@person_lister
+def name_format(pers):
+    return ("Mr. " if pers[3] == "M" else "Ms. ") + pers[0] + " " + pers[1]
+
+
+if __name__ == '__main__':
+    people = [input().split() for i in range(int(input()))]
+    print(*name_format(people), sep='\n')
+
+"""
+Robert Bustle 32 M
+Robert Bux 32 M
+Mike Thomson 20 M
+
+For sorting a nested list based on some parameter, you can use the itemgetter
+ library. You can read more about it here.
+"""
+# %% PYTHON - Closures and Decorators - Decorators 2 - Name Directory Try 2
+# we use map iterator above because it disappears after iteration; if we want
+# to use
+# memory to store elements, we need to use list
+
+
+def person_lister(f):
+    def inner(people):
+        # complete the function
+        return list(map(f, sorted(people, key=lambda x: int(x[2]))))
+    return inner
+
+
+@person_lister
+def name_format(pers):
+    return ("Mr. " if pers[3] == "M" else "Ms. ") + pers[0] + " " + pers[1]
+
+
+if __name__ == '__main__':
+    people = [input().split() for i in range(int(input()))]
+    print(*name_format(people), sep='\n')
+
+# since we didn't store the list in a variable, it doesn't matter
+# %% Python - Numpy
+
+# The reshape tool gives a new shape to an array without changing its
+# data. It creates a new array and does not modify the original array itself.
+import numpy
+
+my_array = numpy.array([1, 2, 3, 4, 5, 6])
+print(numpy.reshape(my_array, (3, 2)))
 
 # %% PYTHON - Debugging - Default arguments
+
+
 class EvenStream(object):
     def __init__(self):
         self.current = 0
@@ -1396,12 +1689,66 @@ Topics covered in 58 questions on hackerrank, only some examples included
 - 20 Basic Select x
 -  5 Advanced Select x
 - 17 Aggregation x
--  8 Basic Join 1
--  5 Advanced Join 4
+-  8 Basic Join x
+-  5 Advanced Join 3
 -  3 Alternative Queries 1
 ====
-52 of 58
+54 of 58 done
 """
+
+# %% HACKERRANK SQL - SQL Project Planning
+"""
+SET sql_mode = '';
+SELECT Start_Date, End_Date
+FROM
+    (SELECT Start_Date FROM Projects WHERE Start_Date NOT IN (SELECT End_Date FROM Projects)) a,
+    (SELECT End_Date FROM Projects WHERE End_Date NOT IN (SELECT Start_Date FROM Projects)) b
+WHERE Start_Date < End_Date
+GROUP BY Start_Date
+ORDER BY DATEDIFF(End_Date, Start_Date), Start_Date
+
+
+# OR
+
+SELECT Start_Date, MIN(End_Date)
+FROM
+# Choose start dates that are not end dates of other projects
+#     (if a start date is an end date, it is part of the samee project) */
+    (SELECT Start_Date FROM Projects WHERE Start_Date NOT IN
+     (SELECT End_Date FROM Projects)) a,
+# Choose end dates that are not end dates of other projects */
+    (SELECT end_date FROM PROJECTS WHERE end_date NOT IN
+     (SELECT start_date FROM PROJECTS)) b
+# At this point, we should have a list of start dates and end dates that
+# don't necessarily correspond with each other */
+# This makes sure we only choose end dates that fall after the start date,
+#and choosing the MIN means for the particular start_date, we get the closest
+# end date that does not coincide with the start of another task */
+where start_date < end_date
+GROUP BY start_date
+ORDER BY datediff(start_date, MIN(end_date)) DESC, start_date
+# %% HACKERRANK SQL - Ollivander's Inventory
+SELECT
+    w.id,
+    wp.age,
+    w.coins_needed,
+    w.power
+FROM Wands w
+JOIN Wands_Property wp
+    ON w.code = wp.code
+WHERE wp.is_evil=0
+AND w.coins_needed =
+    # this is the key part
+    (select
+         min(w1.coins_needed)
+    from Wands as w1
+    join Wands_Property as p1
+        on (w1.code = p1.code)
+    where w1.power = w.power
+        and p1.age = wp.age)
+ORDER BY w.power DESC, wp.age DESC;
+"""
+
 
 # %% HACKERRANK SQL - Occupations
 # works!
@@ -1444,15 +1791,6 @@ from information_schema.tables where @row < 20
 
 """
 # %% Binary tree
-
-# The reshape tool gives a new shape to an array without changing its
-# data. It creates a new array and does not modify the original array itself.
-import numpy
-
-my_array = numpy.array([1, 2, 3, 4, 5, 6])
-print(numpy.reshape(my_array, (3, 2)))
-
-# %% Binary tree
 """
 SELECT
     N,
@@ -1473,6 +1811,45 @@ select
 from BST
 order by N;
 """
+# %% HACKERRANK SQL - Interviews
+""" ANSWER
+
+SELECT
+    con.contest_id,
+    con.hacker_id,
+    con.name,
+    SUM(total_submissions),
+    SUM(total_accepted_submissions),
+    SUM(total_views),
+    SUM(total_unique_views)
+FROM Contests con
+JOIN Colleges col on con.contest_id = col.contest_id
+JOIN Challenges cha on  col.college_id = cha.college_id
+LEFT JOIN
+    (SELECT
+        challenge_id,
+        SUM(total_views) AS total_views,
+        SUM(total_unique_views) AS total_unique_views
+    FROM View_Stats
+    GROUP BY challenge_id) vs
+    ON cha.challenge_id = vs.challenge_id
+LEFT JOIN
+    (SELECT
+        challenge_id,
+        SUM(total_submissions) AS total_submissions,
+        SUM(total_accepted_submissions) AS total_accepted_submissions
+    FROM Submission_Stats
+    GROUP BY challenge_id) ss
+    ON cha.challenge_id = ss.challenge_id
+
+GROUP BY con.contest_id, con.hacker_id, con.name
+HAVING SUM(total_submissions)!=0 or
+       SUM(total_accepted_submissions)!=0 or
+       SUM(total_views)!=0 or
+       SUM(total_unique_views)!=0
+ORDER BY contest_id;
+"""
+
 # **end sql
 
 # %%  HACKERRANK - REGEX - 47 total
@@ -1500,25 +1877,26 @@ https://docs.python.org/3/library/re.html#re.MULTILINE
 # %% REGEX - Introduction - start() and end()
 # Return the indices of the start and end of the substring matched.
 # by the group.
-""" Notes
-The dot (.) matches anything (except for a newline).
-\d digit
-\D non-digit
-\s whitespace [ \r\n\t\f ].
-\S  nonwhitespace
-\w word (alphanumeric and numbers and _)
-\W non word
-^ start
-$ end
-[] only matches one character []
-[^] matches any character NOT in[]
-+ one ore more
-* 0 or more
-() captureing group
-(?:) noncapturing
-Here, b? is optional and matches nothing.
+# """ Notes
+# The dot (.) matches anything (except for a newline).
+# \d digit
+# \D non-digit
+# \s whitespace [ \r\n\t\f ].
+# \S  nonwhitespace
+# \w word (alphanumeric and numbers and _)
+# \W non word
+# ^ start
+# $ end
+# [] only matches one character []
+# [^] matches any character NOT in[]
+# + one ore more
+# * 0 or more
+# () captureing group
+# (?:) noncapturing
+"""Here, b? is optional and matches nothing.
 Thus, (b?) is successfully matched and capture nothing.
-o is matched with o and \1 successfully matches the nothing captured by the group.
+o is matched with o and \1 successfully matches the nothing captured by the
+group.
 
 (b?)o\1 matches 'o' because the first group did match nothing, and so didthe \1
 (b)?o\1 does not match 'o', because (b)? didn't even participate, so \1
@@ -1530,24 +1908,25 @@ c(?!o) matches 1st o in chocolate - negative loohahead
     -- neg lookbehind
 re.MULTILINE mode at end of expression counts \n as edge for $ as well vs.only
 at end of string for $ when re.MULTILINE is notinlcuded
+"""
 
 prog = re.compile(pattern)
 result = prog.match(string)
-    is equivalent to
+#    is equivalent to
 result = re.match(pattern, string)
-    but using re.compile() and saving the resulting regular expression object
-    for reuse is more efficient when the expression will be used several times
-    in a single program.
+#    but using re.compile() and saving the resulting regular expression object
+#    for reuse is more efficient when the expression will be used several times
+#    in a single program.
 
-re.search(pattern, string, flags=0)¶ - find first location where matches
+re.search(pattern, string, flags=0)  # find first location where matches
 
-re.match - will only match at beginning of string
+# re.match - will only match at beginning of string
 
-re.DOTALL
-    Make the '.' special character match any character at all, including a
-    newline; without this flag, '.' will match anything except a newline.
-    Corresponds to the inline flag (?s).
-"""
+# re.DOTALL
+#    Make the '.' special character match any character at all, including a
+# newline; without this flag, '.' will match anything except a newline.
+# Corresponds to the inline flag (?s).
+
 import re
 
 m = re.search(r'\d+', '1234')
@@ -1589,18 +1968,19 @@ if re.search(k, s):  # stops looking after find first match
 else:
     print('No matches found (-1, -1)')
 
-#%%  REGEX - pattern match
+
+# %%  REGEX - pattern match
 import re
 import sys
 
-regex_pattern = r"...\....\....\...."	# Do not delete 'r'.
+regex_pattern = r"...\....\....\...."  # Do not delete 'r'.
 test_string = input()
 match = re.match(regex_pattern, test_string) is not None
 # True if there's match, otherwise false
 
 print(str(match).lower())  # prints 'true' or 'false'
 
-#%%  REGEX - pattern match
+# %%  REGEX - pattern match
 
 """
 pattern below didn't work because 2 of the test cases out of 7 had 7 character
@@ -1621,7 +2001,7 @@ Regex_Pattern = r'[1-3][0-2][x,s,0][3,0,A,a][x,s,u][.,]'
 print(bool(re.match(r'[abc][1-3]', 'a5')))  # False
 print(bool(re.match(r'[abc][1-3]', 'a3')))  # True
 
-#%%  REGEX - excluding
+# %%  REGEX - excluding
 
 rp = r'^\D[^aeiou][^bcDF]\S[^AEIOU][^.,]$'  # not ANY of abcde
 print(bool(re.match(rp, 'trains')))  # True
@@ -1872,7 +2252,7 @@ import re
 
 for _ in range(int(input())):
     u = input()
-    pat1 = '^([_.])\d+([a-zA-Z]){0,}_?$'
+    pat1 = r'^([_.])\d+([a-zA-Z]){0,}_?$'
 
     try:
         x = re.match(pat1, u)
@@ -2429,7 +2809,7 @@ matches = re.findall(pat, txt, re.DOTALL|re.MULTILINE)
 
 print("\n".join(re.sub('\n\s+', '\n', comment) for comment in matches))
 
-# %% REGEX - APPLICATIONS - Building a Smart IDE: Programming Language Detection
+# %% REGEX - APPLICATIONS - Building a Smart IDE: Programming Lang Detection
 """
 C code:
     /*  */         are comments
@@ -2493,343 +2873,7 @@ for i in range(N):
     except Exception:
             print('NO')
 
-# %% INTERVIEW PREP
-"""
-69 CHALLENGES broken into 15 subjects
-- 4 Warmups x
-- 5 Arrays
-- 5 Dictionaries and Hashmaps
-        - Tips and Guidelines (just hint videos)
-- 5 Sorting
 
-- 5 String manipulation
-- 5 Greedy algorithms
-- 7 Search
-- 4 Dynamic Programming
-- 6 Stacks and Queues
-
-- 5 Graphs
-- 5 Trees
-- 5 Linked Lists
-- 4 Recursion and backtracking
-- 4 Miscellaneous
-===
-- 69
-
-"""
-
-# %% INTERVIEW PREP - Warmups - Sock Merchant
-from collections import Counter
-
-n = int(input())
-a = input().split()
-y = Counter(a)
-
-pairs = 0
-for key, value in y.items():
-    pairs += value//2
-
-print(pairs)
-
-
-def sockMerchant(n, ar):
-    y = Counter(ar)
-    pairs = 0
-    for key, value in y.items():
-        pairs += value//2
-    return pairs
-
-# %% INTERVIEW PREP - Warmups - - Jumping on the Clouds
-
-import math
-import os
-import random
-import re
-import sys
-
-
-def jumpingOnClouds(c):
-    jumps = 0
-    position = 0
-    n = len(c)
-    for i in range(n):
-        print(i, position)
-        if position == n-1:  # we've already reached end
-            print('position ==')
-            pass
-        elif c[i] == 1:
-            print('one a 1')
-            pass
-        elif i < position:  # we already moved beyond this cloud
-            print('i < position')
-            pass
-        elif (((i+2) <= (n-1)) and (c[i+2] == 0)):
-            jumps += 1
-            position = i+2
-        elif c[i+1] == 0:
-            # by the time we reach here, it means that we've
-            # reached the second to last index, and because
-            # game always end with a win, we could just pass
-            # True as the condition instead of c[i+1]==0
-            jumps += 1
-            position = i + 1
-
-    return jumps
-
-
-if __name__ == '__main__':
-    n = int(input())
-    c = list(map(int, input().rstrip().split()))
-    result = jumpingOnClouds(c)
-    print(result)
-
-# %% INTERVIEW PREP - Warmups - Repeated strings
-""" takes string s and length n that an infinite stream of
-characters generated from s
-
-find how many times letere 'a' appears.
-
-below function does the math on the main string * # times
-it has to repeat,plus the count from remainder
-
-this is preferable to searching through the full stream,
-which could overflow memory
-"""
-
-
-def repeatedString(s, n):
-    n_strings = n//len(s)
-    partial = s[0: n % len(s)]
-    count1 = 0
-    count2 = 0
-    for i in s:
-        if i == 'a':
-            count1 += 1
-    for i in partial:
-        if i == 'a':
-            count2 += 1
-    full_count = count1 * n_strings + count2
-    print('Within %d characters of string %s' % (n, s))
-    print('We find %d occurences of letter a' % (full_count))
-    return full_count
-
-
-s = input()
-n = int(input())
-print(repeatedString(s, n))
-"""
-Test inputs
------------
-a
-100000
-
-a;lksfjlkj
-100
-
-aba
-10
-"""
-# %% INTERVIEW PREP - Arrays: Left Rotation
-"""
-write a function that takes spaced integers and n number of positions to left
-shift the elements of that array
-A: take the input into a list, then print the new string as
-print(s[n:] + s{0:n])
-shift left by 4
-s = '01234'
-print(s[4:] + s[0:4])
-
-Out[7]: '40123'
-"""
-# %% INTERVIEW PREP - Hash Tables: Ransom Note
-# m, n = list(map(int, input().split()))  # length magazine, length note
-# magazine = input().split()  # magazines strings
-# note = input().split()  # note strings
-
-# this works but shouldn't because Counter breaks apart words into characters
-# when the problem specifies that words should be whole
-
-magazine = 'give me one grand dnarg today night'
-note = 'give me grand grand'
-
-# simplistic version
-
-from collections import Counter
-
-def checkMagazine(magazine, note):
-    if (Counter(note) - Counter(magazine)) == {}:
-        print('Yes')
-    else:
-        print('No')
-
-checkMagazine(magazine, note)
-
-# %% INTERVIEW PREP - String Manipulation: Making Anagrams
-"""Strings: Making Anagrams.
-solved 10/31/2020
-
-Alice is taking a cryptography class and finding anagrams to be very useful.
-We consider two strings to be anagrams of each other if the first string's
-letters can be rearranged to form the second string. In other words, both
-strings must contain the same exact letters in the same exact frequency
-For example, bacdc and dcbac are anagrams, but bacdc and dcbad are not.
-
-Alice decides on an encryption scheme involving two large strings where
-encryption is dependent on the minimum number of character deletions
-required to make the two strings anagrams. Can you help her find this number?
-
-Given two strings, and , that may or may not be of the same length, determine
-the minimum number of character deletions required to make and anagrams.
-Any characters can be deleted from either of the strings.
-
-For example, if and , we can delete from string and from string so that both
-remaining strings are and which are anagrams.
-
-Function Description
-Complete the makeAnagram function in the editor below. It must return an
-integer representing the minimum total characters that must be deleted to make
-the strings anagrams.
-
-makeAnagram has the following parameter(s):
-    a: a string
-    b: a string
-Input Format
-The first line contains a single string,
-The second line contains a single string,
-
-Constraints
-The strings and
-    consist of lowercase English alphabetic letters ascii[a-z].
-
-Output Format
-Print a single integer denoting the number of characters you must delete to
-make the two strings anagrams of each other.
-
-Sample Input
-cde
-abc
-
-Sample Output
-4
-
-Explanation
-We delete the following characters from our two strings to turn them into
-anagrams of each other:
-    Remove d and e from cde to get c.
-    Remove a and b from abc to get c.
-We must delete characters to make both strings anagrams, so we print on a
-new line.
-"""
-
-import math
-import os
-import random
-import re
-import sys
-
-# Complete the makeAnagram function below.
-def makeAnagram(a, b):
-    # first process both strings into count of each letter of alphabet
-    # numbersa is 26 long list of numbers, each # representing count of a-z
-    # in string a
-    numbersa = [0]*26
-    numbersb = [0]*26
-    for i in a:
-        numbersa[ord(i)-96-1]+=1
-    for i in b:
-        numbersb[ord(i)-96-1]+=1
-
-    count = 0
-    for i in range(26):
-        count += abs(numbersa[i] - numbersb[i])
-    return count
-
-
-if __name__ == '__main__':
-    fptr = open(os.environ['OUTPUT_PATH'], 'w')
-    a = input()
-    b = input()
-    res = makeAnagram(a, b)
-    fptr.write(str(res) + '\n')
-    fptr.close()
-
-# %% INTERVIEW PREP - String Manipulation: Alternating Characters
-"""Strings: Alternating Characters.
-solved 10/31/2020
-
-You are given a string containing characters A and B only. Your task is to
-change it into a string such that there are no matching adjacent characters.
-To do this, you are allowed to delete zero or more characters in the string.
-
-Your task is to find the minimum number of required deletions.
-
-For example, given the string s=AABAAB, remove an A at positions 0 and 3 to
-make ABAB in deletions.
-
-Function Description
-Complete the alternatingCharacters function in the editor below.
-It must return an integer representing the minimum number of deletions to
-make the alternating string.
-
-alternatingCharacters has the following parameter(s):
-    s: a string
-Input Format
-The first line contains an integer q, the number of queries.
-The next Q lines each contain a string s.
-
-Constraints
-Each string will consist only of characters A and B
-
-Output Format
-For each query, print the minimum number of deletions required on a new line.
-
-Sample Input
-5
-AAAA
-BBBBB
-ABABABAB
-BABABA
-AAABBB
-
-Sample Output
-3
-4
-0
-0
-4
-
-Explanation
-The characters marked red are the ones that can be deleted so that the
-string doesn't have matching consecutive characters.
-"""
-import math
-import os
-import random
-import re
-import sys
-
-
-# Complete the alternatingCharacters function below.
-def alternatingCharacters(s):
-    # MY CODE BELOW
-    prior = s[0]
-    deletions = 0
-    for letter in s[1:]:
-        if letter == prior:
-            deletions += 1
-        else:
-            prior = letter
-    return deletions
-
-
-if __name__ == '__main__':
-    fptr = open(os.environ['OUTPUT_PATH'], 'w')
-    q = int(input())
-    for q_itr in range(q):
-        s = input()
-        result = alternatingCharacters(s)
-        fptr.write(str(result) + '\n')
-    fptr.close()
 
 
 # %% # %% ARTIFICIAL INTELLIGENCE The Best Aptitude Test
