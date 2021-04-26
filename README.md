@@ -9,19 +9,15 @@ Reference
 
 ---------
 
-https://www.kaggle.com/willkoehrsen/start-here-a-gentle-introduction
-
-https://www.hackerrank.com/pjrowe?hr_r=1
-
-https://realpython.com/
+- https://www.kaggle.com/willkoehrsen/start-here-a-gentle-introduction
+- https://www.hackerrank.com/pjrowe?hr_r=1
+- https://realpython.com/
 
 
 Verified Skills on Hackerrank 
 
 -----------------------------
 
-Sept 15, 2020 SQL (Basic) 
-
-Jan 18, 2021  Python (Basic)  
-
-Jan 18, 2021  Problem Solving (Basic)
+- Sept 15, 2020 SQL (Basic) 
+- Jan 18, 2021  Python (Basic)  
+- Jan 18, 2021  Problem Solving (Basic)
