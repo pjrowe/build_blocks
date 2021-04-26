@@ -20,5 +20,7 @@ Verified Skills on Hackerrank
 -----------------------------
 
 Sept 15, 2020 SQL (Basic) 
+
 Jan 18, 2021  Python (Basic)  
+
 Jan 18, 2021  Problem Solving (Basic)
