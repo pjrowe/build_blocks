@@ -10,7 +10,9 @@ Reference
 ---------
 
 https://www.kaggle.com/willkoehrsen/start-here-a-gentle-introduction
+
 https://www.hackerrank.com/pjrowe?hr_r=1
+
 https://realpython.com/
 
 Verified Skills on Hackerrank 
