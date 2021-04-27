@@ -1,48 +1,55 @@
-"""Hackerrank quizzes
+"""Hackerrank quizzes.
 
 Reference and progress for hackerrank skills / problems
 
-Four skills
-------------------
-1. Python 102/115
-2. SQL 54/58
+3 skills covered in this file
+------------------------------------------------------------
+1. Python              102/115   (I earned badge on Hackerrank)
+2. SQL                  54/58    (I earned badge on Hackerrank)
     - the challenges are quite simple, so I only more difficult ones
-    included here for reference
+      included here for reference
     **end sql
-3. Regex 45/47
-4. Interview Prep 7/69
+3. Regex                 45/47    (I earned badge on Hackerrank)
+4. Interview Prep          /69
     -- see separate file hackerrank_interview_prep.py
 
 """
-# %% PYTHON - 115
+# =============================================================================
+# %% PYTHON PRACTICE - 115 QUESTIONS/DRILLS from hackerrank.com
+# =============================================================================
 """
-- 7 Introduction x
-- 6 Basic Data Types x
-- 14 Strings - 2 left trivial
-- 13 Sets x
-- 7 Math 2
---- 47
-- 7 Itertools x
-- 8 Collections x
-- 2 Date and Time x
-- 2 Errors and Exceptions x
-- 2 Classes 1
---- 21
+#    Topics                          # left to do
+-  7 Introduction                   x
+-  6 Basic Data Types               x
+- 14 Strings                        x
+- 13 Sets                           x (operations)
+-  7 Math                           x
+---  47
+-  7 Itertools                      x (permutations, groupby, product,
+                                       combinations,
+                                       combinations_with_replacement...)
+-  8 Collections                    x (Counter, DefaultDict, namedtuple,
+                                       OrderedDict, deque, etc.)
+-  2 Date and Time                  x (datetime, timedelta,)
+-  2 Errors and Exceptions          x
+-  2 Classes                        1
+---  21
 
-- 6 Built-Ins x
-- 3 Python Functionals x
--17 Regex and Parsing 2
-- 2 XML x
-- 2 Closures and Decorators x
---- 30
+-  6 Built-Ins                      x (any, all, zip, input, sort,
+                                       etc.see realpython)
+-  3 Python Functionals             x (map, lambda, reduce, filter)
+- 17 Regex and Parsing              1
+-  2 XML                            x
+-  2 Closures and Decorators        x
+---  30
 
--15 Numpy 3
-- 2 Debugging x
---- 17
-===
-105/115
+- 15 Numpy                          x
+-  2 Debugging                      x
+---  17
+=======
+113/115
 
-strings, math, classes, regex,nummpy
+classes, regex, nummpy
 """
 
 # %%  PYTHON - BASIC DATA TYPES - Find the Runner-Up Score!
@@ -61,8 +68,7 @@ if __name__ == '__main__':
     # print(array)
     runnerup = array[-1]
     for i in range(2, n + 1):
-        # note how we need to added n+1 to get to
-        # n in reverse parsing
+        # n+1 to get to n in reverse parsing
         if array[-i] < array[-1]:
             # print('check',array[-i])
             runnerup = array[-i]
@@ -87,7 +93,7 @@ if __name__ == '__main__':
 if __name__ == '__main__':
     n = int(input())
     student_marks = {}
-#    print(n)
+
     for _ in range(n):
         line = input().split()
         name, scores = line[0], line[1:]
@@ -97,24 +103,34 @@ if __name__ == '__main__':
     out = sum(student_marks[query_name]) / len(student_marks[query_name])
     print("%.2f" % round(out, 2))
 
+    width = 10
+    precision = 4
+#    print(f'{out:{width}.{precision}}')
+    print(f'{out:10d}')  # {width}.{precision} specified in that order
+
+
 # %% PYTHON - BASIC DATA TYPES - List Comprehensions
 # solved 6/20/2020
 # return 3d space in cube defined by origin and X,Y,Z where i + j + k != n
+# permutations problem, excluding
+
+def combos(x, y, z, n):
+    return [[i, j, k] for i in range(x + 1) for j in range(y + 1) for k in
+            range(z + 1) if sum([i, j, k]) != n]
+
 
 if __name__ == '__main__':
     x = int(input())
     y = int(input())
     z = int(input())
     n = int(input())
-    out1 = [[i, j, k] for i in range(x + 1) for j in range(y + 1) for k in
-            range(z + 1) if sum([i, j, k]) != n]
-    print(out1)
+    output = combos(x, y, z, n)
+    print(f'Output has {len(output)} combinations: {output}')
 
 
 # %% PYTHON - BASIC DATA TYPES - Nested lists
-# - print alphabetically sorted list of student names that
-# have second highest scores
-#  completed 6/20/2020
+# Print sorted list of students that have 2nd highest scores
+# completed 6/20/2020
 
 if __name__ == '__main__':
     low_score = 100
@@ -130,82 +146,291 @@ if __name__ == '__main__':
         elif (score > low_score) & (score < second_low_score):
             second_low_score = score
         name_score.append(insert_list)
-#        print(low_score, second_low_score)
-    out = [name_score[i][0] for i in range(len(name_score)) if
-           name_score[i][1] == second_low_score]
+    names = [name_score[i][0] for i in range(len(name_score)) if
+             name_score[i][1] == second_low_score]
     out.sort()
-    for _ in out:
-        print(_)
+    for name in names:
+        print(name)
+
+
+# %% PYTHON - BASIC DATA TYPES - Nested lists
+# Print sorted list of students that have 2nd highest scores
+# better way is to use set
+
+
+if __name__ == '__main__':
+    name_score = []
+    for _ in range(int(input())):
+        name = input()
+        score = float(input())
+        insert_list = [name, score]
+        scores.add(score)
+        name_score.append(insert_list)
+    second_low_score = min(scores - {min(scores)})
+    names = [name_score[i][0] for i in range(len(name_score)) if
+             name_score[i][1] == second_low_score]
+    names.sort()
+    for name in names:
+        print(name)
+
 
 # %% PYTHON - STRINGS - Alphabet Rangoli
 from string import ascii_lowercase
 
-n = int(input())
-rows = ['x']*(n*2-1)
 
-for i in range(n):
-    pattern = ascii_lowercase[n-i-1:n]
-    print(pattern)
-    fullpat = pattern[-1:0:-1] + pattern
-    print(fullpat)
-    rowpat = '-'*(n*2-2-2*i) + '-'.join(fullpat) + '-'*(n*2-2-2*i)
-    print(rowpat)
-    rows[i] = rowpat
-    rows[2*n-2-i] = rowpat
+def print_rangoli(n):
+    rows = ['x'] * (n * 2 - 1)
+    # initialize the list as of 2*n -1 strings of 'x'
 
-print(*rows, sep='\n')
+    for i in range(n):
+        pattern = ascii_lowercase[n-i-1:n]
+        fullpat = pattern[-1:0:-1] + pattern
+        rowpat = '-' * (n*2-2-2*i) + '-'.join(fullpat) + '-'*(n*2-2-2*i)
+        rows[i] = rowpat
+        rows[2*n-2-i] = rowpat
+    print(*rows, sep='\n')
 
+
+if __name__ == '__main__':
+    n = int(input())
+    print_rangoli(n)
+
+
+"""
+# when n=4, rows is as follows:
+
+------d------
+----d-c-d----
+--d-c-b-c-d--
+d-c-b-a-b-c-d
+--d-c-b-c-d--
+----d-c-d----
+------d------
+"""
+
+# %% PYTHON - STRINGS - String Formatting
+"""Format String.
+
+Given an integer, n, print the following values for each integer from
+1 to n:
+
+Decimal Octal  Hexadecimal (capitalized)   Binary
+Decimal Octal  Hexadecimal (capitalized)   Binary
+Decimal Octal  Hexadecimal (capitalized)   Binary
+
+The four values must be printed on a single line in the order specified
+above for each i from 1 to n. Each value should be space-padded to match
+the width of the binary value of n.
+"""
+
+
+def print_formatted1(number):
+    """First try."""
+    for i in range(1, number + 1):
+        print(i, '\t', oct(i), '\t', hex(i), '\t', bin(i))
+
+
+def print_formatted2(n):
+    """Use .format()"""
+    width = len("{0:b}".format(n))
+
+    for i in range(1, n + 1):
+        print("{0:{width}d} {0:{width}o} {0:{width}X} \
+              {0:{width}b}".format(i, width=width))
+
+
+def print_formatted3(n):
+    """Use fstring."""
+    width = len(f"{n:b}")
+
+    for i in range(1, n + 1):
+        print("{0:{width}d} {0:{width}o} {0:{width}X} \
+              {0:{width}b}".format(i, width=width))
+
+
+print_formatted1(10)
+print_formatted2(10)
+print_formatted3(10)
+# %% PYTHON - STRINGS - Minion Game
+
+
+def minion_game(string):
+    """Determine who is winner and their score."""
+    str_vowels = set(string).intersection(set('AEIOU'))
+    str_consonants = set(string).difference(str_vowels)
+
+    cpoints = 0
+    vpoints = 0
+    # breakpoint()
+
+    for i in range(len(string)):
+        if string[i] in str_consonants:
+            # number of words to add is len(strin)-i because
+            # words of length 1 to len(string) are included, but we are
+            # at position i so we subtract i
+            cpoints = cpoints + len(string) - i
+        elif string[i] in str_vowels:
+            vpoints = vpoints + len(string) - i
+
+    if cpoints > vpoints:
+        # more unique consonants => Stuart wins
+        print('Stuart', cpoints)
+    elif cpoints < vpoints:
+        print('Kevin', vpoints)
+    elif cpoints == vpoints:
+        print('Draw')
+
+
+minion_game('BANANA')
 
 
 # %% PYTHON - STRINGS - Designer Door Mat
+# 5 < n < 101
+# 15 < m < 303
 
 n, m = list(map(int, input().split()))
-rows = ['x']*n
+rows = ['x'] * n
 
 for i in range(n//2):
-    pattern = '-'* (m//2-1-3*i) + '.|.'*(2*i + 1) + '-'* (m//2-1-3*i)
-    rows[i]=pattern
-    rows[n-1-i]=pattern
-rows[n//2] = '-'*(m//2-3) + 'WELCOME' + '-'*(m//2-3)
-print(*rows,sep='\n')
+    pattern = '-' * (m//2-1-3*i) + '.|.' * (2*i+1) + '-' * (m//2-1-3*i)
+    rows[i] = pattern
+    rows[n - 1 - i] = pattern
+rows[n // 2] = '-' * (m // 2 - 3) + 'WELCOME' + '-' * (m // 2 - 3)
+print(*rows, sep='\n')
+
+# output for n,m = 6, 16
+"""
+-------.|.-------
+----.|..|..|.----
+-.|..|..|..|..|.-
+-----WELCOME-----
+----.|..|..|.----
+-------.|.-------
+"""
+
 # %% PYTHON - STRINGS - Merge the Tools!
 # worked on all 16 test cases 6/23/2020
 
 
-def merge_the_tools(string, k):
+def merge_the_tools(string_in, k):
+    """Print out the substrings after removing duplicate characters.
 
-    n = int(len(string)/k)
-    for i in range(n):
-        ministr = string[i*k:i*k+k]
+    string: length is a multiple of k
+    k = length of substring to analyze
+
+    1. break string into len(string)/k substrings
+    2. remove duplicate characters from substring
+    3. print out each processed substring
+
+    This code passes all test cases, but we could probably optimize
+    membership test of characters by turning ministr into set instead
+    of iterating through the string with the 'in' operator
+    """
+    n_substrings = int(len(string_in)/k)  # guaranteed to be an integer
+    out_substrings = []
+
+    for i in range(n_substrings):
+        ministr = string_in[i*k:i*k+k]
         mini = ministr[0]
         for i in range(1, len(ministr)):
             if ministr[i] in ministr[0:i]:
                 pass
             else:
                 mini = mini + ministr[i]
-        print(mini)
+        # print(mini)
+        out_substrings.append(mini)
+
+    return out_substrings
+
+
+def merge_the_tools2(string_in, k):
+    """Print out the substrings after removing duplicate characters.
+
+    This version of function tests if each character of substring
+    has already occurred ministr and has been added to passed substring
+    """
+    n_substrings = int(len(string_in)/k)  # guaranteed to be an integer
+    out_substrings = []
+
+    for i in range(n_substrings):
+        ministr = string_in[i*k:i*k+k]
+        mini = ministr[0]
+        for i in range(1, len(ministr)):
+            if ministr[i] in mini:
+                pass
+            else:
+                mini = mini + ministr[i]
+        # print(mini)
+        out_substrings.append(mini)
+
+    return out_substrings
+
+
+#if __name__ == '__main__':
+#    string_in, k = input(), int(input())
+#    merge_the_tools(string_in, k)
+
 
 # testing
 # string = 'abccefggi'
 # k=3
 # merge_the_tools(string, k)
 
+from timeit import Timer
 
-if __name__ == '__main__':
-    string = input()
-    k = int(input())
-    merge_the_tools(string, k)
+for n in [10, 11, 15]:
+    in_prefix = r'.\hackerrank_test_cases\python\merge_tools_input_'
+    out_prefix = r'.\hackerrank_test_cases\python\merge_tools_OUTPUT_'
+    input_file = in_prefix + str(n) + '.txt'
+    output_file = out_prefix + str(n) + '.txt'
+    data_in = loadtxt(input_file, delimiter=' ', dtype='str')
+    data_in, k = data_in[0], data_in[1]
+    k = int(k)
+    # data_out = loadtxt(output_file, delimiter=' ', dtype='str')
+    # generated_output = merge_the_tools(data_in, k)
+    # print(f'Test Case {n}: '
+    #       f'{"PASS" if list(data_out)==generated_output else "FAIL"}')
+    t = Timer(lambda: merge_the_tools(data_in, k))
+    t2 = Timer(lambda: merge_the_tools2(data_in, k))
+    print(f'2000x Test Case {n}, using list: '
+          f'{round(t.timeit(number=2000), 2)} seconds')
+    print(f'2000x Test Case {n}, using set : '
+          f'{round(t2.timeit(number=2000), 2)} seconds\n')
 
+"""
+OUTPUT
+Note Test Case 15 doesn't improve because the string mini is only 1 char long'
+2000x Test Case 10, using list: 6.09 seconds
+2000x Test Case 10, using set : 1.89 seconds
+
+2000x Test Case 11, using list: 4.22 seconds
+2000x Test Case 11, using set : 1.69 seconds
+
+2000x Test Case 15, using list: 10.28 seconds
+2000x Test Case 15, using set : 10.29 seconds
+"""
 
 # %%  PYTHON - STRINGS - Capitalize
 
+
 def solve(s):
-    mylist = s.split(' ')  # this doesn't join consecutive whitespace
-    for i in range(len(mylist)):
-        mylist[i] = mylist[i].capitalize()
+    """Could use built in which iterates through list to capitalize."""
+    mylist = s.split(' ')
+    print(mylist)
+    for i, letter in enumerate(mylist):
+        mylist[i] = letter.capitalize()
     return ' '.join(mylist)
 
 
+s ='this is a sentence i want to make a title 23 43f f88 ;ad'
+print(solve(s))   # capitalizes each word
+print(s.title())  # capitalizes each word, ignoring non-letter prefix
+print(s.upper())  # capitalizes every letter of every word
+"""
+This Is A Sentence I Want To Make A Title 23 43f F88 ;ad
+This Is A Sentence I Want To Make A Title 23 43F F88 ;Ad
+THIS IS A SENTENCE I WANT TO MAKE A TITLE 23 43F F88 ;AD
+"""
 # %% PYTHON - BASIC DATA TYPES - Lists
 # take N on first line as the # lines you will get as input
 # evaluate thelist commands given on the list
@@ -263,8 +488,11 @@ for i in range(thickness):
 
 import textwrap
 
+
 def wrap(string, max_width):
+    """wrap."""
     return '\n'.join(textwrap.wrap(string, max_width))
+
 
 if __name__ == '__main__':
     string, max_width = input(), int(input())
@@ -294,6 +522,124 @@ s.isdigit() True if all numbers
 s.islower() True if all lower
 s.isupper() True if all upper
 """
+# %% PYTHON - SETS - Reference List of Commands
+# set cannot contain another set
+
+numbers = set()
+print(numbers)
+print(type({}))
+
+numbers = set([1, 2])
+print(numbers)  # Output: {1, 2}
+string_set = set("hello")
+print(string_set)  # Output: {'o', 'e', 'l', 'h'}
+
+numbers = {1, 2, 1, 2, 3, 5}
+print(numbers)  # Output: {1, 2, 3, 5}
+
+random_set = {'a', 'a', 1, 2, 1}
+print(random_set)  # Output: {1, 2, 'a'}
+
+################################################
+# Sets can contain only hashable elements.
+# Sets cannot contain other sets.
+my_set = {1, 2}
+set_to_add = {3, 4}
+my_set.add(set_to_add)  # Raises "TypeError: unhashable type: 'set'"
+# To create set of sets, use a frozenset
+my_set.add(frozenset(set_to_add))
+print(my_set)  # Output: {1, 2, frozenset({3, 4})}
+
+# Length of a set.
+numbers = {1, 2, 3}
+print(len(numbers))  # Output: 3
+
+print(1 in {1, 2, 3})  # Output: True
+print(5 in {1, 2, 3})  # Output: False
+print(1 not in {1, 2, 3})  # Output: False
+
+# Access elements in a set
+numbers = {1, 2, 3}
+for number in numbers:
+    print(number)
+
+# Union: Elements in either set_1, set_2 or both.
+set_1 = {1, 2, 3, 4}
+set_2 = {3, 4, 5, 6}
+print(set_1.union(set_2))  # Output: {1, 2, 3, 4, 5, 6}
+print(set_1 | set_2)  # Output: {1, 2, 3, 4, 5, 6}
+
+# Intersection: Elements in both set_1 and set_2
+set_1 = {1, 2, 3, 4}
+set_2 = {3, 4, 5, 6}
+print(set_1.intersection(set_2))  # Output: {3, 4}
+print(set_1 & set_2)   # Output: {3, 4}
+
+# Set difference: Elements in set_1 not in set_2
+set_1 = {1, 2, 3, 4}
+set_2 = {3, 4, 5, 6}
+print(set_1.difference(set_2))  # Output: {1, 2}
+print(set_1 - set_2)  # Output: {1, 2}
+
+# Symmetric difference: Elements in set_1 or set_2, but not in both.
+set_1 = {1, 2, 3, 4}
+set_2 = {3, 4, 5, 6}
+print(set_1.symmetric_difference(set_2))  # Output: {1, 2, 5, 6}
+print(set_1 ^ set_2)  # Output: {1, 2, 5, 6}
+# set_1 not mutatedby ^
+
+# Check if a set is a subset of another.
+set_1 = {1, 2}
+set_2 = {1, 2, 3}
+print(set_1.issubset(set_2))  # Output: True
+print(set_2.issubset(set_1))  # Output: False
+
+# Check if a set is a superset of another.
+set_1 = {1, 2}
+set_2 = {1, 2, 3}
+print(set_1.issuperset(set_2))  # Output: False
+print(set_2.issuperset(set_1))  # Output: True
+
+# Add one element to set using add() methd.
+numbers = {1, 2, 3}
+numbers.add(4)  # <- takes a single hashable element.
+print(numbers)  # Output: {1, 2, 3, 4}
+
+# Add multiple elements to set using update() methd.
+numbers = {1, 2, 3}
+numbers.update([4, 5])  # <- takes any iterable.
+print(numbers)  # Output: {1, 2, 3, 4, 5}
+
+# Remove elements using remove() method.
+numbers = {1, 2, 3}
+numbers.remove(1)
+print(numbers)  # Output: {2, 3}
+numbers.remove(5)  # Raises KeyError if element is not present.
+
+# Remove elements using discard element.
+numbers = {1, 2, 3}
+numbers.discard(1)
+print(numbers)  # Output: {2, 3}
+numbers.discard(5)
+# Does not raise any error even
+# if element is not present.
+
+# Remove and get the last item in a set,
+# sets are unordered so any element could get removed!
+numbers = {1, 2, 3}
+print(numbers.pop())  # Output: 3
+print(numbers)  # Output: {1, 2}
+
+# Empty set using clear()
+numbers = {1, 2, 3}
+numbers.clear()
+print(numbers)  # Output: set()
+
+# Delete set using del keyword
+numbers = {1, 2}
+del numbers
+
+
 # %% PYTHON - SETS - set operations Set Mutations
 # Both the discard() and remove() functions take a single value as an
 # argument and removes that value from the set. If that value is not present,
@@ -347,15 +693,51 @@ print(len(stamps))
 # %% PYTHON - SETS - symmetric difference
 # returns elements outside intersection oftwo iterables, ie.,in one or other
 # but not in both
-
-s ^ set('Rank')
 # ^ replaces .symmetric_difference but only operates on
 # in set elements
 # s is not mutated by ^
 
-s.symmetric_difference({'Rank': 1})
+s = set('ank')
+print(s ^ set('Rank'))
+print(s.symmetric_difference(set('Rank')))
+print(s)
+
+# %% PYTHON - MATH  Triangle Quest
+
+for i in range(1, int(input())):
+    print(int((10**i-1)/9)*i)
+
+# 5
+# 1
+# 22
+# 333
+# 4444
+
+# %% PYTHON - MATH  Triangle Quest 2
+
+for i in range(1, int(input())+1):
+    # More than 2 lines will result in 0 score. Do not leave a blank line also
+    # print(''.join(map(str, [x for x in range(1, i)] + \
+    # [i-x for x in range(i)])))
+
+    # works but string not allowed
+    # or print(int(str(1)*i)**2)
+
+    # print((sum([10**(x-1) for x in range(i)]))**2)
+
+    # but only 1 for is allowed
+    # print((sum([10**(x-1) for x in range(1, i+1)]))**2)
+
+    # math solution
+    print(int((10**i-1)/9)**2)
+    # ((10**1-1)/ 9)**2 = 1**2  = 1
+    # ((10**2-1)/ 9)**2 = 11**2 = 121
+    # ((10**3-1)/ 9)**2 = (999/9)**2 = 111**2 = 12321
+    # 1111**2
+    # 11111**2 etc.
 
 # %% PYTHON - MATH
+
 import cmath
 
 print(*cmath.polar(complex(input())), sep='\n')
@@ -367,21 +749,42 @@ import cmath
 print(*cmath.polar(complex(list(map(int, input())), sep=' ')))
 x = cmath.polar(complex(input()))
 
-
-# %% PYTHON - ITERTOOLS -
-
+# %% PYTHON - ITERTOOLS - Reference
 """
-itertools.permutations(iterable[, r])
-This tool returns successive
-length permutations of elements in an iterable.
-If is not specified or is None, then defaults to the length of the
-iterable, and all possible full length permutations are generated.
+https://realpython.com/python-itertools/
+
+
+Infinite iterators:
+count(10)        -> 10 11 12 ...
+cycle('ABCD') -> A B C D A ...
+repeat(10, 3) -> 10 10 10
+
+Terminate on shortest input:
+accumulate([1,2,3])               1 3 6
+chain('abc', 'def')               a b c d e f
+chain_from_iterable(['abc','def']) a b c d e f
+compress('abcd', [1,0,1,0])      a c
+dropwhile()
+
+groupby(str)
+islice()
+starmap()
+takewhile()
+tee()
+zip_longest()
+
+Combinatorics:
+permutations('ABCD', repeat=2)
+combinations_with_replacement('ABCD', repeat=2)
+combinations('ABCD', repeat=2)
+product('ABCD', repeat=2)
+
 
 Permutations are printed in a lexicographic sorted order. So, if the
 input iterable is sorted, the permutation tuples will be produced in a
 sorted order.
 """
-#mylist = 'HACK 2'.split()
+# mylist = 'HACK 2'.split()
 
 from itertools import permutations
 
@@ -389,8 +792,12 @@ mylist = input().split()
 strings = list(mylist[0])
 k = int(mylist[1])
 strings.sort()
-for i in permutations(strings, k):
-    print(''.join(i))
+my_generator = permutations(strings, k)
+for i, triple in enumerate(my_generator):
+    print(''.join(triple))
+
+print(f'# of {k}-length permutations of {"".join(mylist)}: {i+1}')
+# permutations of 12345, 3 is 5x4x3=60
 
 # %% PYTHON - ITERTOOLS -itertools.combinations_with_replacement(iterable, r)
 
@@ -420,7 +827,7 @@ from itertools import combinations
 
 mylist = input().split()
 strings = list(mylist[0])
-k =  int(mylist[1])
+k = int(mylist[1])
 strings.sort()
 for j in range(1, k + 1):
     for i in combinations(strings, j):
@@ -449,70 +856,153 @@ tot = len(comb)
 
 count = 0
 for i in comb:
-    if 'a' in i: count += 1
+    if 'a' in i:
+        count += 1
 
 print(count/tot)
 
 # %% PYTHON - ITERTOOLS - Groupby
+# sub-iterators grouped by value of key(v)
 from itertools import groupby
 
-str = input()
 out = []
-for k, g in groupby(str):
+for k, g in groupby('112333'):
     out.append(tuple((len(list(g)), int(k))))
 
 print(*out)
+# >>(2, 1) (1, 2) (3, 3)
 
+print(*groupby('112333'))
+# ('1', <itertools._grouper object at 0x00000270E084F6A0>)
+# ('2', <itertools._grouper object at 0x00000270E084FD00>)
+# ('3', <itertools._grouper object at 0x00000270E084F220>)
+# %% PYTHON - ITERTOOLS - Groupby
+L = [("a", 1), ('c', 'a'), ("a", 2), ("b", 3), ("b", 4)]
+key_func = lambda x: x[0]
+
+for key, group in groupby(L, key_func):
+    # groupby doesn't rearrange keys,i.e., it will only group consecutive
+    # items in the sequence
+    print(key + " :", list(group))
+
+"""
+a : [('a', 1)]
+c : [('c', 'a')]
+a : [('a', 2)]
+b : [('b', 3), ('b', 4)]
+"""
 
 # %% PYTHON - ITERTOOLS - max product
-# max product, done with generator object, which I should learn how to use
-# better
-
+# max product, done with generator object
+# product(A, B) returns the same as ((x,y) for x in A for y in B)
 from itertools import product
 
-K, M = map(int, input().split())
-N = list((square(list(map(int, input().split()))[1:]) for _ in range(K)))
+# K, M = map(int, input().split())
+K = 3
+M = 1000
+# M = used for modulus operator below
+# K = # lists from which we need to choose one value that will max the
+# sum of squares
 
-results = map((lambda x: sum(i) for i in x) % M, product(*N))
+# we want to use product to create all combinations from the K different
+# lists;  then we can choose the max yielding combination
+
+
+def sum_eles(combo):
+    return sum(combo) % M
+
+
+def square(arr):
+    return [x**2 for x in arr]
+
+
+inputs = ['2 5 4', '3 7 8 9', '5 7 8 9 10']
+k_lists = (square(list(map(int, inputs[k].split()))[1:]) for k in range(K))
+combos = product(*k_lists)
+# we need to unpack because we need as many arguments to product as
+# elements in each tuple
+# product(k_lists) = product([1]) is going go generate only one output
+# because there is only one argument
+# product(a,b,c) will generate combinations of each elements of a, b, c
+# with one another
+results = list(map(sum_eles, combos))
 print(max(results))
+
+# for inputs:
+# 3 1000
+# 2 5 4
+# 3 7 8 9
+# 5 5 7 8 9 10
+
 # correct answer is 206, but there is some deprecated code here
 
-# %%  PYTHON - ITERTOOLS - max product
-from itertools import product
-
-N, M = map(int, input().split())
-
-sq_lists = []
-for i in range(N):
-    x = list(map(int, input().split()))
-    sq_lists.append([x**2 for x in x[1:]])
-
-checklist = list(product(*sq_lists))
-
-newmax = 0
-imax = 0
-for i in range(len(checklist)):
-    if sum(checklist[i]) % M > newmax:
-        newmax = sum(checklist[i]) % M
-    imax = i
-
-checkmax = checklist[imax]
-print(newmax)  # correct answer is 206
-
 # %% PYTHON - ITERTOOLS - itertools
-# other to do puzzles of hackerrank
-"""
-itertools.product()
-
-"""
 from itertools import product
 
-x = list(map(int, input().split()))
-y = list(map(int, input().split()))
+x = [1, 2]
+y = [3, 4]
 print(*product(x, y))  # unpack the product iterable
+print(*zip(x, y))
+# (1, 3) (2, 4)
+
+# unpacking the contents
+print(*(x*y for x, y in zip(x, y)))
+# 3 8
+
+# see this site for explanation of unpacking a list into fstrnig
+# /stackoverflow.com/questions/42756537/
+# f-string-syntax-for-unpacking-a-list-with-brace-suppression
+# =============================================================================
+# Examples
+# =============================================================================
+print('Tuple products:', *(x*y for x, y in zip(x, y)))
+# >Tuple products: (3, 8)
+
+# without the unpacking, returns generator object
+print('Tuple products: {}'.format((x*y for x, y in zip(x, y))))
+# >Tuple products: <generator object <genexpr> at 0x00000270E0825D60>
+
+# with only one unpacking, returns just first generated product
+print('Tuple products: {}'.format(*(x*y for x, y in zip(x, y))))
+# > Tuple products: 3
+
+# therefore, need to multiply the string by the length
+print(('Tuple products:' + ' {}' * len(x)).format(*(x*y for x, y in zip(x, y))))
+# Tuple products: 3 8
+
+# or could just add another {}
+print('Tuple products:' + ' {} {}'.format(*(x*y for x, y in zip(x, y))))
+# >Tuple products: 3 8
+
+my_list = [(1, 3), (2, 4)]
+print('Tuple products:' + ' {} {}'.format(*my_list))
+# >Tuple products: (1, 3) (2, 4)
+
+# with f-string, need a comma following or there will be error
+print(f'Tuple products: {*my_list}')
+#                        ^
+# SyntaxError: can't use starred expression here
+
+print(f'Tuple products: {my_list}')
+# >Tuple products: [(1, 3), (2, 4)]
+print(f'Tuple products: {my_list,}')
+# >Tuple products: ([(1, 3), (2, 4)],)
+
+# we will get ()'s surrounding contents of list
+print(f'Tuple products: {*my_list,}')
+#  Tuple products: ((1, 3), (2, 4))
 
 
-# %%
+# trailing comma allows unpacking of the product in fstring
+print(f'Tuple products: {*(x*y for x,y in zip(x, y)),}')
+# >Tuple products: (3, 8)
+
+# without comment generates error
+print(f'Tuple products: {*(x*y for x,y in zip(x, y))}')
+# >     print(f'Tuple products: {*(x*y for x, y in zip(x, y))}')
+#                                ^
+# SyntaxError: can't use starred expression here
+
 # generator object
 gen = ((x, y) for x in [1, 2] for y in [3, 4])
 for i in gen:
@@ -522,8 +1012,35 @@ for i in gen:
 n = int(input())
 print(all([int(input().split()) > 0 for _ in range(n)]))
 
+# =============================================================================
 # %% PYTHON - COLLECTIONS - Word Order
+# =============================================================================
+"""Reference.
+
+This module implements specialized container datatypes providing
+alternatives to Python’s general purpose built-in containers,
+dict, list, set, and tuple.
+
+namedtuple()  factory function for creating tuple subclasses
+              with named fields
+deque         list-like container with fast appends and pops on either
+                end
+ChainMap      dict-like class for creating a single view of multiple
+               mappings
+Counter       dict subclass for counting hashable objects
+OrderedDict   dict subclass that remembers the order entries were added
+
+defaultdict   dict subclass that calls a factory function to supply
+              missing values
+UserDict      wrapper around dictionary objects for easier dict
+              subclassing
+UserList      wrapper around list objects for easier list subclassing
+UserString    wrapper around string objects for easier string
+              subclassing
+
+"""
 # completed all 7 test cases 6/24/2020
+# could use ordereddictionary as well
 
 n = int(input())
 words = []
@@ -544,8 +1061,55 @@ for i in words[1:]:
 print(len(words))
 print(out)
 
+# %% # PYTHON - COLLECTIONS - Word Order
+
+from collections import OrderedDict
+
+n = int(input())
+words = OrderedDict()
+
+for i in range(n):
+    word = input()
+    if word in words:
+        words[word] += 1
+    else:
+        words[word] = 1
+
+out = list(map(str, words.values()))
+print(len(out))
+print(' '.join(out))
+
+
+# %% # PYTHON - COLLECTIONS - Piling Up!
+# USING deque is better way
+
+from collections import deque
+
+cases = int(input())
+
+for c in range(cases):
+
+    ncubes = int(input())
+    cubes = deque(map(int, input().split()))
+    left_index = 0
+
+    prior = 2**31
+
+    result = 'Yes'
+    while len(cubes) > 0:
+        if cubes[0] >= cubes[-1] and cubes[0] <= prior:
+            prior = cubes.popleft()
+        elif cubes[-1] > cubes[0] and cubes[-1] <= prior:
+            prior = cubes.pop()
+        else:
+            result = 'No'
+            break
+    print(result)
+
+
 # %% # PYTHON - COLLECTIONS - Piling Up!
 # done 12/4/2020
+# solution above using deque data structure is better
 
 cases = int(input())
 
@@ -557,11 +1121,10 @@ for c in range(cases):
 
     for i in range(1, ncubes):
         if cubes[i] <= cubes[i-1]:
-                 left_index = i
+            left_index = i
         else:
             break
 
-#    print(left_index)
     result = 'Yes'
     for j in range(left_index+1, ncubes):
         if cubes[j] < cubes[j-1]:
@@ -569,7 +1132,6 @@ for c in range(cases):
             break
 
     print(result)
-
 # %% # PYTHON - COLLECTIONS - Company Logo
 # this works but uses higher order python (pandas)
 # not sure how I would do with just low level
@@ -603,14 +1165,7 @@ for i in range(3):
 
 # %% # PYTHON - COLLECTIONS - Company Logo --- suggested solution
 
-import math
-import os
-import random
-import re
-import sys
 from collections import Counter
-
-
 
 if __name__ == '__main__':
     s = input()
@@ -794,7 +1349,9 @@ for i in range(n):
 for item, price in shop_list.items():
     print(item, price)
 
-
+# =============================================================================
+# PYTHON - TIME DATE - calendar
+# =============================================================================
 # %% PYTHON - TIME DATE - calendar
 import calendar
 
@@ -826,14 +1383,16 @@ from datetime import datetime
 
 
 def time_delta(t1, t2):
+    """time_delta."""
     formt = '%a %d %b %Y %H:%M:%S %z'
     time1 = datetime.strptime(t1, formt)
     time2 = datetime.strptime(t2, formt)
     diff = time1 - time2
     return int(abs(timedelta.total_seconds(diff)))
 
+
 if __name__ == '__main__':
-#    fptr = open(os.environ['OUTPUT_PATH'], 'w')
+    #    fptr = open(os.environ['OUTPUT_PATH'], 'w')
     t = int(input())
 
     for t_itr in range(t):
@@ -841,11 +1400,12 @@ if __name__ == '__main__':
         t2 = input()
         delta = time_delta(t1, t2)
         print(delta)
-        #fptr.write(delta + '\n')
-#    fptr.close()
+        # fptr.write(delta + '\n')
+        # fptr.close()
 
-
+# =============================================================================
 # %%  PYTHON - ERRORS AND EXCEPTIONS - Exceptions
+# =============================================================================
 """ONLY 2 EXERCISES IN ERRORS/EXCEPTIONS"""
 
 x = int(input())
@@ -854,15 +1414,33 @@ for i in range(x):
         a, b = map(int, input().split())
         print(a//b)
     except Exception as e:
-        print("Error Code:", e)
+        # a best practice is to specific the type of Exception; having
+        # general error is often a way to leave loopholes in code
+        # that will allow errors in execution that are difficult to
+        # debug; this program is simple but we might want to anticipate
+        # different types of error and take different actions for each
+        # type of error
+
+        print("Try again:", e)
 
         # except ZeroDivisionError as e:
         # except ValueError as e:
+# %% PYTHON - ERRORS AND EXCEPTIONS - My example
 
+flag = 0
+while flag==0:
+    try:
+        a, b = map(int, input().split())
+        print(f'Answer is {a/b}')
+        flag = 1
+    except Exception as e:
+        print(f'Try again: {e}')
 # %% PYTHON - ERRORS AND EXCEPTIONS - Incorrect Regex
 
 # 89,928 rank before, 80200 after; wow, that's quite a jump
 import re
+
+
 for _ in range(int(input())):
     ans = True
     try:
@@ -871,31 +1449,40 @@ for _ in range(int(input())):
         ans = False
     print(ans)
 
+# =============================================================================
 # %% PYTHON - BUILTINS - Classes: Dealing with Complex Numbers
+# =============================================================================
 
 import math
 
+
 class Complex(object):
+    """Complex."""
+
     def __init__(self, real, imaginary):
         self.real = real
         self.imaginary = imaginary
 
     def __add__(self, no):
+        """Docstring."""
         real = self.real + no.real
         imaginary = self.imaginary + no.imaginary
         return Complex(real, imaginary)
 
     def __sub__(self, no):
+        """Docstring."""
         real = self.real - no.real
         imaginary = self.imaginary - no.imaginary
         return Complex(real, imaginary)
 
     def __mul__(self, no):
+        """Docstring."""
         real = self.real * no.real - self.imaginary * no.imaginary
         imaginary = self.imaginary * no.real + self.real * no.imaginary
         return Complex(real, imaginary)
 
     def __truediv__(self, no):
+        """Docstring."""
         coeff = 1/(no.real**2 + no.imaginary**2)
         real = coeff * (self.real * no.real + self.imaginary * no.imaginary)
         imaginary = coeff * (-self.real * no.imaginary +
@@ -903,10 +1490,12 @@ class Complex(object):
         return Complex(real, imaginary)
 
     def mod(self):
+        """Docstring."""
         mod = ((self.real**2)+(self.imaginary**2))**0.5
         return Complex(mod, 0)
 
     def __str__(self):
+        """Docstring."""
         if self.imaginary == 0:
             result = "%.2f+0.00i" % (self.real)
         elif self.real == 0:
@@ -935,7 +1524,7 @@ if __name__ == '__main__':
 
 n = int(input())
 ns = list(map(int, input().split()))
-palin = any([str(x)[0:len(str(x)) // 2]==str(x)[-1:len(str(x))//2 - 1: -1]
+palin = any([str(x)[0:len(str(x)) // 2] == str(x)[-1:len(str(x))//2 - 1: -1]
              for x in ns])
 print(bool(all([x > 0 for x in ns])*palin))
 
@@ -991,9 +1580,14 @@ K = int(input())
 
 for row in sorted(rows, key=lambda row: int(row.split()[K])):
     print(row)
+
+# =============================================================================
 # %% PYTHON - PYTHON FUNCTIONALS - map and lambda
+# =============================================================================
+
 
 def fib(n):
+    """fib."""
     if n == 0:
         mylist = []
     elif n == 1:
@@ -1011,23 +1605,24 @@ def fib(n):
 
 print(list(map(lambda x: x**3, fib(5))))
 
-# %% PYTHON - PYTHON FUNCTIONALS - Validating Email Addresses With a Filter
+# %% PYTHON - PYTHON FUNCTIONALS - Validate Email Addresses With Filter
 """
-You are given an integer followed by
-
-email addresses. Your task is to print a list containing only valid email
-addresses in lexicographical order.
+You are given an integer followed by email addresses. Your task is to
+print a list containing only valid
+email addresses in lexicographical order.
 
 Valid email addresses must follow these rules:
 
     It must have the username@websitename.extension format type.
-    The username can only contain letters, digits, dashes and underscores.
+    The username can only contain letters, digits, dashes and underscore
     The website name can only have letters and digits.
     The maximum length of the extension is
 """
 import re
 
+
 def fun(s):
+    """Docstring."""
     try:
         username, siteext = s.split('@')
         site, ext = siteext.split('.')
@@ -1056,6 +1651,7 @@ def fun(s):
 
 
 def filter_mail(emails):
+    """Docstring."""
     return list(filter(fun, emails))
 
 
@@ -1086,7 +1682,7 @@ for i in range(n):
 
 numer = math.prod(nums)
 denom = math.prod(dens)
-gc = math.gcd(numer,denom)
+gc = math.gcd(numer, denom)
 print(int(numer/gc), int(denom/gc))
 
 """ solution
@@ -1095,17 +1691,23 @@ def product(fracs):
     t = reduce(operator.mul , fracs)
     return t.numerator, t.denominator
 """
+
+# =============================================================================
 # %% PYTHON - REGEX AND PARSING - re.split
+# note that there is separate section below on just Regex with 45
+# drills; the exercises that follow are under Python drills (17)
+# =============================================================================
 import re
 
-x = '100,000,000.000'
+x = '100,000'
 print('\n'.join(re.split('[,.]', x)))
 
+pat = re.compile(r'[,.]')
+print("Second try:\n" + '\n'.join(re.split(pat, x)))
 
 # %% PYTHON - REGEX AND PARSING - HTML Parser - Part 1
 
 """
-
 from HTMLParser import HTMLParser
 
 # create a subclass and override the handler methods
@@ -1126,7 +1728,10 @@ from html.parser import HTMLParser
 
 
 class MyHTMLParser(HTMLParser):
+    """Docstring."""
+
     def handle_starttag(self, tag, attrs):
+        """Docstring."""
         print("Start :", tag)
         for name, value in attrs:
             try:
@@ -1135,11 +1740,13 @@ class MyHTMLParser(HTMLParser):
                 print("-> {0} > None".format(name))
 
     def handle_endtag(self, tag):
+        """Docstring."""
         print("End   :", tag)
         # very important that we have 3 spaces after 'End' so that colons
         # line up for after Start, End, and Empty.
 
     def handle_startendtag(self, tag, attrs):
+        """Docstring."""
         print("Empty :", tag)
         for name, value in attrs:
             try:
@@ -1156,15 +1763,17 @@ for i in range(N):
     parser.feed(html_text)
 
 # %% PYTHON - REGEX AND PARSING - HTML Parser - Part 2
-# I should read howHTMLParser works, because this exercise itself isn't that
-# useful or informative
+# I should read howHTMLParser works, because this exercise itself isn't
+# that useful or informative
 
 from html.parser import HTMLParser
 
 
 class MyHTMLParser(HTMLParser):
+    """Docstring."""
 
     def handle_comment(self, data):
+        """Docstring."""
         num_lines = len(data.split('\n'))
         if num_lines > 1:
             print(">>> Multi-line Comment")
@@ -1174,6 +1783,7 @@ class MyHTMLParser(HTMLParser):
             print(data)
 
     def handle_data(self, data):
+        """Docstring."""
         if data.strip():  # space or \n will evaluate as False
             print('>>> Data')
             print(data)
@@ -1183,7 +1793,7 @@ html = ""
 N = int(input())
 for i in range(N):
     html += input().rstrip()
-    html += '\n'  # so we end up feeding all N lines to parser at same time
+    html += '\n'  # so we end up feeding all N lines to parser at once
 
 parser = MyHTMLParser()
 parser.feed(html)
@@ -1210,19 +1820,18 @@ data_pattern = r'<\w+>(.*)(?=<[/]\w+>)'
 # Attribute Values
 
 # cannot seem to solve all cases due to comments i.e.,  <!-- -->
-
 # the tough problem is how to exclude
 
 import re
 
 N = int(input())
-html=''
+html = ''
 for i in range(N):
     html = html + input()
 
 html = input()
 html = re.sub(r'<!.+-->', r'', html, re.DOTALL)
-tags_in_line = re.findall(r"<((\w+).*?)>", html, re.M|re.DOTALL)
+tags_in_line = re.findall(r"<((\w+).*?)>", html, re.M | re.DOTALL)
 
 for tag in tags_in_line:
     attrs_contents = re.findall(r'\s(\w+)="([/\w.-]*)"', tag[0])
@@ -1269,25 +1878,43 @@ for _ in range(int(input())):
 import re
 
 s = input()
-pat = r'(?<=[QWRTYPSDFGHJKLZXCVBNMqwrtypsdfghjklzxcvbnm])([aeiouAEIOU]{2,})(?=[QWRTYPSDFGHJKLZXCVBNMqwrtypsdfghjklzxcvbnm])'
+# this worksfortest cases on Hackerrank,but may allow nonconsonant letters
+pat = r'(?<=[^AEIOUaeiou])([aeiouAEIOU]{2,})(?=[^AEIOUaeiou])'
+pat2 = r'(?<=[QWRTYPSDFGHJKLZXCVBNMqwrtypsdfghjklzxcvbnm])([aeiouAEIOU]{2,})(?=[QWRTYPSDFGHJKLZXCVBNMqwrtypsdfghjklzxcvbnm])'
 matches = list(map(lambda x: x.group(), re.finditer(pat, s)))
-matches2 = list(map(lambda x: x.group(0), re.finditer(pat, s)))
-matches3 = list(map(lambda x: x.groups(), re.finditer(pat, s)))
 if matches == []:
     print(-1)
 else:
-    for x in range(len(matches)):
-        print(matches[x])
-print(matches)
-print(matches2)
+    for i, mat in enumerate(matches):
+        print(mat)
 
+# %% PYTHON - REGEX AND PARSING - findall, finditer
+
+# our 'not vowel' patterndoesn'tfilter out the first ee like pat1 does
+s = 'rabcdeefgyYhFjkIoomnpOeorteeeeet'
+s2 = 'rabcd3eefgyYhFjkIoomnpOeorteeeeet'
+list(map(lambda x: x.group(), re.finditer(pat, s2)))
+# ['ee', 'Ioo', 'Oeo', 'eeeee']
+list(map(lambda x: x.group(), re.finditer(pat2, s2)))
+# ['Ioo', 'Oeo', 'eeeee']
+
+matches2 = list(map(lambda x: x.group(0), re.finditer(pat, s)))
+matches3 = list(map(lambda x: x.groups(), re.finditer(pat, s)))
+print(matches2)
+# ['ee', 'Ioo', 'Oeo', 'eeeee']
+
+print(matches3)
+# [('ee',), ('Ioo',), ('Oeo',), ('eeeee',)]
+
+print(list(re.finditer(pat, s)))
 
 # %% PYTHON - REGEX AND PARSING - .group(). .groups(), .groupdict()
 """
-group()
-group() expression returns one or more subgroups of the match.
 >>> import re
 >>> m = re.match(r'(\w+)@(\w+)\.(\w+)','username@hackerrank.com')
+
+group()
+returns one or more subgroups of the match.
 >>> m.group(0)       # The entire match
 'username@hackerrank.com'
 >>> m.group(1)       # The first parenthesized subgroup.
@@ -1296,19 +1923,18 @@ group() expression returns one or more subgroups of the match.
 'hackerrank'
 >>> m.group(3)       # The third parenthesized subgroup.
 'com'
->>> m.group(1,2,3)   # Multiple arguments give us a tuple.
+>>> m.group(1, 2, 3)   # Multiple arguments give us a tuple.
 ('username', 'hackerrank', 'com')
 
-groups() expression returns a tuple containing all the subgroups of the match.
 
->>> import re
->>> m = re.match(r'(\w+)@(\w+)\.(\w+)','username@hackerrank.com')
->>> m.groups()
+groups()
+returns a tuple containing all the subgroups of the match.
+>>> m.groups()  # three groups in pattern means groups will have 3 items
 ('username', 'hackerrank', 'com')
 
 groupdict()
-A groupdict() expression returns a dictionary containing all the named
-subgroups of the match, keyed by the subgroup name.
+returns a dictionary containing all the named subgroups of the match,
+keyed by the subgroup name.
 
 >>> m = re.match(r'(?P<user>\w+)@(?P<website>\w+)\.(?P<extension>\w+)',
                  'myname@hackerrank.com')
@@ -1318,12 +1944,43 @@ subgroups of the match, keyed by the subgroup name.
 
 import re
 
-s = input()
-m = re.search(r'([A-Za-z0-9])\1+', s)  # two consec appearances
-print(m.group(1) if m else -1)
+#s = input()
+s = 'a235bbcddabbok33'
+m = re.search(r'(?P<first>[A-Za-z0-9])\1+', s)  # two consec appearances
+print(f'string\t\t: \t\t{s:10}')
+print(f'.group(1)\t: \t\t{m.group(1):10}')
+print(f'.group()\t: \t\t{m.groups()}')
+print(f'.groupdict(): \t\t{m.groupdict()}')
+"""
+string		: 		a235bbcddabbok33
+.group(1)	: 		b
+.group()	: 		('b',)
+.groupdict(): 		{'first': 'b'}
+"""
 
-# NOTE - re.match only works from beginning of string??
+# %% PYTHON - REGEX AND PARSING - Validating Postal Codes
+# hard
+import re
 
+regex_integer_in_range = r"[1-9][0-9]{5}$"
+regex_alternating_repetitive_digit_pair = r"(\d)(?=\d\1)"
+
+
+def pat_match(str):
+    return (bool(re.match(regex_integer_in_range, str)) and
+            len(re.findall(regex_alternating_repetitive_digit_pair, str)) < 2)
+
+
+# 7 Test cases, 0 through 6
+test_strings = ['110000', '111456', 'abcdef', '101201', '542361', '4542867',
+                '137370']
+
+# 111456 is True because the first one is the match. It doesn't matter that
+# the in between digit is the same. So the pattern is matched by the first 1,
+# any digit, and the repeated 1.
+answers = [pat_match(s) for s in test_strings]
+print(answers)
+# [False, True, False, True, True, False, False]
 
 # %% PYTHON - REGEX AND PARSING - Validating Credit Card Numbers
 """
@@ -1349,6 +2006,33 @@ for _ in range(int(input())):
         assert len(u) == 16 or len(u) == 19
     except Exception:
         print('Invalid')
+    else:
+        print('Valid')
+
+# %% PYTHON - REGEX AND PARSING - Validating Credit Card Numbers 2
+# rewrote from scratch for practice; this works
+
+import re
+
+
+N = int(input())
+
+for i in range(N):
+    pat1 = r'[456](\d){3}-(\d){4}-(\d){4}-(\d){4}'
+    pat2 = r'[456](\d){15}'
+    number = input()
+
+    try:
+        assert len(number) == 16 or len(number) == 19
+        if len(number) == 16:
+            assert re.match(pat2, number)
+        elif len(number) == 19:
+            assert re.match(pat1, number)
+        assert not re.search(r'(\d)\1\1\1', ''.join(number.split('-')))
+
+    except Exception:
+        print('Invalid')
+
     else:
         print('Valid')
 
@@ -1383,10 +2067,12 @@ import re
 
 
 def my_filter(match):
+    """Docstring."""
     return ' and '
 
 
 def my_filter2(match):
+    """Docstring."""
     return ' or '
 
 
@@ -1410,7 +2096,7 @@ for i in range(n):
 # i want && and '&&& or ||  |||  &&
 #
 print(re.sub(r"\s[&]{2}\s", my_filter, "1 2 3 && 2d bbd"))
-
+# >1 2 3 and 2d bbd
 # %% PYTHON - REGEX AND PARSING - Validating and Parsing Email Addresses
 """
 2
@@ -1421,14 +2107,16 @@ import email.utils
 import re
 
 for i in range(int(input())):
-    t = email.utils.parseaddr(input())  # creates tuple with two items
-    # it looks like the name is not checked, and the problem does in fact NOT
-    # say anything about the name, only the user; so it was pointless to do
-    # prior match on name in section above;  some names are in fact not user
-    # \w includes _
-    # name <user@email.com>
-    # re.match automatically starts at beginning, so any characters at front
-    # that are not alphabetic causes False
+    t = email.utils.parseaddr(input())
+    # creates tuple with two items
+    # it looks like the name is not checked, and the problem does
+    # in fact NOT
+    # say anything about the name, only the user; so it was pointless
+    # to do
+    # prior match on name in section above;  some names are in fact
+    # not user  \w includes _name <user@email.com>
+    # re.match automatically starts at beginning, so any characters
+    # at front that are not alphabetic causes False
     if bool(re.match('[a-zA-Z](\w|-|\.)*@[a-zA-Z]*\.[a-zA-Z]{1,3}$', t[1])):
         print(email.utils.formataddr(t))
     # probably change to + on group after @ to be more accurate
@@ -1457,8 +2145,13 @@ for _ in range(int(input())):
     try:
         assert re.search(r'[A-Z]{2}', u)  # must have at least 2 caps
         assert re.search(r'\d\d\d', u)  # must have at least 3 digits
-        assert not re.search(r'[^a-zA-Z0-9]', u)  # must not have non alphanum
-        assert not re.search(r'(.)\1', u)  # \1 means repeat of prior match
+
+        # must not have non alphanum
+        assert not re.search(r'[^a-zA-Z0-9]', u)
+
+        # \1 means repeat of prior match
+        assert not re.search(r'(.)\1', u)
+
         assert len(u) == 10
     except Exception:
         print('Invalid')
@@ -1474,13 +2167,14 @@ import re
 
 N = int(input())
 pat = r'(?<!^)(#(?:[\da-fA-F]{3}){1,2})'
-#  { #fff returns #fff, not (#fff, fff) because grouping with # is optional
+#  { #fff returns #fff, not (#fff, fff) because grouping with # is
+# optional
 # when theres a subgroup
 #  { #fff123 returns #fff123, not (#fff123, 123)
 # the {1,2} outside of () group means you could repeat that (), which is
 # why the second three hex digits wouldn't need #
 
-pat2 = r'(?<!^)(#([\da-fA-F]{3}){1,2})'  #  { #fff would return
+pat2 = r'(?<!^)(#([\da-fA-F]{3}){1,2})'  # { #fff would return
 #  { #fff returns (#fff, fff)
 #  { #fff123 returns (#fff123, 123)
 
@@ -1525,6 +2219,7 @@ import xml.etree.ElementTree as etree
 
 
 def get_attr_number(node):
+    """Docstring."""
     return etree.tostring(node).count(b'=')    # your code goes here
 
 
@@ -1544,6 +2239,7 @@ maxdepth = -1
 
 
 def depth(elem, level):
+    """Docstring."""
     global maxdepth
     if (level == maxdepth):
         maxdepth += 1
@@ -1553,10 +2249,10 @@ def depth(elem, level):
 
 
 if __name__ == '__main__':
-    n = int(raw_input())
+    n = int(input())
     xml = ""
     for i in range(n):
-        xml = xml + raw_input() + "\n"
+        xml = xml + input() + "\n"
     tree = etree.ElementTree(etree.fromstring(xml))
     depth(tree.getroot(), -1)
     print(maxdepth)
@@ -1566,6 +2262,7 @@ if __name__ == '__main__':
 
 
 def wrapper(f):
+    """Docstring."""
     def phone(list_n):
         f(["+91 "+c[-10:-5]+" "+c[-5:] for c in list_n])
     return phone
@@ -1573,6 +2270,7 @@ def wrapper(f):
 
 @wrapper
 def sort_phone(list_nums):
+    """Docstring."""
     print(*sorted(list_nums), sep='\n')
 
 
@@ -1584,6 +2282,7 @@ if __name__ == '__main__':
 
 
 def person_lister(f):
+    """Docstring."""
     def inner(people):
         # complete the function
         return map(f, sorted(people, key=lambda x: int(x[2])))
@@ -1592,6 +2291,7 @@ def person_lister(f):
 
 @person_lister
 def name_format(pers):
+    """Docstring."""
     return ("Mr. " if pers[3] == "M" else "Ms. ") + pers[0] + " " + pers[1]
 
 
@@ -1604,16 +2304,19 @@ Robert Bustle 32 M
 Robert Bux 32 M
 Mike Thomson 20 M
 
-For sorting a nested list based on some parameter, you can use the itemgetter
- library. You can read more about it here.
+For sorting a nested list based on some parameter, you can use the
+itemgetter library. You can read more about it here.
 """
-# %% PYTHON - Closures and Decorators - Decorators 2 - Name Directory Try 2
-# we use map iterator above because it disappears after iteration; if we want
-# to use
+# %% PYTHON - Closures and Decorators - Decorators 2 -
+#  Name Directory Try 2
+# we use map iterator above because it disappears after iteration; if
+# we want to use
 # memory to store elements, we need to use list
 
 
 def person_lister(f):
+    """Docstring."""
+
     def inner(people):
         # complete the function
         return list(map(f, sorted(people, key=lambda x: int(x[2]))))
@@ -1622,7 +2325,9 @@ def person_lister(f):
 
 @person_lister
 def name_format(pers):
-    return ("Mr. " if pers[3] == "M" else "Ms. ") + pers[0] + " " + pers[1]
+    """Docstring."""
+    return ("Mr. " if pers[3] == "M" else "Ms. ") \
+            + pers[0] + " " + pers[1]
 
 
 if __name__ == '__main__':
@@ -1633,38 +2338,133 @@ if __name__ == '__main__':
 # %% Python - Numpy
 
 # The reshape tool gives a new shape to an array without changing its
-# data. It creates a new array and does not modify the original array itself.
+# data. It creates a new array and does not modify the original array
+# itself.
 import numpy
 
 my_array = numpy.array([1, 2, 3, 4, 5, 6])
 print(numpy.reshape(my_array, (3, 2)))
 
+
+# Linear Algebra
+# The linalg.det tool computes the determinant of an array.
+
+print(numpy.linalg.det([[1, 2], [2, 1]]))       # Output : -3.0
+print(numpy.linalg.det([[1.1, 1.1], [1.1, 1.2]]))  # Output : -3.0
+
+# The linalg.eig computes the eigenvalues and right eigenvectors of
+# square array.
+vals, vecs = numpy.linalg.eig([[1, 2], [2, 1]])
+print(vals)  # Output : [ 3. -1.]
+print(vecs)  # Output : [[ 0.70710678 -0.70710678]
+#            #          [ 0.70710678  0.70710678]]
+
+A = numpy.array([1, 2])
+B = numpy.array([3, 4])
+print(numpy.dot(A, B))    # Output : 11
+
+A = numpy.array([1, 2])
+B = numpy.array([3, 4])
+print(numpy.cross(A, B))  # Output : -2
+
+x = [1, 2]
+y = [3, 4]
+A = []
+A.append(x)
+A.append(y)
+A = numpy.matrix(A)
+print(numpy.dot(A, A))
+
+# =============================================================================
+# # polynomials
+# =============================================================================
+# The poly tool returns the coefficients of a polynomial with the given
+# sequence of roots.
+
+print(numpy.poly([-1, 1, 1, 10]))
+# Output : [  1 -11   9  11 -10]
+
+# The roots tool returns the roots of a polynomial with the given
+# coefficients.
+
+print(numpy.roots([1, 0, -1]))          #Output : [-1.  1.]
+
+# The polyint tool returns an antiderivative (indefinite integral) of a
+# polynomial.
+
+print(numpy.polyint([1, 1, 1]))
+# Output : [ 0.33333333  0.5         1.          0.        ]
+
+# The polyder tool returns the derivative of the specified order of a
+#   polynomial.
+
+print(numpy.polyder([1, 1, 1, 1]))
+# Output : [3 2 1]
+
+# The polyval tool evaluates the polynomial at specific value.
+
+print(numpy.polyval([1, -2, 0, 2], 4))
+# Output : 34
+
+# The polyfit tool fits a polynomial of a specified order to a set of
+# data using a least-squares approach.
+print(numpy.polyfit([0,1,-1, 2, -2], [0, 1, 1, 4, 4], 2))
+# Output : [  1.00000000e+00   0.00000000e+00  -3.97205465e-16]
+# The functions polyadd, polysub, polymul, and polydiv also handle
+# proper addition, subtraction, multiplication, and division of polynomial
+# coefficients, respectively.
+
+# %%
+n = int(input())
+
+A = []
+for i in range(2 * n):
+    row = list(map(int, input().split()))
+    A.append(row)
+
+B = numpy.matrix(A[n:])
+A = numpy.matrix(A[0:n])
+
+print(numpy.dot(A, B))
+
+
+p = list(map(float, input().split()))
+x = float(input())
+print(numpy.polyval(p, x))
 # %% PYTHON - Debugging - Default arguments
 
 
 class EvenStream(object):
+    """Docstring."""
+
     def __init__(self):
         self.current = 0
 
     def get_next(self):
+        """Docstring."""
         to_return = self.current
         self.current += 2
         return to_return
 
 
 class OddStream(object):
+    """Docstring."""
+
     def __init__(self):
         self.current = 1
 
     def get_next(self):
+        """Docstring."""
         to_return = self.current
         self.current += 2
         return to_return
 
 
 def print_from_stream(n, stream=EvenStream()):
-    stream.__init__()   # this is the key line to fix error; need to init
-    # the Stream object, because we were just passed it as arg or as dafault
+    """Docstring."""
+    stream.__init__()   # this is the key line to fix error; need to
+    # init the Stream object, because we were just passed it as arg or
+    # as dafault
     for _ in range(n):
         stream == print(stream.get_next())
 
@@ -1679,19 +2479,21 @@ for _ in range(queries):
         print_from_stream(n, OddStream())
 
 # **end python
-
+# =============================================================================
 # %% HACKERRANK SQL SKILLS - 58 TOTAL EXERCISES
+# =============================================================================
 """
-Topics covered in 58 questions on hackerrank, only some examples included
-        as reference in this file
+Topics covered in 58 questions on hackerrank, only some examples
+included as reference in this file
+
 # Qs Topic
 ---- ------------
-- 20 Basic Select x
--  5 Advanced Select x
-- 17 Aggregation x
--  8 Basic Join x
--  5 Advanced Join 3
--  3 Alternative Queries 1
+- 20 Basic Select            x
+-  5 Advanced Select         x
+- 17 Aggregation             x
+-  8 Basic Join              x
+-  5 Advanced Join           3
+-  3 Alternative Queries     1
 ====
 54 of 58 done
 """
@@ -1851,30 +2653,32 @@ ORDER BY contest_id;
 """
 
 # **end sql
-
-# %%  HACKERRANK - REGEX - 47 total
+# =============================================================================
+# %%  HACKERRANK - REGEX DRILLS - 47 total
+# =============================================================================
 """
 Course Outline (not all problems in this outline are included in this file)
 ---------------------------------------------------------------------------
-
-- 6 Introduction x
-- 3 Character Class x
-- 5 Repetitions x
-- 3 Grouping and Capturing x
-- 4 Backreferences - 2 problems not supported with Python
-- 4 Assertions x
-- 22 Applications x
+- 6 Introduction            DONE
+- 3 Character Class         DONE
+- 5 Repetitions             DONE
+- 3 Grouping and Capturing  DONE
+- 4 Backreferences         -2 (2 problems not supported with Python)
+- 4 Assertions              DONE
+- 22 Applications           DONE
 ===
 Finished 45 of 47
 
 Other References:
 https://docs.python.org/3/library/re.html#re.MULTILINE
 
-3 more applications to do for python
 
 """
 
 # %% REGEX - Introduction - start() and end()
+# https://docs.python.org/3/library/re.html
+# https://docs.python.org/3/howto/regex.html
+# https://www.oreilly.com/library/view/mastering-regular-expressions/0596528124/
 # Return the indices of the start and end of the substring matched.
 # by the group.
 # """ Notes
@@ -1910,23 +2714,37 @@ re.MULTILINE mode at end of expression counts \n as edge for $ as well vs.only
 at end of string for $ when re.MULTILINE is notinlcuded
 """
 
-prog = re.compile(pattern)
+
+prog = re.compile(r'[a-z]', flags=0)
+prog
+# Out[30]: re.compile(r'[a-z]', re.UNICODE)
+prog.flags
+# 32
+prog.groups
+# 0
+prog = re.compile(r'([a-z])', flags=0)
+prog.groups
+# 1
+prog.pattern
+# Out[40]: '([a-z])'
+
 result = prog.match(string)
 #    is equivalent to
 result = re.match(pattern, string)
-#    but using re.compile() and saving the resulting regular expression object
-#    for reuse is more efficient when the expression will be used several times
-#    in a single program.
+#    using re.compile() allows reuse of regex object
 
-re.search(pattern, string, flags=0)  # find first location where matches
+re.search(pattern, string, flags=0)
+# find first location where matches
 
 # re.match - will only match at beginning of string
 
 # re.DOTALL
-#    Make the '.' special character match any character at all, including a
-# newline; without this flag, '.' will match anything except a newline.
+#    Make the '.' special character match any character at all,
+# including a # newline; without this, '.' will match anything except
+# a newline.
 # Corresponds to the inline flag (?s).
 
+# %% REGEX
 import re
 
 m = re.search(r'\d+', '1234')
@@ -1945,26 +2763,25 @@ if m is None:
 else:
     print((m.start(), m.end()-1))
     print(all)
-# m.end() is 1 greater than index of match ending, so if 0-5 match, m.end()
-# is 6
-# %% REGEX - Introduction - search for start/end index of matches in string
+# m.end() is 1 greater than index of match ending, so if 0-5 match,
+# m.end() is 6
+# %% REGEX - Introduction - search for start/end index of matches
 
 import re
 
-s = input()
-k = input()
+my_string = input()
+pat = input()
 index = 0
 
-if re.search(k, s):  # stops looking after find first match
-    while index+len(k) < len(s):
-        m = re.search(k, s[index:])  # begins search with new index
-
+if re.search(pat, my_string):  # stops looking after find first match
+    while index + len(pat) < len(my_string):
+        m = re.search(pat, my_string[index:])  # begins search with new index
         if m is None:
             break
         else:
-            print("Match start, end: ({0}, {1})".format(index+m.start(),
-                                                        index + m.end()-1))
-            index += m.start() + 1  # assign new index by +1
+            print(f'Match start, end: '
+                  f'({index + m.start()}, {index + m.end()-1})')
+            index += m.start() + 1
 else:
     print('No matches found (-1, -1)')
 
@@ -1973,7 +2790,7 @@ else:
 import re
 import sys
 
-regex_pattern = r"...\....\....\...."  # Do not delete 'r'.
+regex_pattern = r"...\....\....\...."  # must have 'r'.
 test_string = input()
 match = re.match(regex_pattern, test_string) is not None
 # True if there's match, otherwise false
@@ -1983,8 +2800,8 @@ print(str(match).lower())  # prints 'true' or 'false'
 # %%  REGEX - pattern match
 
 """
-pattern below didn't work because 2 of the test cases out of 7 had 7 character
-length, unlike the specification below
+pattern below didn't work because 2 of the test cases out of 7 had
+7 character length, unlike the specification below
 
 with the following conditions:
 
@@ -2021,17 +2838,17 @@ Regex_Pattern = r'^[a-zA-z02468]{40}[13579\s]{5}$'
 
 # + tool will match one or more repetitions of character/class/group
 # * tool will match zero or more repetitions of character/ class/grou.
-# $ boundary matcher matches occurrence of a character/character class/group
-# at the end of a line.
+# $ boundary matcher matches occurrence of a character/character class
+# or group at the end of a line.
 
 # \b assert position at a word boundary.
 # 3 positions for \b
-# Before the first character in the string, if the first character is a word
-# character.
-# Between two characters in the string, where one is a word character and the
-# other is not a word character.
-# After the last character in the string, if the last character is a word
-# character.
+# Before the first character in the string, if the first character is a
+# word character.
+# Between two characters in the string, where one is a word character
+# and the other is not a word character.
+# After the last character in the string, if the last character is a
+# word character.
 
 # () groups part of regex together
 # (?:) can be part of match that is optional
@@ -2040,8 +2857,8 @@ Regex_Pattern = r'^[a-zA-z02468]{40}[13579\s]{5}$'
 
 # (\d)\1: It can match 00, 11, 22, 33, 44, 55, 66, 77, 88
 # or 99.
-# This tool (\1 references the first capturing group) matches the same text as
-# previously matched by the capturing group.
+# This tool (\1 references the first capturing group) matches the same
+# text as previously matched by the capturing group.
 
 
 r'([a-z])([\w])([\s])\1\2\3'
@@ -2055,10 +2872,10 @@ print(bool(re.search(rp, '12-34-56-78')))
 
 
 # %% REGEX - Lookahead and behind
-# The positive lookahead (?=) asserts regex_1 to be immediately followed by
-# regex_2. The lookahead is excluded from the match. It does not return
-#  matches of regex_2. The lookahead only asserts whether a match is
-#  possible or not.
+# The positive lookahead (?=) asserts regex_1 to be immediately followed
+# by regex_2. The lookahead is excluded from the match. Does not return
+# matches of regex_2. The lookahead only asserts whether a match is
+# possible or not.
 rp = r'o(?=oo)'
 print(re.search(rp, 'xxoooxx'), bool(re.search(rp, 'xxoooxx')))
 
@@ -2068,7 +2885,7 @@ print(re.search(rp, 'xxo'), bool(re.search(rp, 'xxo')))
 
 # The positive lookbehind (?<=) asserts regex_1 to be immediately
 # preceded by regex_2. Lookbehind is excluded from the match
-# (do not consume matches of regex_2), but only assert whether a match is
+# (do not consume matches of regex_2), but only assert whether match is
 # possible or not.
 
 # nEGATIVE LOOKbehind
@@ -2098,7 +2915,8 @@ import re
 
 n = int(input())
 pat = r'<a href="(.*?)".*?>([\w ,./]*)(?=</)'
-#       this is one match,   this is second match for word, space, , or . or /
+# this is one match,   this is second match for word, space, ,
+# or . or /
 for i in range(n):
     text = input()
     # text = html.loc[i].values[0]
@@ -2113,7 +2931,8 @@ import re
 
 pat = r'<a href="(.*?)".*?>([\w ,./]*)(?=</)'
 
-text = '<p><a href="http://www.quackit.com/html/tutorial/html_links.cfm">Example Link</a></p>'
+text = '<p><a href="http://www.quackit.com/html/tutorial/html_links.'
+text = text + 'cfm">Example Link</a></p>'
 all = re.findall(pat, text)
 print(all[0][0] + ',' + all[0][1])
 
@@ -2144,11 +2963,16 @@ for j in range(T):
 
 
 # %% REGEX - APPLICATIONS - Find a Word
-# text = 'foo bar (foo) bar foo-bar foo_bar foo\'bar bar-foo bar, foo.'
+"""
+text = 'foo bar (foo) bar foo-bar foo_bar foo\'bar bar-foo bar, foo.'
+text = 'colourfuture saturday.future face_future(anxiety obtain.future '
+text = text + 'surroundings\'futurerefrigerator alone)futurecomparison '
+text = text + 'wine-future,tight futureimpatient '
+text = text + 'bodyfuture excite(future(grandfather'
+"""
 
 import re
 
-text = 'colourfuture saturday.future face_future(anxiety obtain.future surroundings\'futurerefrigerator alone)futurecomparison wine-future,tight futureimpatient bodyfuture excite(future(grandfather'
 N = int(input())
 
 sentences = []
@@ -2172,12 +2996,13 @@ for w in words:
 # %% REGEX - APPLICATIONS - Utopian Identification Number
 """New ID.
 
-A new identification number is given for every Citizen of the Country Utopia
- and it has the following format.
+A new identification number is given for every Citizen of the Country
+Utopia and it has the following format.
 
 - The string must begin with between 0-3 (inclusive) lowercase letters.
 - Immediately following the letters, there must be a sequence of digits
-    (0-9). The length of this segment must be between 2 and 8, both inclusive.
+    (0-9). The length of this segment must be between 2 and 8, both
+    inclusive.
 - Immediately following the numbers, there must be atleast 3 uppercase
     letters.
 2
@@ -2189,6 +3014,9 @@ Sample Output
 VALID
 INVALID
 
+
+3c0123ABC
+INVALID
 """
 import re
 
@@ -2201,7 +3029,9 @@ for _ in range(int(input())):
         print('INVALID')
     else:
         print('VALID')
-# **end regex
+
+
+# %% REGEX - APPLICATIONS - Find a Sub-word
 
 """conditions:
 must be of length: 6
@@ -2232,6 +3062,7 @@ for _ in range(t):
     print(len(re.findall(r'\B(%s)\B' % input().strip(), text)))
 # \B means not a boundary of a word
 
+
 # %% REGEX - APPLICATIONS - Alien Username
 # what is diff between () and []
 # order matters for (), BUT NOT for []
@@ -2247,20 +3078,20 @@ VALID
 INVALID
 INVALID
 """
-
 import re
 
+pat1 = r'^([_.])\d+([a-zA-Z]){0,}_?$'
 for _ in range(int(input())):
     u = input()
-    pat1 = r'^([_.])\d+([a-zA-Z]){0,}_?$'
 
     try:
         x = re.match(pat1, u)
-        assert x
+        assert x  # x evaluates as True
     except Exception:
         print('INVALID')
     else:
         print('VALID')
+
 
 # %% REGEX - APPLICATIONS - Alien Username
 # troubleshooting
@@ -2295,12 +3126,16 @@ for _ in range(int(input())):
 
 # %% REGEX - APPLICATIONS - hackerrank language
     # make sure no spaces between word and :
-    languages = 'C:CPP:JAVA:PYTHON:PERL:PHP:RUBY:CSHARP:HASKELL:CLOJURE:BASH:SCALA:ERLANG:CLISP:LUA:BRAINFUCK:JAVASCRIPT:GO:D:OCAML:R:PASCAL:SBCL:DART:GROOVY:OBJECTIVEC'
-    languages = languages.split(':')
+languages = 'C:CPP:JAVA:PYTHON:PERL:PHP:RUBY:CSHARP:HASKELL:'
+languages = languages + 'CLOJURE:BASH:SCALA:ERLANG:CLISP:LUA:'
+languages = languages + 'BRAINFUCK:JAVASCRIPT:GO:D:OCAML:R:PASCAL:'
+languages = languages + 'SBCL:DART:GROOVY:OBJECTIVEC'
+languages = languages.split(':')
 
 n = int(input())
 for i in range(n):
     code, language = input().split()
+    # code is a code snippet, but is not used in this exercise
     if language in languages:
         print('VALID')
     else:
@@ -2315,8 +3150,9 @@ for i in range(int(input())):
 
     x = re.findall(r'(\d{1,3})[ -]', num)
     y = re.findall(r'(?<=[ -])(\d{4,10})$', num)
-    answer = 'CountryCode=' + x[0] + ',LocalAreaCode='
-    + x[1] + ',Number=' + y[0]
+    answer = 'CountryCode=' + x[0] + ',' +\
+             'LocalAreaCode=' + x[1] +', ' +\
+             'Number=' + y[0]
     print(answer)
 
 # %% REGEX - APPLICATIONS - Split the phone numbers
@@ -2330,31 +3166,33 @@ for i in range(int(input())):
 # %% REGEX - APPLICATIONS - Detecting Valid Latitude and Longitude Pairs
 """Description.
 
-Given a line of text which possibly contains the latitude and longitude of a
-point, can you use regular expressions to identify the latitude and longitude
-referred to (if any)?
+Given a line of text which possibly contains the latitude and longitude
+of a point, can you use regular expressions to identify the latitude
+and longitude referred to (if any)?
 
 Input Format
-The first line contains an integer N, which is the number of tests to follow.
-This is followed by N lines of text. Each line contains a pair of co-ordinates
-which possibly indicate the latitude and longitude of a place.
+The first line contains an integer N, which is the number of tests to
+follow.
+This is followed by N lines of text. Each line contains a pair of
+co-ordinates which possibly indicate the latitude and longitude of a
+place.
 
 Constraints
 1 <= N <= 100
-The latitude and longitude, if present will always appear in the form of (X, Y)
-where X and Y are decimal numbers.
+The latitude and longitude, if present will always appear in the form
+of (X, Y) where X and Y are decimal numbers.
 For a valid (latitude, longitude) pair:
 -90<=X<=+90 and -180<=Y<=180.
-They will not contain any symbols for degrees or radians or N/S/E/W. There
-may or may not be a +/- sign preceding X or Y.
+They will not contain any symbols for degrees or radians or N/S/E/W.
+There may or may not be a +/- sign preceding X or Y.
 There will be a space between Y and the comma before it.
-There will be no space between X and the preceding left-bracket, or between Y
-and the following right-bracket.
+There will be no space between X and the preceding left-bracket, or
+between Y and the following right-bracket.
 There will be no unnecessary zeros (0) before X or Y.
 
 Output Format
-"Valid" where X and Y are the latitude and longitude which you found to be a
-valid (latitude, Longitude) pair.
+"Valid" where X and Y are the latitude and longitude which you found
+to be a valid (latitude, Longitude) pair.
 If the given pair of numbers are not a valid (latitude,longitude) pair,
 output "Invalid".
 """
@@ -2385,6 +3223,7 @@ for i in range(int(input())):
         print('Valid')
 
 # %% REGEX - APPLICATIONS - HackerRank Tweets
+# text = 'kj342lal;;hackerrank8a  asdf hackerrank kal8'
 
 import re
 
@@ -2579,112 +3418,7 @@ results = re.findall(r'question-summary-(\w\w\w\w\w)".\
 # ('80405', '5V Regulator Power Dissipation', '11 hours ago')]
 
 for result in results:
-	print(';'.join(result))
-
-"""
-"""<div class="question-summary" id="question-summary-80407">
-        <div class="statscontainer">
-            <div class="statsarrow"></div>
-            <div class="stats">
-                <div class="vote">
-                    <div class="votes">
-                        <span class="vote-count-post "><strong>2</strong></span>
-                        <div class="viewcount">votes</div>
-                    </div>
-                </div>
-                <div class="status answered">
-                    <strong>1</strong>answer
-                </div>
-            </div>
-
-    <div class="views " title="60 views">
-                        60 views
-    </div>
-        </div>
-        <div class="summary">
-            <h3><a href="/questions/80407/about-power-supply-of-opertional-amplifier" class="question-hyperlink">about power supply of opertional amplifier</a></h3>
-            <div class="excerpt">
-                I am constructing an operational amplifier as shown in the following figure. I use a batter as supplier for the OP Amp and set it up as a non-inverting amp circuit. I saw that the output was clipped ...
-            </div>
-
-            <div class="tags t-op-amp">
-                <a href="/questions/tagged/op-amp" class="post-tag" title="show questions tagged 'op-amp'" rel="tag">op-amp</a>
-
-            </div>
-            <div class="started fr">
-
-
-        <div class="user-info ">
-            <div class="user-action-time">
-
-
-                        asked <span title="2013-08-27 21:49:14Z" class="relativetime">11 hours ago</span>
-            </div>
-            <div class="user-gravatar32">
-                <a href="/users/17060/user1285419"><div class=""><img src="https://www.gravatar.com/avatar/08ee68b20a4eceff26f7eee99b708c08?s=32&d=identicon&r=PG" alt="" width="32" height="32"></div></a>
-            </div>
-            <div class="user-details">
-                <a href="/users/17060/user1285419">user1285419</a><br>
-                <span class="reputation-score" title="reputation score" dir="ltr">165</span><span title="5 bronze badges"><span class="badge3"></span><span class="badgecount">5</span></span>
-            </div>
-        </div>
-
-            </div>
-        </div>
-    </div>
-
-    <div class="question-summary" id="question-summary-80405">
-        <div class="statscontainer">
-            <div class="statsarrow"></div>
-            <div class="stats">
-                <div class="vote">
-                    <div class="votes">
-                        <span class="vote-count-post "><strong>4</strong></span>
-                        <div class="viewcount">votes</div>
-                    </div>
-                </div>
-                <div class="status answered-accepted">
-                    <strong>2</strong>answers
-                </div>
-            </div>
-
-
-
-    <div class="views " title="64 views">
-                        64 views
-    </div>
-        </div>
-        <div class="summary">
-            <h3><a href="/questions/80405/5v-regulator-power-dissipation" class="question-hyperlink">5V Regulator Power Dissipation</a></h3>
-            <div class="excerpt">
-                I am using a 5V regulator (LP2950) from ON Semiconductor. I am using this for USB power and I'm feeding in 9V from an adapter. USB requires maximum of 500mA right? So the maximum power dissipation in ...
-            </div>
-
-            <div class="tags t-voltage-regulator t-surface-mount t-heatsink t-5v t-power-dissipation">
-                <a href="/questions/tagged/voltage-regulator" class="post-tag" title="show questions tagged 'voltage-regulator'" rel="tag">voltage-regulator</a> <a href="/questions/tagged/surface-mount" class="post-tag" title="show questions tagged 'surface-mount'" rel="tag">surface-mount</a> <a href="/questions/tagged/heatsink" class="post-tag" title="show questions tagged 'heatsink'" rel="tag">heatsink</a> <a href="/questions/tagged/5v" class="post-tag" title="show questions tagged '5v'" rel="tag">5v</a> <a href="/questions/tagged/power-dissipation" class="post-tag" title="show questions tagged 'power-dissipation'" rel="tag">power-dissipation</a>
-
-            </div>
-            <div class="started fr">
-
-
-        <div class="user-info ">
-            <div class="user-action-time">
-
-
-                        asked <span title="2013-08-27 21:39:31Z" class="relativetime">11 hours ago</span>
-            </div>
-            <div class="user-gravatar32">
-                <a href="/users/10082/david-norman"><div class=""><img src="https://www.gravatar.com/avatar/8b073417e471077280b3fc5ff2eaf1f7?s=32&d=identicon&r=PG" alt="" width="32" height="32"></div></a>
-            </div>
-            <div class="user-details">
-                <a href="/users/10082/david-norman">David Norman</a><br>
-                <span class="reputation-score" title="reputation score" dir="ltr">322</span><span title="3 silver badges"><span class="badge2"></span><span class="badgecount">3</span></span><span title="10 bronze badges"><span class="badge3"></span><span class="badgecount">10</span></span>
-            </div>
-        </div>
-
-            </div>
-        </div>
-    </div>
+    print(';'.join(result))
 
 """
 # %% REGEX - APPLICATIONS - Detect Domain Name
@@ -2724,7 +3458,7 @@ N = int(input())
 for i in range(N):
     text = input()
 
-    if '.'  in text:
+    if '.' in text:
         # test for ipv4
         try:
             address = text.split('.')
@@ -2749,7 +3483,8 @@ for i in range(N):
             print('IPv6')
     else:
         print('Neither')
-# %% REGEX - APPLICATIONS - Building a Smart IDE: Identifying comments try 1
+# %% REGEX - APPLICATIONS - Building a Smart IDE: Identifying comments
+# try 1
 # example code:
 """
 // this is a single line comment
@@ -2766,7 +3501,7 @@ import sys
 
 
 code = input()
-code  = sys.stdin.read()
+code = sys.stdin.read()
 single_line_pat = r'([/]{2}.*)'
 line_pat = r'/\*.*\*/'
 ml_pat = r'/\*(?:.*\n){1,}(?:.*){1,}(?=\n)'
@@ -2795,7 +3530,8 @@ for i in matches:
 # print('All comments:', comments)
 
 
-# %% REGEX - APPLICATIONS - Building a Smart IDE: Identifying comments CORRECT
+# %% REGEX - APPLICATIONS - Building a Smart IDE: Identifying comments
+# CORRECT
 
 import re
 import sys
@@ -2803,13 +3539,14 @@ import sys
 pat = r'(/\*.*?\*/|//.*?$)'
 txt = sys.stdin.read()
 # re.sub() for Testcase #4: others will just work with comment
-matches = re.findall(pat, txt, re.DOTALL|re.MULTILINE)
-# DOTALL and Multiline take care of all the messinessI was tryingto fix in
-# my first try at this
+matches = re.findall(pat, txt, re.DOTALL | re.MULTILINE)
+# DOTALL and Multiline take care of all the messinessI was tryingto fix
+# in my first try at this
 
 print("\n".join(re.sub('\n\s+', '\n', comment) for comment in matches))
 
-# %% REGEX - APPLICATIONS - Building a Smart IDE: Programming Lang Detection
+# %% REGEX - APPLICATIONS - Building a Smart IDE: Programming Language
+# Detection
 """
 C code:
     /*  */         are comments
@@ -2841,7 +3578,7 @@ c_pattern = r'#include<'
 java_pattern = r'import \w+;?'
 # python_pat = r'#|:\n'
 
-find_cjava = re.findall(cjava_pattern, txt, re.DOTALL|re.MULTILINE)
+find_cjava = re.findall(cjava_pattern, txt, re.DOTALL | re.MULTILINE)
 find_c = re.findall(c_pattern, txt)
 find_java = re.findall(java_pattern, txt)
 # find_python = re.findall(python_pat, txt)
@@ -2871,12 +3608,10 @@ for i in range(N):
         assert re.match('^[A-Z]', pan[9])
         print('YES')
     except Exception:
-            print('NO')
+        print('NO')
 
 
-
-
-# %% # %% ARTIFICIAL INTELLIGENCE The Best Aptitude Test
+# %% ARTIFICIAL INTELLIGENCE The Best Aptitude Test
 # https://www.hackerrank.com/challenges/the-best-aptitude-test/problem
 # 1 <= T <= 10
 # 4 <= N <= 100
@@ -2887,6 +3622,7 @@ for i in range(N):
 
 
 def get_gpa(n):
+    """Docstring."""
     # n GPAs for first year, one per student
     gpas_ = input().split(' ')
     gpas = []
@@ -2896,6 +3632,7 @@ def get_gpa(n):
 
 
 def get_scores(n):
+    """Docstring."""
     scores_ = []
     scores = []
     for i in range(5):
@@ -2907,6 +3644,7 @@ def get_scores(n):
 
 
 def get_relscore(gpas, scores):
+    """Docstring."""
     correct = 0
     for i in range(1, len(gpas)):
         if scores[i] > scores[i - 1]:
@@ -2915,6 +3653,7 @@ def get_relscore(gpas, scores):
 
 
 def get_error(gpas, scores):
+    """Docstring."""
     error = 0
     for i in range(len(gpas)):
         error += (gpas[i]-scores[i])**2
@@ -2949,31 +3688,11 @@ if __name__ == '__main__':
 # i.e., binary math of 11111111 11111111 11111111 11111111 - int(format(n, 'b')
 # then turned back to decimal
 
+
 def flippingBits(n):
+    """Docstring."""
     return 2**32-1-n
 
-# %% MISCELLANEOUS PYTHON - PRINT formatting
-# read 2 int from stdin, print sum, diff, product
-
-if __name__ == '__main__':
-    a = int(input())
-    b = int(input())
-    print(a + b)
-    print(a - b)
-    print(a * b)
-
-"""
-# ALTERNATIVES, showing formatting options
-    print('{0}\n{1}\n{2}'.format((a + b), (a - b), (a * b)))
-# or
-    print('{:d}\n{:d}\n{:d}'.format(a + b, a - b, a*b))
-# if we wanted to pad a few spaces before number
-    print('{:3d}\n{:2d}\n{:d}'.format(a+b, a-b, a*b))
-
-# %% int division, float division
-print('{:d}\n{:f}'.format(a // b, a / b))
-print('{0}\n{1}'.format(a // b, a / b))
-"""
 
 # %% MISCELLANEOUS PYTHON - unpack an iterable with *
 #  print 12345...n where n in input; *turns range into output
@@ -3019,6 +3738,7 @@ import math
 
 
 def std(x, avg, n):
+    """Docstring."""
     ans = 0
     for i in x:
         ans += (avg - i) ** 2
@@ -3027,6 +3747,7 @@ def std(x, avg, n):
 
 
 def cof(u, v, avg_u, avg_v, std_u, std_v, n):
+    """Docstring."""
     ans = 0
     for i in range(n):
         ans += u[i] * v[i]
@@ -3063,7 +3784,6 @@ std_c = std(c, avg_c, n)
 print(round(cof(m, p, avg_m, avg_p, std_m, std_p, n), 2))
 print(round(cof(c, p, avg_c, avg_p, std_c, std_p, n), 2))
 print(round(cof(m, c, avg_m, avg_c, std_m, std_c, n), 2))
-
 
 
 # %% Overly dense list comprehension for hackerrank problem
