@@ -1,47 +1,55 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Dec 21 16:33:40 2020
+"""Created on Mon Dec 21 16:33:40 2020.
 
 @author: Trader
 """
 
 # %% PROBLEM SOLVING BADGE
 """
-Problem Solving (Algorithms and Data Structures)
+Problem Solving (Algorithms)
 
-4 Star - Silver 475 --> Currently I have 366 points for 17 solved
-5 Star - Gold   850
 6 Star - Gold  2200
+5 Star - Gold   850
 
 Subdomains
+Algorithms
 n   Category                  Done
 --  --------                  -------
 10  Warmup                    10 / 10 x
-66  Implementation            46 / 66
-10  Strings                   13 / 45
-15  Sorting                   2  / 15
-26  Search                    .
-    --127                     -------
+66  Implementation            49 / 66
+48  Strings                   22 / 48
+15  Sorting                   13 / 15
+26  Search                    .  /
+    --94/127                  -------
 
-64  Graph Theory              .
-24  Greedy                    1 /
-99  Dynamic Programming       .
-11  Constructive Algos        1 /
-27  Bit Manipulation          1 /
-    --225                     -------
+64  Graph Theory              . / 64
+24  Greedy                    1 / 24
+99  Dynamic Programming       . / 99
+11  Constructive Algos        1 / 11
+27  Bit Manipulation          1 / 27
+    --3/225                   -------
 
-11  Recursion                 .
-33  Game Theory               .
- 4  NP Complete               .
- 5  Debugging                 .
---  --------53                -------
-//405 so far                  17 for
+11  Recursion                 . / 11
+33  Game Theory               . / 33
+ 4  NP Complete               . /  4
+ 5  Debugging                 2 /  5
+--  -2/ 53                    -------
+//  99/405 so far
 
-as of 1/7/2020: 861/2200 points
+405 Problem Solving - Algos (hackerrank_problem_solving.py)
+121 Problem Solving - Data Structures(see hackerrank_data_structures.py)
+---
+526?? why does Problem Solving have 563 challenges then?
+
+as of 1/07/2021:  861/2200 points
+as of 1/19/2021: 1701/2200 points
+as of 1/24/2021:  105/ 563 challenges solved
+
+
 """
-
+# =============================================================================
 # %% Practice - Algorithms - Warmup - Birthday Cake Candles
 # function that counts how many of the tallest candles are on cake
+# =============================================================================
 from collections import Counter
 
 candles = [1, 1, 2, 4, 9, 5, 9, 7, 9]
@@ -52,6 +60,7 @@ def birthdayCakeCandles(candles):
     count = Counter(candles)
     max_ = max(count)
     return count[max_]
+
 
 # max of a counter gives the value that is greatest; then we lookup how many
 # of them appear in teh Counter or candles list input
@@ -78,12 +87,88 @@ print(birthdayCakeCandles(candles))
 def kangaroo(x1, v1, x2, v2):
     """kangaroo."""
     # lines cross at integer # jumps
-    if x1 < x2 and v1 > v2 and (x2-x1) % (v1-v2) == 0:
+    if x1 < x2 and v1 > v2 and (x2 - x1) % (v1 - v2) == 0:
         return 'YES'
-    elif x1 > x2 and v1 < v2 and (x1-x2) % (v2-v1) == 0:
+    elif x1 > x2 and v1 < v2 and (x1 - x2) % (v2 - v1) == 0:
         return 'YES'
     else:
         return 'NO'
+
+# %% Practice Algorithms: Implementation - Sequence Equation
+
+
+def permutationEquation(p):
+    """Calculate sequence."""
+    xlookup = {}
+    for i in range(len(p)):
+        xlookup[p[i]] = i + 1
+    result = [xlookup[xlookup[i]] for i in range(1, len(p) + 1)]
+    print(result)
+    return result
+
+
+# %% Practice Algorithms: Implementation - Forming a Magic Square
+# nxn matrix with values [1,n^2] is magic if sum of rows and diags and cols
+# is always same constant...
+# - will have one instance of each int in range
+# - sum will be (n^2+1)*n/2
+#     if n = 3, 10 * 3 / 2 = 15 will be magic constant
+
+class Magic(object):
+
+    pre = [[[8, 1, 6], [3, 5, 7], [4, 9, 2]],
+           [[6, 1, 8], [7, 5, 3], [2, 9, 4]],
+           [[4, 9, 2], [3, 5, 7], [8, 1, 6]],
+           [[2, 9, 4], [7, 5, 3], [6, 1, 8]],
+           [[8, 3, 4], [1, 5, 9], [6, 7, 2]],
+           [[4, 3, 8], [9, 5, 1], [2, 7, 6]],
+           [[6, 7, 2], [1, 5, 9], [8, 3, 4]],
+           [[2, 7, 6], [9, 5, 1], [4, 3, 8]]
+           ]
+
+    def evaluate(self, s):
+        totals = []
+        for p in self.pre:
+            total = 0
+            for p_row, s_row in zip(p, s):
+                for i, j in zip(p_row, s_row):
+                    if not i == j:
+                        total += max([i, j]) - min([i, j])
+            totals.append(total)
+        return min(totals)
+
+
+def evaluate(s):
+    """Calculate distance of given s matrix from all of the magic squares.
+
+    Then calc minimum
+    """
+    # 5 is the only integer that can be placed in middle because all others
+    # would result in excess ofthe magic number 15 in one ofthediagonals, cols,
+    # or rows
+    pre = [[[8, 1, 6], [3, 5, 7], [4, 9, 2]],
+           [[6, 1, 8], [7, 5, 3], [2, 9, 4]],
+           [[4, 9, 2], [3, 5, 7], [8, 1, 6]],
+           [[2, 9, 4], [7, 5, 3], [6, 1, 8]],
+           [[8, 3, 4], [1, 5, 9], [6, 7, 2]],
+           [[4, 3, 8], [9, 5, 1], [2, 7, 6]],
+           [[6, 7, 2], [1, 5, 9], [8, 3, 4]],
+           [[2, 7, 6], [9, 5, 1], [4, 3, 8]]
+           ]
+
+    totals = []
+    for p in pre:
+        total = 0
+        for p_row, s_row in zip(p, s):
+            for i, j in zip(p_row, s_row):
+                if not i == j:
+                    total += abs(i - j)  # or += max([i, j]) - min([i, j])
+        totals.append(total)
+    return min(totals)
+
+
+s = [[5, 3, 4], [1, 5, 8], [6, 4, 2]]
+print(evaluate(s))
 
 # %% Practice Algorithms: Implementation - Between Two Sets
 # perhaps klunky, but oh well
@@ -159,9 +244,9 @@ print(breakingRecords(x))
 def birthday(s, d, m):
     """birthday."""
     ways = 0
-    for i in range(m, len(s)+1):
-        print(i-m, i, s[i-m:i])
-        if sum(s[i-m:i]) == d:
+    for i in range(m, len(s) + 1):
+        print(i - m, i, s[i - m:i])
+        if sum(s[i - m:i]) == d:
             ways += 1
     return ways
 
@@ -260,9 +345,10 @@ print(dayOfProgrammer(1984))
 
 # %% Practice Algorithms - Implementation - Bill Division
 
+
 def bonAppetit(bill, k, b):
     """bonAppetit."""
-    fairsplit = (sum(bill)-bill[k])/2
+    fairsplit = (sum(bill) - bill[k]) / 2
     if fairsplit == b:
         print('Bon Appetit')
     else:
@@ -280,7 +366,7 @@ def pageCount(n, p):
     elif n != p and n % 2 == 0:
         return min(math.ceil((n - p) / 2), math.ceil((p - 1) / 2))
     elif n != p and n % 2 == 1:   # odd # pages
-        return min((n-p) // 2, (p-0) // 2)
+        return min((n - p) // 2, (p - 0) // 2)
 
 # %%  Practice Algorithms - Implementation - Electronics Shop
 
@@ -296,11 +382,12 @@ def getMoneySpent(keyboards, drives, b):
 
 # %%  Practice Algorithms - Implementation - Cat and Mouse
 
+
 def catAndMouse(x, y, z):
     """catAndMouse."""
-    if (abs(x-z)) < (abs(y-z)):
+    if (abs(x - z)) < (abs(y - z)):
         return 'Cat A'
-    elif (abs(x-z)) > (abs(y-z)):
+    elif (abs(x - z)) > (abs(y - z)):
         return 'Cat B'
     else:
         return 'Mouse C'
@@ -319,15 +406,15 @@ def pickingNumbers(arr):
     print(arr)
 
     for i in range(1, len(arr)):
-        if arr[i] == arr[i-1] and arr[i] == start:
+        if arr[i] == arr[i - 1] and arr[i] == start:
             # same # as start
             length += 1
             max_length = max(max_length, length)
-        elif arr[i] == arr[i-1] + 1 and arr[i] == start + 1:
+        elif arr[i] == arr[i - 1] + 1 and arr[i] == start + 1:
             # ending value of subarr
             length += 1
             max_length = max(max_length, length)
-        elif arr[i] == arr[i-1] and arr[i] == start + 1:
+        elif arr[i] == arr[i - 1] and arr[i] == start + 1:
             # continuing onending value
             length += 1
             max_length = max(max_length, length)
@@ -337,6 +424,7 @@ def pickingNumbers(arr):
             length = 1
 
     return max_length
+
 
 # %%  Practice Algorithms - Implementation - Designer PDF Viewer
 import string
@@ -349,7 +437,7 @@ def designerPdfViewer(h, word):
     for letter in word:
         maxheight = max(maxheight, lookup[letter])
 
-    return 1*len(word)*maxheight
+    return 1 * len(word) * maxheight
 
 # %%  Practice Algorithms - Implementation -  Utopian Tree
 
@@ -503,13 +591,14 @@ def appendAndDelete(s, t, k):
     print('special_value', special_value)
     print('len s', len(s))
     print('len t', len(t))
-    print('both', len(s)+len(t))
-    print('---')
+    print('both', len(s) + len(t))
+    print('-' * 3)
 
     if k >= len(s) + len(t):
         print('Yes')
         return 'Yes'
-    elif k >= special_value and k < len(s) + len(t) and (k-special_value) %2 == 0:
+    elif k >= special_value and k < len(s) + len(t) and\
+            (k - special_value) % 2 == 0:
         print('Yes')
         return 'Yes'
 
@@ -543,7 +632,7 @@ appendAndDelete(s, t, 13)
 def squares(a, b):
     """Squares."""
     count = 0
-    for i in range(a, b+1):
+    for i in range(a, b + 1):
         count += ((i**0.5 - int(i**0.5)) == 0)
     print(count)
     return count
@@ -800,8 +889,10 @@ from itertools import combinations
 def acmTeam(topic):
     """AcmTeam."""
     students = [list(map(int, list(x))) for x in topic]
-    sums_elements = [[x for x in list(zip(*i))] for i in combinations(students, 2)]
-    sums = [sum([x[0] or x[1] for x in list(zip(*i))]) for i in combinations(students, 2)]
+    sums_elements = [[x for x in list(zip(*i))] for i in
+                     combinations(students, 2)]
+    sums = [sum([x[0] or x[1] for x in list(zip(*i))]) for i in
+            combinations(students, 2)]
     print(students)
     print(sums_elements)
     print(sums)
@@ -839,7 +930,93 @@ def acmTeam(data):
 
 data = ['10101', '11100', '11010', '00101']
 acmTeam(data)
+
+# %% Practice Algorithms: Implementation - The Grid Search
+
+# this worksfor allbutone test case which  is huge and multiple
+# tests
+
+
+def gridSearch(G, P):
+    pr = len(P)
+    pc = len(P[0])
+    gr = len(G)
+    gc = len(G[0])
+    result = 'NO'
+    for i in range(gr - pr + 1):
+        print('checking row', i)
+        for j in range(gc - pc + 1):
+            # if we find the pattern, no need to continue searching other
+            # columns j; thus we check result and return 'yes' to break out
+            if result == 'YES':
+                return result
+            print('checking column', j)
+            if G[i][j:j + pc] == P[0][0:pc]:
+                print('match')
+                result = 'YES'
+                # iterate through to see if rest of pattern matches
+                for row in range(1, pr):
+                    if G[i + row][j:j + pc] != P[row][0:pc]:
+                        print('mismatch')
+                        result = 'NO'
+
+    return result
+
+
+G = ['123412', '561212', '123634', '781288']
+P = ['12', '34']
+
+gridSearch(G, P)
+P = ['1234', '4321', '5678', '8765']
+
+# %% Practice Algorithms: Implementation - The Grid Search
+# this is leaner; fewer debugging code, which passes test
+
+
+def gridSearch(G, P):
+    pr = len(P)
+    pc = len(P[0])
+    gr = len(G)
+    gc = len(G[0])
+    lines = 0
+    for i in range(gr - pr + 1):
+        for j in range(gc - pc + 1):
+            if G[i][j:j + pc] == P[0]:
+                # iterate through to see if rest of pattern matches
+                for row in range(1, pr):
+                    if G[i + row][j:j + pc] == P[row]:
+                        lines += 1
+                        if lines == pr - 1:
+                            return 'YES'
+                    else:
+                        lines = 0
+    return 'NO'
+
+
+G = ['123412', '341212', '123634', '341288', '341288']
+P = ['12', '34', '56']
+print(gridSearch(G, P))
+# %% Practice Algorithms: Implementation - The Grid Search
+# this works
+
+
+def gridSearch(G, P):
+    lineChecks = 0
+    for i in range(len(G[0]) - len(P[0]) + 1):
+        for j in range(len(G) - len(P) + 1):
+            if G[j][i:i + len(P[0])] == P[0]:
+                for x in range(1, len(P)):
+                    if G[j + x][i:i + len(P[0])] == P[x]:
+                        lineChecks += 1
+                        if lineChecks == len(P) - 1:
+                            return "YES"
+                    else:
+                        lineChecks = 0
+    return "NO"
+
 # %% Practice Algorithms: Implementation - Taum and B'day
+
+
 # quite simple
 
 
@@ -857,7 +1034,7 @@ def taumBday(n_b, n_w, cost_b, cost_w, z):
 def kaprekarNumbers(p, q):
     """Numbers."""
     results = []
-    for n in range(p, q+1):
+    for n in range(p, q + 1):
         square = n**2
         str_sq = str(square)
         d = len(str(n))
@@ -921,11 +1098,11 @@ def minimumDistances(arr):
     distance = -1
     pairs = []
     for i in range(len(arr)):
-        for j in range(i+1, len(arr)):
+        for j in range(i + 1, len(arr)):
             if arr[i] == arr[j]:
                 pairs.append((i, j))
     if len(pairs) != 0:
-        distance = min([abs(x[0]-x[1]) for x in pairs])
+        distance = min([abs(x[0] - x[1]) for x in pairs])
 
     return distance
 
@@ -944,10 +1121,10 @@ def howManyGames(p, d, m, budget):
 
         i += 1
 
-        if (p - i*d) <= m:
+        if (p - i * d) <= m:
             cost = m
         else:
-            cost = p - i*d
+            cost = p - i * d
     print(i)
     return i
 
@@ -975,7 +1152,7 @@ def serviceLane(widths_array, cases):
     min_widths = []
     for case in cases:
         entry_i = case[0]
-        exit_i = case[1]+1
+        exit_i = case[1] + 1
         min_widths.append(min(widths_array[entry_i:exit_i]))
     print(min_widths)
     return min_widths
@@ -992,7 +1169,7 @@ def workbook(n, k, arr):
     for chapter in range(1, n + 1):
         n_probs = arr[chapter - 1]
         n_pages = math.ceil(n_probs / k)
-        print('\nnprobs',  n_probs, 'npages', n_pages)
+        print('\nnprobs', n_probs, 'npages', n_pages)
         prob_range = [1, min(k, n_probs)]
         curr_page = last_page + 1
         last_page = curr_page + n_pages - 1
@@ -1011,6 +1188,26 @@ def workbook(n, k, arr):
 
 workbook(5, 3, [4, 2, 6, 1, 10])
 
+# %% Practice Algorithms: Implementation - Viral Advertising
+
+
+def viralAdvertising(n):
+    """viralAdvertising."""
+    cum_liked = 0
+    liked = 0
+    shared = 5
+    for day in range(1, n + 1):
+        liked = shared // 2
+        cum_liked = liked + cum_liked
+        print(day, shared, liked, cum_liked)
+        shared = liked * 3
+
+    return cum_liked
+
+
+viralAdvertising(5)
+
+
 # %% Practice Algorithms: Implementation -
 
 
@@ -1022,7 +1219,7 @@ def flatlandSpaceStations(n, c):
     print(maxdist)
 
     for i in range(1, len(c)):
-        dist = math.ceil((c[i]-c[i-1]-1)/2)
+        dist = math.ceil((c[i] - c[i - 1] - 1) / 2)
         maxdist = max(maxdist, dist)
 
     print(maxdist)
@@ -1042,17 +1239,17 @@ def fairRations(B):
         i = 1
         loaves = 0
         while i < len(B):
-            if B[i] % 2 == 0 and B[i-1] % 2 == 0:
+            if B[i] % 2 == 0 and B[i - 1] % 2 == 0:
                 i += 1
 
             # even, odd -> pass
-            elif B[i] % 2 == 1 and B[i-1] % 2 == 0:
+            elif B[i] % 2 == 1 and B[i - 1] % 2 == 0:
                 i += 1
 
-            elif B[i] % 2 == 1 and B[i-1] % 2 == 1:
+            elif B[i] % 2 == 1 and B[i - 1] % 2 == 1:
                 loaves += 2
                 i += 2
-            elif B[i] % 2 == 0 and B[i-1] % 2 == 1:
+            elif B[i] % 2 == 0 and B[i - 1] % 2 == 1:
                 B[i] += 1
                 loaves += 2
                 i += 1
@@ -1060,7 +1257,7 @@ def fairRations(B):
     return loaves
 
 
-fairRations([2, 3, 4,  5, 6])
+fairRations([2, 3, 4, 5, 6])
 
 
 # %% Practice Algorithms: Implementation - cavityMap
@@ -1082,13 +1279,13 @@ def cavityMap(grid):
     #    print(n_grid)
     #   print(second_grid)
 
-    for row in range(1, n-1):
-        for col in range(1, n-1):
+    for row in range(1, n - 1):
+        for col in range(1, n - 1):
             cavity = n_grid[row][col]
-            upper = n_grid[row-1][col]
-            lower = n_grid[row+1][col]
-            left = n_grid[row][col-1]
-            right = n_grid[row][col+1]
+            upper = n_grid[row - 1][col]
+            lower = n_grid[row + 1][col]
+            left = n_grid[row][col - 1]
+            right = n_grid[row][col + 1]
 
             is_cavity = (cavity > upper) and (cavity > lower) and \
                 (cavity > left) and (cavity > right)
@@ -1112,7 +1309,7 @@ def stones(n, a, b):
     """Stones."""
     last_numbers = []
     for i in range(n):
-        last_numbers.append(a*(n-1-i) + b*i)
+        last_numbers.append(a * (n - 1 - i) + b * i)
     result = list(set(last_numbers))
     result.sort()
     print(result)
@@ -1154,7 +1351,7 @@ def happyLadybugs(b):
         elif b[0] != b[1] or b[-1] != b[-2]:
             return 'NO'
         for i in range(1, len(b) - 1):
-            if not (b[i] == b[i-1] or b[i] == b[i+1]):
+            if not (b[i] == b[i - 1] or b[i] == b[i + 1]):
                 print('NO')
                 return 'NO'
         print('YES')
@@ -1170,7 +1367,7 @@ def strangeCounter(t):
 
     while t > upper:
         power += 1
-        upper = upper + 3*2**power
+        upper = upper + 3 * 2**power
     value = upper - t + 1
     print(value)
     return value
@@ -1187,8 +1384,8 @@ def superReducedString(s):
     while i < length and reduced != []:
 
         if i == length - 1:
-           i += 1
-        elif reduced[i] == reduced[i+1]:
+            i += 1
+        elif reduced[i] == reduced[i + 1]:
             reduced.pop(i)
             reduced.pop(i)
             length = len(reduced)
@@ -1237,7 +1434,7 @@ def minimumNumber(n, password):
         print('here', categories)
         return (4 - categories)
     elif n < 6 and categories == 4:
-        return (6-n)
+        return (6 - n)
     elif (n < 6) and (categories < 4):
         if (n + 4 - categories) >= 6:
             return 4 - categories
@@ -1261,7 +1458,7 @@ def alternate(s):
     def is_valid(st):
         result = True
         for i in range(1, len(st)):
-            if st[i] == st[i-1]:
+            if st[i] == st[i - 1]:
                 result = False
         return result
 
@@ -1428,8 +1625,8 @@ def weightedUniformStrings(s, queries):
     start_time = time.time()
 
     for i in range(1, len(s_values)):
-        if s_values[i] == s_values[i-1]:
-            cum_values.append(cum_values[i-1] + s_values[i])
+        if s_values[i] == s_values[i - 1]:
+            cum_values.append(cum_values[i - 1] + s_values[i])
         else:
             cum_values.append(s_values[i])
     print(cum_values, '<==cum_values', 'len of array', len(cum_values))
@@ -1504,7 +1701,7 @@ def weightedUniformStrings(s, queries):
     value_lookup[count * letters[s[0]]] = True
     # This loop adds True to value_lookup for numbers
     for i in range(1, len(s)):
-        if s[i] == s[i-1]:
+        if s[i] == s[i - 1]:
             count += 1
             value_lookup[count * letters[s[i]]] = True
         else:
@@ -1550,8 +1747,8 @@ def separateNumbers(s):
         result = 'NO'
 
     else:
-        while current_end != n and (end+len(str(next_int))) <= n:
-            print('------\nCurrent:', current, 'from', start, ':', end)
+        while current_end != n and (end + len(str(next_int))) <= n:
+            print('-' * 6, '\nCurrent:', current, 'from', start, ':', end)
             print('Next   :', next_int, 'from', start + length, ':',
                   end + len(str(next_int)))
             if s[start + len(str(current)):
@@ -1626,14 +1823,14 @@ NO
 NO
 NO
 """
-# %% Practice Algorithms: Data Structures/Strings-
+# %% Practice Algorithms: Data Structures / Strings-
 # Funny Numbers
 
 
 def funnyString(s):
     """funnyString."""
-    x = [abs(ord(s[i])-ord(s[i-1])) for i in range(1, len(s))]
-    y = [abs(ord(s[len(s) - 1 - i])-ord(s[len(s) - 1 - (i-1)]))
+    x = [abs(ord(s[i]) - ord(s[i - 1])) for i in range(1, len(s))]
+    y = [abs(ord(s[len(s) - 1 - i]) - ord(s[len(s) - 1 - (i - 1)]))
          for i in range(1, len(s))]
 
     if x == y:
@@ -1646,7 +1843,132 @@ print(funnyString('abc'))
 print(funnyString('abd'))
 
 
-# %% Gemstones
+# %% Practice Algorithms: Data Structures/Strings- String Construction
+# this was easy - don't need to worry about long substrings, because even
+# one letter in p can be repeated/appended for no cost
+
+def stringConstruction(s):
+    """Minimize cost of re-constructing string 's'.
+
+    Cost 1 for appending from s to p=''
+    Cost 0 for appending any substring of p to p
+    """
+    p = ''
+    i = 0
+    mincost = 0
+    while p != s:
+        if s[i] in p:
+            p = p + s[i]
+            # no cost since it is substring of p
+        else:
+            p = p + s[i]
+            mincost += 1
+        i += 1
+    return mincost
+
+
+print(stringConstruction('abab'))
+
+# %% Practice Algorithms: Data Structures/Strings - Game of Thrones I
+from collections import Counter
+
+
+def gameOfThrones(s):
+    """Determine if s can be arranged into palindrome.
+
+    If s length is odd, then only one letter can have frequency of just 1
+    All others must have even frequency
+
+    If s length is even, every letter must have even frequency
+    """
+    y = Counter()
+    x = Counter(s)
+
+    for a in x:
+        if x[a] % 2 == 1:
+            y['odd'] += 1
+
+    if len(s) % 2 == 1 and y['odd'] > 1:
+        return 'NO'
+    elif len(s) % 2 == 1 and y['odd'] == 1:
+        return 'YES'
+    elif len(s) % 2 == 0 and y['odd'] > 0:
+        return 'NO'
+    elif len(s) % 2 == 0 and y['odd'] == 0:
+        return 'YES'
+
+
+# %% Practice Algorithms: Data Structures/Strings- Anagram
+# need the Counters to be equivalent, so that same freq of letters in both
+# words
+from collections import Counter
+
+
+def makingAnagrams(s1, s2):
+    """Return min number of deletions for two strings to be anagrams.
+
+    Uses two counters and reduces frequency every time a letter is found
+    that has higher freq in one string vs. the second string
+
+    Needs two passes, one through first string, second through second.
+    """
+    min_del = 0
+
+    x = Counter(s1)
+    y = Counter(s2)
+
+    for key in x:
+        if x[key] > 0 and x[key] > y[key]:
+            min_del += x[key] - y[key]
+            x[key] -= x[key] - y[key]
+        elif x[key] == y[key]:
+            pass
+        elif x[key] > 0 and x[key] < y[key]:
+            min_del += y[key] - x[key]
+            y[key] -= y[key] - x[key]
+
+    for key in y:
+        if y[key] > 0 and y[key] > x[key]:
+            min_del += y[key] - x[key]
+            y[key] -= y[key] - x[key]
+        elif x[key] == y[key]:
+            pass
+        elif y[key] > 0 and y[key] < x[key]:
+            min_del += x[key] - y[key]
+            x[key] -= x[key] - y[key]
+
+    return min_del
+
+
+print(makingAnagrams('abc', 'cde'))
+
+# %% Practice Algorithms: Data Structures/Strings- Making Anagrams
+
+
+def anagram(s):
+    """Return min number of changes to make word1 and word2 anagrams."""
+    minchanges = 0
+
+    if len(s) % 2 == 1:
+        return -1
+    else:
+        word1 = s[0:len(s) // 2]
+        word2 = s[len(s) // 2:]
+        print(word1, word2)
+        c1 = Counter(word1)
+        for letter in word2:
+            if c1[letter] > 0:
+                c1[letter] -= 1
+            elif c1[letter] == 0:
+                minchanges += 1
+            else:
+                minchanges += 1
+
+        return minchanges
+
+
+# %% Practice Algorithms: Data Structures/Strings- Gemstones
+
 
 def gemstones(arr):
     """gemstones."""
@@ -1660,4 +1982,1579 @@ def gemstones(arr):
 
 arr = ['abcdde', 'baccd', 'eeabg']
 print(gemstones(arr))
+# %% Practice Algorithms: Data Structures/Strings- Beautiful binary String
+
+
+def beautifulBinaryString(b):
+    """Minimum Number of Element changes to turn string into 'beautiful.
+
+    beautiful = no substring '010'
+    We go straight through string, changes the last 0 to a 1 in any substring
+    encountered.
+    """
+    b_list = list(b)
+    min_changes = 0
+    for i in range(1, len(b_list) - 1):
+        if b_list[i - 1] == '0' and b_list[i] == '1' and b_list[i + 1] == '0':
+            b_list[i + 1] = '1'
+            min_changes += 1
+    return min_changes
+
+
+# %% Practice Algorithms: Data Structures/Strings - Palindrome Index
+#  This is the simplest solution
+
+
+def find_mismatching_pair(s):
+    """find_mismatching_pair.
+    j will be <=i if all letters are palindromic through the middle index"""
+    i = 0
+    j = len(s) - 1
+    while i < j and s[i] == s[j]:
+        i += 1
+        j -= 1
+    return i, j
+
+
+def is_palindrome(s):
+    """is_palindrome."""
+    i, j = find_mismatching_pair(s)
+    return True if j <= i else False
+
+
+def palindromeIndex(s):
+    """correct."""
+    i, j = find_mismatching_pair(s)
+    return -1 if j <= i else i if is_palindrome(s[i + 1:j + 1]) else j
+
+
+print(palindromeIndex('mmbiefhflbeckaecprwfgmqlydfroxrblulpasumubqhhbvlqpixvvxipqlvbhqbumusaplulbrxorfdylqmgfwrpceakceblfhfeibmm'))
+
+# %% Practice Algorithms: Data Structures/Strings-
+
+
+def theLoveLetterMystery(s):
+    """Turn each string into palindrome in min number of operations.
+
+    Can only reduce value of letter, and each reduction counts as 1 operation
+    """
+    mincount = 0
+    for i in range(len(s) // 2):
+        mincount += abs(ord(s[i]) - ord(s[-1 - i]))
+
+    return mincount
+
+# %% Practice Algorithms: Data Structures/Strings-
+
+
+# %% Practice Algorithms - Sorting
+"""Outline.
+-------
+Insertion Sort challenges
+- Insertion Sort 1 - Inserting       x
+- Insertion Sort 2 - Sorting         x
+- Correctness and loop invariant     x
+- Running Time of Algorithms         x
+
+Quicksort challenges
+- Quicksort 1 - Partition            X
+- Quicksort 2 - Sorting              X
+- Quicksort In-place (advanced)      -
+- Running time of Quicksort          -
+
+Counting sort challenges
+- Counting Sort 1 - Counting         -
+- Counting Sort 2 - Simple sort
+- Counting Sort 3 - Preparing
+- Full Counting Sort (advanced)      -
+
+Insertion sort algo - O(N^2). for 2N elements, 4N^2
+Quicksort (comparison sort) - n log n is worst case run time, because that
+many comparisons need to be done
+
+"""
+
+
+# %% Practice Algorithms - Sorting - Big Sorting
+
+from collections import defaultdict
+
+
+def bigSorting(unsorted):
+    """Sort list of strings / numbers of various lengths.
+
+    Using default dictionary allows us to put each string into list of equal
+    length strings. Avoid need to turn everything into an integer before
+    sorting.
+    """
+    lookup = defaultdict(lambda: [])
+    print(lookup)
+    for num_string in unsorted:
+        lookup[len(num_string)].append(num_string)
+
+    results = []
+    lengths = list(lookup.keys())
+    lengths.sort()
+    for length in lengths:
+        x = lookup[length]
+        x.sort()
+        results = results + x
+    print(results)
+    return results
+
+
+x = bigSorting(['31415926535897932384626433832795', '1',
+                '31415926535897932384626433832500', '3', '10', '3', '5'])
+
+
+# %% Practice Algorithms - Sorting - Insertion Sort - Part 1
+
+def insertionSort1(n, arr):
+    """Sort list of strings / numbers of various lengths."""
+    unsorted_val = arr[n - 1]
+    i = 1
+
+    while unsorted_val < arr[n - i - 1] and (i < n):
+        arr[n - i] = arr[n - i - 1]
+        print(' '.join(map(str, arr)))
+        i += 1
+    arr[n - i] = unsorted_val
+    print(' '.join(map(str, arr)))
+
+# %% Practice Algorithms - Sorting - Insertion Sort - Part 2
+
+
+def insertionSort2(n, arr):
+    """Adapt code from insertionSort1() to use on subarray of length i + 1."""
+    i = 1
+    while i < n:
+        unsorted_val = arr[i]
+
+        m = i + 1
+        j = 1
+        while unsorted_val < arr[m - j - 1] and (j < m):
+            arr[m - j] = arr[m - j - 1]
+            j += 1
+        arr[m - j] = unsorted_val
+        print(' '.join(map(str, arr)))
+
+        i += 1
+
+
+insertionSort2(6, [1, 4, 3, 5, 6, 2])
+
+# %% Practice Algorithms - Sorting - - Correctness and loop invariant
+
+
+def insertion_sort(arr):
+    """Insertion_sort.
+
+    Find the error"""
+
+    n = len(arr)
+    i = 1
+    while i < n:
+        unsorted_val = arr[i]
+
+        m = i + 1
+        j = 1
+        while unsorted_val < arr[m - j - 1] and (j < m):
+            arr[m - j] = arr[m - j - 1]
+            j += 1
+        arr[m - j] = unsorted_val
+        i += 1
+
+
+arr = [1, 4, 3, 5, 6, 2]
+insertion_sort(arr)
+print(" ".join(map(str, arr)))
+
+
+# %% Practice Algorithms - Sorting - quickSort
+
+def quickSort(arr):
+    """quickSort."""
+    equal = [arr[0]]
+    left = []
+    right = []
+    for i in range(1, len(arr)):
+        if arr[i] == arr[0]:
+            equal.append(arr[i])
+        elif arr[i] < arr[0]:
+            left.append(arr[i])
+        elif arr[i] > arr[0]:
+            right.append(arr[i])
+
+    return left + equal + right
+
+# %% Practice Algorithms - Sorting - Running Time of Algorithms
+
+
+def runningTime(arr):
+    """runningTime."""
+    n = len(arr)
+    i = 1
+    times = 0
+
+    while i < n:
+        unsorted_val = arr[i]
+
+        m = i + 1
+        j = 1
+        while unsorted_val < arr[m - j - 1] and (j < m):
+            arr[m - j] = arr[m - j - 1]
+            j += 1
+            times += 1
+        arr[m - j] = unsorted_val
+        i += 1
+    # print(arr)
+    return times
+
+
+arr = [2, 1, 3, 1, 2]
+print(runningTime(arr))
+
+
+# %% Practice Algorithms - Sorting - countingSort 1
+
+
+def countingSort(arr):
+    """countingSort.
+
+    Returns the frequency of arr's elements, which are 0<=arr[i]<100
+    """
+    freq = [0] * 100
+    for el in arr:
+        freq[el] += 1
+    return freq
+
+
+# %% Practice Algorithms - Sorting - Counting Sort 2
+
+
+def countingSort2(arr):
+    """Return arr sorted.
+
+    by going through frequency array and building sorted
+    from ground up
+    """
+    freq = [0] * 100
+    for el in arr:
+        freq[el] += 1
+
+    sorted_arr = []
+    for i in range(len(freq)):
+        sorted_arr = sorted_arr + [i] * freq[i]
+    return sorted_arr
+
+
+# %% Practice Algorithms - Sorting - The Full Counting Sort
+
+
+def fullcountSort(arr):
+    """Return associated strings in proper order."""
+    sorted = [[] for i in range(100)]
+    for i in range(int(len(arr) / 2)):
+        sorted[int(arr[i][0])].append('-')
+    for i in range(int(len(arr) / 2), len(arr)):
+        sorted[int(arr[i][0])].append(arr[i][1])
+
+    output = ''
+    for item in sorted:
+        if item == []:
+            pass
+        else:
+            output = output + ' '.join(item) + ' '
+    print(output)
+
+
+# %% Practice Algorithms - Sorting - Closest Numbers
+
+
+def closestNumbers(arr):
+    """Sort so we can find smallest difference between pairs."""
+    arr.sort()
+    mindiff = abs(arr[1] - arr[0])
+
+    for i in range(1, len(arr)):
+        mindiff = min(mindiff, abs(arr[i] - arr[i - 1]))
+
+    pairs = []
+    for i in range(1, len(arr)):
+        if arr[i] - arr[i - 1] == mindiff:
+            pairs.append(arr[i - 1])
+            pairs.append(arr[i])
+    return pairs
+
+
+# %% Find the Median - very simple - sort and then calculate middle index value
+# for odd number
+
+
+def findMedian(arr):
+    arr.sort()
+    mid = len(arr) // 2
+    return arr[mid]
+
+
+# %% Practice Algorithms - Search
+
+
+def missingNumbers(arr, brr):
+    bcounter = Counter(brr)
+    acounter = Counter(arr)
+    missing = []
+    for el in list(acounter):
+        bcounter[el] -= acounter[el]
+    for el in list(bcounter):
+        if bcounter[el] > 0:
+            missing.append(el)
+    missing.sort()
+    return missing
+
+# %% Practice Algorithms - Search - Sherlock and Array
+
+
+def balancedSums(arr):
+    total = sum(arr)
+    cumsumleft = 0
+    i = 0
+    while i < len(arr):
+        if cumsumleft == (total - arr[i] - cumsumleft):
+            return 'YES'
+        else:
+            cumsumleft += arr[i]
+        i += 1
+    return 'NO'
+
+
+# %% Practice Algorithms - Search - Ice Cream Parlor
+
+from collections import defaultdict
+
+
+def icecreamParlor(m, arr):
+    """Return index + 1 of two flavors that use all budget m from arr."""
+    lookup = defaultdict(lambda: [])
+    for i in range(len(arr)):
+        lookup[arr[i]] = lookup[arr[i]] + [i + 1]
+
+    for i in range(len(arr)):
+        if lookup[m - arr[i]] != [] and len(lookup[m - arr[i]]) == 2:
+            # We know there will be a unique solution, i.e., two indices whose
+            # arr[i] add up to m.  This if clause finds the case where
+            # m/2 = arr[i] and arr[j], both i and j stored in lookup[arr[i]]
+            # which is equivalent to lookup[m-arr[i]]; if the length were 1,
+            # then it would not be a solution
+            print([lookup[m - arr[i]][0], lookup[m - arr[i]][1]])
+            return [lookup[m - arr[i]][0], lookup[m - arr[i]][1]]
+        elif lookup[m - arr[i]] != [] and len(lookup[m - arr[i]]) == 1 and \
+                arr[i] != m - arr[i]:
+            print([i + 1, lookup[m - arr[i]][0]])
+            return [lookup[arr[i]][0], lookup[m - arr[i]][0]]
+
+
+icecreamParlor(8, [1, 2, 4, 4, 5])
+icecreamParlor(100, [5, 75, 25])
+
+
+# %% Practice Algorithms - Greedy - Grid Challenge
+
+
+def gridChallenge(grid):
+    for i in range(len(grid)):
+        row_list = list(grid[i])
+        row_list.sort()
+        grid[i] = ''.join(row_list)
+    ascending = 'YES'
+    col = 0
+    while col < len(grid[0]):
+        row = 1
+        while row < len(grid):
+            if grid[row][col] < grid[row - 1][col]:
+                ascending = 'NO'
+                return ascending
+            row += 1
+        col += 1
+    return ascending
+
+
+# %% Practice Algorithms - Greedy - Candies
+
+def givecandies(arr):
+    """Give students seated in arr by their scores at least one candy.
+
+    such that the total candies is minimized and that student with higher
+    score will get more than student next to them
+
+    Algo is to go through front to back and then back to front, increasing
+    candy by one when 'next' student has higher score
+    """
+    n = len(arr)
+    candies = [1] * n
+    print(arr, 'Student scores')
+    print(candies, 'Initital/minimum candies')
+    for i in range(1, n):
+        if arr[i] > arr[i - 1]:
+            candies[i] = 1 + candies[i - 1]
+    for i in range(1, n):
+        if (
+            arr[n - i - 1] > arr[n - i]
+            and candies[n - i - 1] <= candies[n - i]
+        ):
+            candies[n - i - 1] = candies[n - i] + 1
+    print(candies, 'Minimum candies rewarding for higher score')
+    print(sum(candies), 'Total candies')
+    return sum(candies)
+
+
+givecandies([2, 1, 3, 4, 5, 6, 2, 1])
+givecandies([4, 6, 4, 5, 6, 2])
+givecandies([3, 1, 3, 10, 12, 2])
+
+# %% Practice Algorithms - Greedy - Sherlock and The Beas
+# n
+# 1, 2, 4, 7 cannot be formed
+# any mulitple of 3 will be maxed by having all 5s
+# all other n are covered by remaining three
+
+
+def decentNumber(n):
+    """Examples.
+
+    case 1: 5, 10, 20, 25, 35, 40, 45, 50 55, etc.
+    case 2: 3+5=8, 6+5=11, 9+5=14, 12+5=17,etc.
+    case 3: 3+10=13, 6+10=16, 9+10=19
+        10 case 1 = all 3s
+        11 case 2 = 555 555 33333
+        12 %3==0  = 12x'5'
+        13 case 3 = 555 33333 33333
+        14 case 2 = 555 555 555 33333
+        15 %3==0
+        16 case 3 = 555 555 33333 33333
+        17 case 2
+        18 %3==0
+        19 case 3
+        20 case 1
+        etc.
+    """
+    if n < 3 or n == 4 or n == 7:
+        print(-1)
+    elif n % 3 == 0:
+        print(int('5' * n))
+    elif (n % 15) != 0 and (n % 15) % 5 == 0:  # covers 5, 10, 20, 25, etc.
+        print(int(('5' * (n - (n % 15))) + '3' * (n % 15)))
+    elif n % 3 != 0 and n % 5 != 0 and ((n - 5) % 3) == 0:
+        print(int('5' * (n - 5) + '3' * (5)))
+    elif n % 3 != 0 and n % 5 != 0 and ((n - 10) % 3) == 0:
+        print(int('5' * (n - 10) + '3' * (10)))
+
+
+# %% Practice Algorithms - Greedy -Largest Permutation
+import copy
+
+# probably want to create lookup table to store index of each unique array
+# value, which we will update each time a swap is performed
+# also need a sorted list so that we know which values to lookup each time
+# the lookup tables will help us avoid searching through array each time we
+# want next largest value to swap into next position in permutation
+
+
+def largestPermutation(k, arr):
+    ref = copy.deepcopy(arr)
+    lookup = {}
+    for i in range(len(arr)):
+        lookup[arr[i]] = i
+    ref.sort(reverse=True)
+    print('Original', arr)
+    print('Lookup', lookup)
+    print('Goal', ref)
+
+    if k > len(arr):
+        return ref
+    else:
+        swaps = 0
+        i = 0
+        while swaps < k and i < len(arr):
+            if arr[i] != ref[i]:
+                new1 = lookup[ref[i]]
+                new2 = lookup[arr[i]]
+                lookup[arr[i]] = new1
+                lookup[ref[i]] = new2
+                arr[new1] = arr[i]
+                arr[i] = ref[i]
+                swaps += 1
+            i += 1
+    print(arr)
+    return arr
+
+
+k = 1
+arr = [4, 2, 3, 5, 1]
+largestPermutation(k, arr)
+
+
+# %% Practice Algorithms - Greedy - Jim and the Orders
+def jimOrders(orders):
+    lookup = {}
+    delivered = []
+    delivery = []
+    for i in range(len(orders)):
+        d_time = orders[i][0] + orders[i][1]
+        lookup[d_time] = lookup.get(d_time, []) + [i + 1]
+        delivery.append(d_time)
+    delivery.sort()
+    delivered = [lookup[time].pop(0) for time in delivery]
+    print(delivered)
+    return delivered
+
+
 # %%
+# can be done shorter because each element of arr should be element of first
+# N numbers; my approach is omre general, consideringelements could be
+# skipping around and not consecutive integers
+
+
+def largestPermutation(k, arr):
+    a = dict(enumerate(arr))
+    b = {v: k for k, v in a.items()}
+    length = len(arr)
+    for i in range(length):
+        if k and a[i] != length - i:
+            x = a[i]
+            y = b[length - i]
+            a[i] = length - i
+            a[y] = x
+            b[x] = y
+            k -= 1
+        yield a[i]
+
+# %% Practice Algorithms - Greedy - Priyanka and Toys
+
+
+def toys(w):
+    w.sort()
+    containers = 1
+    minval = w[0]
+    for el in w:
+        if el > minval + 4:
+            containers += 1
+            minval = el
+    return containers
+# %% Practice Algorithms - Greedy - Permuting Two Arrays
+
+
+def twoArrays(k, A, B):
+    A.sort(reverse=True)
+    B.sort()
+    for i in range(len(A)):
+        if B[i] + A[i] < k:
+            print('NO')
+            return 'NO'
+    print('YES')
+    return 'YES'
+
+
+twoArrays(10, [7, 1, 1], [8, 9, 3])
+
+# %% Practice Algorithms - Greedy - Beautiful Pairs
+# if there are more than 2 occurrences more in B than in A of a certain item,
+# it will be impossible to be disjoint
+
+# find number of matching elements in A/B, then if freq of one element occurs
+# more in B than A, we can increase the number of beautiful pairs by one, at
+# most ; if sum of pairs is < len(B) and there are no freq differences of
+# common elements, then we can increase # pairs by one by changing one element
+# of B into same as A
+from collections import Counter
+
+
+def beautifulPairs(A, B):
+    pairs = 0
+    a_ctr = Counter(A)
+    b_ctr = Counter(B)
+    a_elements = list(a_ctr)
+    for el in a_elements:
+        pairs = pairs + min(a_ctr[el], b_ctr[el])
+    if pairs < len(A):
+        pairs += 1
+    else:
+        pairs -= 1
+        # we must make one change, so it already identical sets in A and B,
+        # only change will reduce the number of pairs by one; pretty stupid
+
+    print(pairs)
+    return pairs
+
+
+A = [3, 5, 7, 11, 5, 8]
+B = [5, 7, 11, 10, 5, 8]
+
+beautifulPairs(A, B)
+# %%PracticeAlgorithmsGreedyMaximum Perimeter Triangle
+# How is this not just testing the combinations
+
+
+def maximumPerimeterTriangle(sticks):
+    sticks.sort()
+    triangles = []
+    for i in range(len(sticks) - 2):
+        for j in range(i + 1, len(sticks) - 1):
+            for k in range(j + 1, len(sticks)):
+                if sticks[i] + sticks[j] > sticks[k]:
+                    triangles.append((sticks[i], sticks[j], sticks[k]))
+
+    if triangles == []:
+        print(triangles)
+        return [-1]
+    else:
+        print(triangles[-1])
+        return triangles[-1]
+
+
+maximumPerimeterTriangle([1, 1, 1, 3, 3])
+
+# %% Practice Algorithms - Bit Manipulation - maximizing Xor
+
+
+def maximizingXor(left, right):
+    maxval = left ^ left
+    for i in range(left, right + 1):
+        for j in range(left, right + 1):
+            maxval = max(maxval, i ^ j)
+    return maxval
+
+# %% Practice Algorithms - Bit Manipulation SumXor
+# 4 test cases dont work becuase n can be very large; timeout
+
+
+def sumXor(n):
+    which = []
+    values = 0
+    for i in range(n + 1):
+        if n + i == i ^ n:
+            which.append(i)
+            values += 1
+    print(which, values)
+    return values
+
+
+sumXor(100)
+
+# %% Practice Algorithms - Bit Manipulation SumXor
+# solution using trick or XOR
+"""
+the justification is that the xor simulates binary addition without the
+carry over to the next digit. For the zero digits of n you can either add a
+1 or 0 without getting a carry which implies xor = + whereas if a digit in n
+ is 1 then the matching digit in x is forced to be 0 on order to avoid carry.
+ For each 0 in n in the matching digit in x can either being a 1 or 0 with a
+ total combination count of 2^(num of zero).
+
+ for i in range(6):
+    print(i^5, i+5)
+
+5 5
+4 6
+7 7
+6 8
+1 9
+0 10
+"""
+
+
+def sumXor(n):
+    mylist = list(str(bin(n))[2:])
+    nzeros = len(mylist) - sum(list(map(int, mylist)))
+    if n == 0:
+        # this case makes no sense; how can 0 ^ 0 is 0; this was test case 1
+        print(1)
+        return 1
+    else:
+        result = 2**nzeros
+        print(result)
+        return result
+
+
+sumXor(5)
+sumXor(0)
+
+
+# %% Practice Algorithms - Game Theory - Tower Breakers
+"""
+Two players are playing a game of Tower Breakers! Player 1 always moves first,
+and both players always play optimally.The rules of the game are as follows:
+
+Initially there are n towers.
+Each tower is of height m.
+The players move in alternating turns.
+In each turn, a player can choose a tower of height x and reduce its height
+to y, where 1 <= y < x and y evenly divides x.
+If the current player is unable to make a move, they lose the game.
+Given the values of n and m , determine which player will win.
+If the first player wins, return 1. Otherwise, return 2
+
+y must be a factor of x at every step, with lowest value of y being 1,so
+each tower can be lowered to 1 and then it offers no more moves
+
+Thus, a tower of6 can be lowered to 3 or 2 or 1, because 3%6 = 0 or 2%6 or 0
+so the set of possible moves on this tower is 3. if there is only one tower
+with remaining moves, Player 1 could cut all way down to 1, leaving no more
+moves.
+So we need to count the number of towers with remaining moves, since # or
+remaining moves can always be reduced to 1 given the opportunity.
+Can calculate rmainging moves on each tower using this method.
+"""
+
+def towerBreakers(n, m):
+
+    def get_all_factors(n):
+        factors = []
+        for i in range(1, n + 1):
+            if n % i == 0:
+                factors.append(i)
+
+        return factors
+
+    z = get_all_factors(m)
+    nfactors = len(z)
+
+    towers = [nfactors] * n
+    print('towers:', towers, n, 'towers, of height', m)
+
+    # coordinates are (n_towers, max_factors)
+
+    def coords(towers):
+        greater_than_one = 0
+        equal_one = 0
+        for el in towers:
+            if el == 1:
+                equal_one += 1
+            elif el > 1:
+                greater_than_one += 1
+        x0 = greater_than_one
+        y0 = equal_one
+        return x0, y0
+
+    def nextstep(x0, y0):
+        thenext = set()
+        # we need to change one tower; reducing it to 1, or 0 should
+        # cover all cases, as 0 is even and 1 is odd
+        if x0 > 0 and y0 > 0:
+            thenext.add((max(x0 - 1, 0), y0 + 1))  # drop to 1 left in tower
+            thenext.add((max(x0 - 1, 0), y0))      # drop to 0 in tower
+            thenext.add((x0, max(y0 - 1, 0)))          # drop to 0 in tower
+
+        elif x0 > 0 and y0 == 0:
+            thenext.add((max(x0 - 1, 0), y0 + 1))  # drop to 1 left in tower
+            thenext.add((max(x0 - 1, 0), y0))      # drop to 0 in tower
+        elif x0 == 0 and y0 > 0:
+            thenext.add((x0, max(y0 - 1, 0)))          # drop to 0 in tower
+        print('current', x0, y0, 'the next', thenext)
+        return thenext
+
+#    nextstep(0,1)
+#    nextstep(1,1)
+#    nextstep(1,0)
+#    nextstep(2,0)
+
+    x0, y0 = coords(towers)
+    print('starting coords of towers (', x0, ',', y0, ')')
+    if x0 == 0:  # then towers is all ones, and we just find out if odd /even
+        if y0 % 2 == 1:
+            print(1, 'wins: odd number of towers with 1\n')
+            return 1
+        else:
+            print(2, 'wins: even number of towers with 1\n')
+            return 2
+    else:
+
+        winning_start = set([(0, 1), (1, 0), (0, 3), (1, 1)])
+        losing_start = set([(0, 2), (2, 0)])
+        i = 0
+        while i < x0 + 1:
+            j = 0
+            while j < 10:
+                thenext = nextstep(i, j)
+                if (i, j) in winning_start:
+                    print('in table building', 1)
+                    pass
+                elif (i, j) in losing_start:
+                    print('in table building', 2)
+                elif len(losing_start.intersection(thenext)) > 0:
+                    # if player 1 has any option that is a losing start,he wins
+                    print('(', i, ',', j, ')', ': Adding to winning start',
+                          'because next', losing_start.intersection(thenext),
+                          'is losing\n')
+                    winning_start.add((i, j))
+
+                elif len(winning_start.intersection(thenext)) == len(thenext):
+                    # if player 1 gives player 2 only winning options, p1 loses
+                    print('(', i, ',', j, ')', ': Adding to losing start',
+                          thenext, ': because next is all winning\n')
+                    losing_start.add((i, j))
+
+                j += 1
+            i += 1
+
+    print('winning start', winning_start)
+    print('losing start', losing_start)
+
+    if (x0, y0) in winning_start:
+        print('starting coords are winning for 1\n')
+        return 1
+    elif (x0, y0) in losing_start:
+        print('starting coords are winning for 2\n')
+        return 2
+    else:
+        print('need to do more searching')
+
+
+# %%
+towerBreakers(1, 1)  # n = # towers, m = height of each initially
+
+towerBreakers(2, 1)
+
+towerBreakers(1, 2)
+
+towerBreakers(2, 2)
+
+towerBreakers(3, 3)
+
+
+towerBreakers(100, 1)
+
+import pprint
+pp = pprint.PrettyPrinter(indent=4)
+pp.pprint(winning_start)
+pp.pprint(losing_start)
+
+# %%
+from collections import Counter
+
+
+def towerBreakers(n, m):
+
+    def get_all_factors(n):
+        factors = []
+        for i in range(1, n + 1):
+            if n % i == 0:
+                factors.append(i)
+
+        return factors
+
+    z = get_all_factors(m)
+    nfactors = len(z)
+
+    towers = [nfactors] * n
+    print('towers:', towers, n, 'towers, of height', m)
+
+    ctower = Counter(towers)
+    print(ctower, sum(ctower.values()))
+    print(Counter([0, 0]) == Counter([0, 1]))
+
+    def nextstep(ctower):
+        thenext = []
+        keys = list(ctower)
+        for key in keys:
+            if key > 1:
+                ctr_copy = copy.deepcopy(ctower)
+                ctr_copy[key] = ctr_copy[key] - 1
+                ctr_copy[1] = ctr_copy[1] + 1
+                ctr_copy2 = copy.deepcopy(ctower)
+                ctr_copy2[key] = ctr_copy2[key] - 1
+                thenext.extend([ctr_copy, ctr_copy2])
+        for key in to_remove:
+            del counter_dict[key]
+
+        print(thenext)
+        thenext = set()
+        # we need to change one tower; reducing it to 1, or 0 should
+        # cover all cases, as 0 is even and 1 is odd
+        if x0 > 0 and y0 > 0:
+            thenext.add((max(x0 - 1, 0), y0 + 1))  # drop to 1 left in tower
+            thenext.add((max(x0 - 1, 0), y0))      # drop to 0 in tower
+            thenext.add((x0, max(y0 - 1, 0)))          # drop to 0 in tower
+
+        elif x0 > 0 and y0 == 0:
+            thenext.add((max(x0 - 1, 0), y0 + 1))  # drop to 1 left in tower
+            thenext.add((max(x0 - 1, 0), y0))      # drop to 0 in tower
+        elif x0 == 0 and y0 > 0:
+            thenext.add((x0, max(y0 - 1, 0)))          # drop to 0 in tower
+        print('current', x0, y0, 'the next', thenext)
+        return thenext
+
+    # if list(ctower.keys()) == [1]
+
+
+towerBreakers(2, 1)
+
+towers = [3, 3, 3]
+
+# %% Practice Algorithms - Chess game
+
+
+def chessboardGame(x, y):
+    move = 0
+    origin = [(x, y)]
+    winning = set([(1, 1), (2, 1), (1, 2), (2, 2)])
+
+    def isvalid(coord):
+        return True if coord[0] >= 1 and coord[1] >= 1 else False
+
+    def iswinning(coords):
+        val = len(set(coords).intersection(winning))
+        return (True if val > 0 else False)
+
+    def nextsquares(origin):
+        next = []
+        for coords in origin:
+            x = coords[0]
+            y = coords[1]
+            temp = [(x - 2, y + 1), (x - 2, y - 1),
+                    (x + 1, y - 2), (x - 1, y - 2)]
+            for coord in temp:
+                if isvalid(coord) and coord not in next:
+                    next.append(coord)
+        return next
+
+    next = nextsquares(origin)
+    print(origin, '->', next)
+    if iswinning(origin):
+        print('origin prevents move')
+        return 'Second'
+    elif iswinning(next):
+        print('First move can win')
+        return 'First'
+    while not iswinning(next):
+        move += 1
+        print('Player has a legal, nonwinning move', move, next)
+        next = nextsquares(next)
+
+    move += 1
+
+    print('\n', next, 'Total moves', move)
+
+    if move % 2 != 0:
+        print('First')
+        return 'First'
+    else:
+        print('Second')
+        return 'Second'
+
+
+chessboardGame(5, 3)
+
+
+# %% Practice Algorithms - Game Theory -  Final chessgame
+
+def chessboardGame(x, y):
+    """Knight-like game.
+
+    Need to determine winner based on starting position of 15x15 board
+    """
+    xin = x
+    yin = y
+
+    # These squares have no possible move, therefore, are losing;
+    # we chose these squares by sight; while loop below expands these sets
+    # until we encompass whole board
+    # it was not clear to me in the beginning that every square has a unique
+    # determinant ending under optimal play
+    losing_start = set([(1, 1), (2, 1), (1, 2), (2, 2)])
+
+    # These squares can jump to losing_start in one move, so are winning
+    winning_start = set([(1, 3), (1, 4), (2, 3), (2, 4),
+                         (3, 1), (3, 2), (3, 3), (3, 4),
+                         (4, 1), (4, 2), (4, 3)])
+
+    def nextset(x, y):
+        def isvalid(coord):
+            return True if coord[0] >= 1 and coord[1] >= 1 \
+                and coord[0] <= 15 and coord[1] <= 15 else False
+
+        nextsquares = [(x - 2, y + 1), (x - 2, y - 1), (x + 1, y - 2),
+                       (x - 1, y - 2)]
+        nextsquares = set([*filter(isvalid, nextsquares)])
+        # print(nextsquares)
+        return nextsquares
+
+    # run a few times through whole board;
+    # it takes 5 times to find a definitive win path for all 225 squares
+    # 161 squares are winning for first player
+    # 64 squares are losing starting for first player
+    test_set = [(i, j) for i in range(1, 16) for j in range(1, 16)]
+    times = 1
+    while (len(winning_start) + len(losing_start)) < 225:
+        for coords in test_set:
+            x_ = coords[0]
+            y_ = coords[1]
+            thenextset = nextset(x_, y_)
+            # print('testing', x_, y_, thenextset)
+
+            if (x_, y_) in losing_start:
+                # print('No Path, Second wins')
+                pass
+            elif (x_, y_) in winning_start:
+                # print('One jump to terminal square, First wins')
+                pass
+            elif (len(winning_start.intersection(thenextset))
+                  == len(thenextset)):
+                # if next set ONLY includes winning_starts, First loses because
+                # he has no choice but give win to opponent
+                # need to add x,y to losing_start
+                losing_start.add((x_, y_))
+                # print('we lose, Second wins')
+            elif len(losing_start.intersection(thenextset)) > 0:
+                # if next set includes ANY losing_start, we win by choosing it
+                # need to add x,y to winning_start
+                winning_start.add((x_, y_))
+                # print('First wins')
+            else:
+                # print('do not know')
+                pass
+
+        print('Run', times, len(winning_start) + len(losing_start))
+        times += 1
+
+    print(len(winning_start))
+    print(len(losing_start))
+
+    # prints schematic of Winor Loss of each of 15x15 squares
+
+    print(' '.join(map(str, [i for i in range(1, 16)])))
+    for i in range(15):
+        row = ''
+        for j in range(15):
+            if test_set[i * 15 + j] in winning_start:
+                row = row + 'W '
+            else:
+                row = row + 'L '
+        print(row + str(i))
+
+    if (xin, yin) in winning_start:
+        print('First wins with', xin, yin)
+        return 'First'
+    else:
+        print('Second wins with', xin, yin)
+        return 'Second'
+
+
+chessboardGame(15, 15)
+
+# %% Practice Algorithms - Game Theory - Game of Stones
+
+
+def gameOfStones(n):
+    """Find who wins when given number of starting stones.
+
+    Player1 and Player 2 move alternately, removing 2, 3, or 5 stones.
+    Loser cannot make a move.  With optimal play, who wins?
+
+    Three options after each play:
+        lose?  nstones< 2
+        win?  2, 3, 4, 5, 6 stones would give Player 1 the win because they
+            could remove enough stones to leave only 1 stone.
+        run through range of options, moving gradually higher, to see if
+        player would win or lose with each higher n starting stones
+
+        Could probably do a recursive solution as well.
+    """
+    winning_start = set([2, 3, 4, 5])  # 7 we don't know who would win yet
+    losing_start = set([0, 1])
+
+    def n_remain(n_):
+        n_next = set([n_ - x for x in [2, 3, 5] if n_ - x >= 0])
+        return n_next
+
+    i = 0
+    while i < n + 1:
+        x = n_remain(i)
+        # let's build lookup table to see what each value of up to n yields as
+        # far as winner under optimal play
+        if i in winning_start:
+            # print('Player 1 wins')
+            pass
+        elif i in losing_start:
+            # print('Player 2 wins')
+            pass
+        elif len(losing_start.intersection(x)) > 0:
+            # if player 1 has any option that is a losing start, he win
+            print(i, 'Adding to winning start', x)
+            winning_start.add(i)
+        elif len(winning_start.intersection(x)) == len(x):
+            # if player 1 gives player 2 only winning options, p1 loses
+            print(i, 'Adding to losing start', x)
+            losing_start.add(i)
+        else:
+            print('this should never happen')
+        i += 1
+
+    if n in winning_start:
+        print('First')
+        return 'First'
+    else:
+        print('Second')
+        return 'Second'
+
+
+for i in range(1, 8):
+    gameOfStones(i)
+
+gameOfStones(10)
+
+# %% Practice Algorithms - Debugging
+
+
+def findZigZagSequence(a, n):
+    a.sort()
+    mid = int((n + 1) / 2) - 1  # 1st change
+    a[mid], a[n - 1] = a[n - 1], a[mid]
+
+    st = mid + 1
+    ed = n - 2  # 2nd change
+    while(st <= ed):
+        a[st], a[ed] = a[ed], a[st]
+        st = st + 1
+        ed = ed - 1  # 3rd change
+
+    for i in range(n):
+        if i == n - 1:
+            print(a[i])
+        else:
+            print(a[i], end=' ')
+    return
+
+
+arr = [1, 2, 3, 4, 5, 6, 7]
+findZigZagSequence(arr, len(arr))
+
+# %%  Hackerrank Python basic Certification - Classes problem, 1 of 2
+# All tests passed
+# Finished in about 20minutes
+# Had 35 min to spare at end
+import os
+
+
+class Multiset:
+    """Init method.
+
+    Py 3 has no ()s in class definition, but in Python 2 one could extend
+    from another object using Multiset(<object>)
+    """
+
+    def __init__(self):
+        """Init method."""
+        self.lookup = {}
+
+    def add(self, val):
+        """Add one occurrence of val from the multiset, if any."""
+        self.lookup[val] = self.lookup.get(val, 0) + 1
+
+    def remove(self, val):
+        """Remove one occurrence of val from the multiset, if any."""
+        if self.lookup.get(val, 0) > 0:
+            self.lookup[val] = self.lookup.get(val, 0) - 1
+
+    def __contains__(self, val):
+        """Return True when val is in the multiset, else returns False."""
+        if self.lookup.get(val, 0) > 0:
+            return True
+        else:
+            return False
+
+    def __len__(self):
+        """Return the number of elements in the multiset."""
+        return sum(list(self.lookup.values()))
+
+
+if __name__ == '__main__':
+
+    def performOperations(operations):
+        """performOperations."""
+        m = Multiset()
+        result = []
+        for op_str in operations:
+            elems = op_str.split()
+            if elems[0] == 'size':
+                result.append(len(m))
+            else:
+                op, val = elems[0], int(elems[1])
+                if op == 'query':
+                    result.append(val in m)
+                elif op == 'add':
+                    m.add(val)
+                elif op == 'remove':
+                    m.remove(val)
+        return result
+
+    q = int(input())
+    operations = []
+    for _ in range(q):
+        operations.append(input())
+
+    result = performOperations(operations)
+
+    fptr = open(os.environ['OUTPUT_PATH'], 'w')
+    fptr.write('\n'.join(map(str, result)))
+    fptr.write('\n')
+    fptr.close()
+
+
+"""Test cases
+12
+query 1
+add 1
+query 1
+remove 1
+query 1
+add 2
+add 2
+size
+query 2
+remove 2
+query 2
+size
+
+Expected Output
+False
+True
+False
+2
+True
+True
+1
+"""
+
+
+# %%  Hackerrank Python basic Certification - Python String Representation
+# All tests passed
+# Finished in 25 minutes
+import os
+
+
+class Car:
+    """Init car object."""
+
+    def __init__(self, max_speed, speed_unit):
+        """Init method."""
+        self.max_speed = max_speed
+        self.speed_unit = speed_unit
+
+    def __str__(self):
+        """For printing method output."""
+        return "Car with the maximum speed of " + str(self.max_speed) + \
+            " " + self.speed_unit
+
+
+class Boat:
+    """Init car object."""
+
+    def __init__(self, max_speed):
+        """Init method."""
+        self.max_speed = max_speed
+
+    def __str__(self):
+        """For printing method output."""
+        return "Boat with the maximum speed of " + str(self.max_speed) \
+            + " knots"
+
+
+if __name__ == '__main__':
+    fptr = open(os.environ['OUTPUT_PATH'], 'w')
+    q = int(input())
+    queries = []
+    for _ in range(q):
+        args = input().split()
+        vehicle_type, params = args[0], args[1:]
+        if vehicle_type == "car":
+            max_speed, speed_unit = int(params[0]), params[1]
+            vehicle = Car(max_speed, speed_unit)
+        elif vehicle_type == "boat":
+            max_speed = int(params[0])
+            vehicle = Boat(max_speed)
+        else:
+            raise ValueError("invalid vehicle type")
+        fptr.write("%s\n" % vehicle)
+    fptr.close()
+
+"""
+2
+car 151 km/h
+boat 77
+
+Car with the maximum speed of 151 km/h
+Boat with the maximum speed of 77 knots
+
+"""
+
+# %%# %%  Hackerrank Problem Solving Basic
+# !/bin/python3
+import os
+
+
+def filledOrders(order, k):
+    """Complete the 'filledOrders' function below.
+
+    The function is expected to return an INTEGER.
+    The function accepts following parameters:
+        1. INTEGER_ARRAY order
+        2. INTEGER k
+    """
+    max_filled = 0
+    cum_ordered = 0
+    order.sort()
+    for i in range(len(order)):
+        cum_ordered = cum_ordered + order[i]
+        if cum_ordered <= k:
+            max_filled = i + 1
+    return max_filled
+
+
+if __name__ == '__main__':
+    fptr = open(os.environ['OUTPUT_PATH'], 'w')
+    order_count = int(input().strip())
+    order = []
+
+    for _ in range(order_count):
+        order_item = int(input().strip())
+        order.append(order_item)
+
+    k = int(input().strip())
+
+    result = filledOrders(order, k)
+
+    fptr.write(str(result) + '\n')
+
+    fptr.close()
+# %%# %%  Hackerrank Problem Solving Basic
+
+# !/bin/python3
+# import math
+import os
+
+
+def getMinCost(crew_id, job_id):
+    """Complete the 'getMinCost' function below.
+
+    The function is expected to return a LONG_INTEGER.
+    The function accepts following parameters:
+        1. INTEGER_ARRAY crew_id
+        2. INTEGER_ARRAY job_id
+    """
+    crew_id.sort()
+    job_id.sort()    # Write your code here
+    min_dist = 0
+    for i in range(len(crew_id)):
+        min_dist = min_dist + abs(crew_id[i] - job_id[i])
+
+    return min_dist
+
+
+if __name__ == '__main__':
+    fptr = open(os.environ['OUTPUT_PATH'], 'w')
+
+    crew_id_count = int(input().strip())
+
+    crew_id = []
+
+    for _ in range(crew_id_count):
+        crew_id_item = int(input().strip())
+        crew_id.append(crew_id_item)
+
+    job_id_count = int(input().strip())
+
+    job_id = []
+
+    for _ in range(job_id_count):
+        job_id_item = int(input().strip())
+        job_id.append(job_id_item)
+
+    result = getMinCost(crew_id, job_id)
+
+    fptr.write(str(result) + '\n')
+
+    fptr.close()
+
+# %%# %%  Hackerrank Problem Solving Intermediate
+# this is bad  approach
+freq = [0, 1, 3]
+
+
+def taskOfPairing(freq):
+    """Docstring."""
+    wts = []
+    for i in range(len(freq)):
+        wts.append((i + 1) * freq[i])
+    print(wts)
+    weights = ''.join(wts)
+    print(weights)
+    i = 1
+    pairs = 0
+    while i < len(weights):
+        if int(weights[i]) <= int(weights[i - 1]) + 1:
+            pairs += 1
+            i = i + 2
+    print(pairs)
+    return pairs
+
+
+freq = [0, 1, 0, 1, 0, 1, 0]
+taskOfPairing(freq)
+# %%
+# not sure why it didn't work...this was fairly efficient I think
+
+
+def taskOfPairing(freq):
+    """Docstring."""
+    pairs = freq[0] // 2
+    leftover = freq[0] % 2
+    print(freq)
+    for i in range(1, len(freq)):
+        pairs = pairs + freq[i] // 2
+        if leftover == 1 and freq[i] % 2 == 1:
+            pairs += 1
+            leftover = 0
+            print('i', i, 'Pairs:', pairs, '0 lo', leftover)
+        elif leftover == 0 and freq[i] % 2 == 1:
+            leftover = 1
+            print('i', i, 'Pairs:', pairs, '+1 lo', leftover)
+        else:  # this case is freq[i]%2 == 0
+            leftover = 0
+            print('i', i, 'Pairs:', pairs, 'no leftovers', leftover)
+
+    print(pairs)
+    return pairs
+
+
+freq = [0, 1, 3, 4, 5, 6, 7, 7, 7, 7]
+freq = [0, 1, 0, 1, 0, 1, 3]
+
+
+taskOfPairing(freq)
+#  this has memory error
+
+# %% this still had only 3 test cases passing
+
+
+def taskOfPairing(freq):
+    """Create lists - memory intensive therefore a bad approach."""
+    n_pairs = list(map(lambda x: x // 2, freq))
+    remainders = list(map(lambda x: x % 2, freq))
+    print(freq)
+    print(n_pairs)
+    print(remainders)
+
+    total = sum(n_pairs)
+    print(total)
+    i = 1
+    while i < len(freq):
+        print('i', i, remainders[i], remainders[i - 1])
+        if remainders[i] + remainders[i - 1] == 2:
+            print('total', total, 'i', i)
+            total = total + 1
+            i = i + 2
+            print('newtotal', total, 'i', i)
+        else:
+            i += 1
+    print(total)
+    return total
+
+
+freq = [0, 1, 3, 4, 5, 6, 7, 7, 7, 7]
+taskOfPairing(freq)
+
+
+# %% Hackerrank Certification - Intermediate Problem Solving -
+# this is bitwise operation exercise
+import math
+
+
+def countPairs(arr):
+    """Find pairs where bitwise &  x&y is a power of 2.
+
+    i.e.,log2(x&B) is equal to round integer
+    key issues I encountered:
+        - using math.log2 (log2 is undefined)
+        - anticipating boundary condition that log(0)= Inf, which cannot be
+          turned into integer for comparison in the elif
+
+    THIS IS THE TRICK
+    Any power of 2, minus 1 would have binary representation where all
+    bits are set except the bit that represents the next number
+    (which is a power of 2).
+
+    Using the bitwise AND with the number n and n-1, we can conclude
+    that the number in question is a power of two if it
+    returns 0. These are just some of the many use cases of bitwise
+    operators.
+    n   &  n-1
+    ---    ---
+    10 & 01 = 0
+    100 & 011 = 0
+    """
+    pairs = 0
+    for i in range(len(arr) - 1):
+        for j in range(i + 1, len(arr)):
+            if arr[i] & arr[j] == 0:  # log 0 = Infinity...avoid this problem
+                pass
+            elif int(math.log2(arr[i] & arr[j])) == math.log2(arr[i] & arr[j]):
+                print('(', arr[i], '&', arr[j], ')', '=', arr[i] & arr[j],
+                      '=2^', int(math.log2(arr[i] & arr[j])))
+                pairs += 1
+                # print('Pairs:', pairs, '\n')
+    print(pairs)
+    return pairs
+
+
+countPairs([10, 2, 3, 4, 8])
+
+
+# math domain error == CANNOT CALCULATE LOG 0, which could
+# happen with bitwise operation,would generate infinity, which cannt be turned
+# into integer
+
+for i in range(100):
+    print(i, i & (i - 1), 'a power of two' * (not i & (i - 1)))
+
+# %%
+# https://medium.com/better-programming/5-pairs-of-magic-methods-in-python-you-should-know-f98f0e5356d6
+
+
+class Product:
+    """Example."""
+
+    def __init__(self, name, price):
+        self.name = name
+        self.price = price
+
+    def __repr__(self):
+        """Reproduce."""
+        print(f"Product({self.name!r}, {self.price})")
+        # we need the !r because {self.name} generates thing with no
+        # quotes, which is not correct;
+        # {self.price} genreates same as {self.price!r}
+        print(f"Product({self.name!s}, {self.price})")
+
+        return f"Product({self.name!r}, {self.price!r})"
+
+    def __str__(self):
+        """Print."""
+        return f"Product: {self.name}, ${self.price:.2f}"
+
+
+# =============================================================================
+# Three conversion flags are currently supported: '!s' which calls
+# str() on the value, '!r' which calls repr() and '!a' which calls
+# ascii().
+#
+# Some examples:
+#
+# "Harold's a clever {0!s}"        # Calls str() on the argument first
+# "Bring out the holy {name!r}"    # Calls repr() on the argument first
+# "More {!a}"                      # Calls ascii() on the argument first
+#
+# =============================================================================
+x = Product('thing', 150)
+print(x)
+print(repr(x))
