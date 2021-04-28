@@ -14,7 +14,7 @@ hackerrank_data_structures.py
 15  Linked Lists               10 / 15 - mostly easy
 17  Trees                       2 / 17 - one third easy
  3  Balanced Trees                /  3 - medium and hard
- 9  Stacks                      2 /  9 - few easy
+ 9  Stacks                      3 /  9 - few easy
  5  Queues                        /  5 - more difficult
  4  Heap                          /  4 - 2 easy, 2 hard
  3  Multiple Choice             3 /  3
@@ -25,7 +25,9 @@ hackerrank_data_structures.py
  2  Trie                         /  2 hard
 53  Advanced                     / 53 none are easy, 4 medium, rest hard
 -----59                       ---------
-                               15 /121
+                               0 / 59
+
+Total                         22 /121
 """
 
 # %% 6  Arrays                      4 / 6  only one difficult
@@ -105,6 +107,47 @@ if __name__ == '__main__':
     fptr.write('\n'.join(map(str, result)))
     fptr.write('\n')
     fptr.close()
+
+# %% Linked Lists - Get Node Value
+# =============================================================================
+# Given a pointer to the head of a linked list and a specific position,
+#  determine the data value at that position. Count backwards from the
+#  tail node. The tail is at postion 0, its parent is at 1 and so on.
+# =============================================================================
+
+
+def getNode(head, positionFromTail):
+    node = head
+    n = positionFromTail
+    out = [node.data]
+    while node.next:
+        out.append(node.next.data)
+        node = node.next
+    return out[len(out) - (n + 1)]
+
+
+if __name__ == '__main__':
+    fptr = open(os.environ['OUTPUT_PATH'], 'w')
+
+    tests = int(input())
+
+    for tests_itr in range(tests):
+        llist_count = int(input())
+
+        llist = SinglyLinkedList()
+
+        for _ in range(llist_count):
+            llist_item = int(input())
+            llist.insert_node(llist_item)
+
+        position = int(input())
+
+        result = getNode(llist.head, position)
+
+        fptr.write(str(result) + '\n')
+
+    fptr.close()
+
 
 # %% 15  Linked Lists - Reverse a LL
 
@@ -205,7 +248,48 @@ def removeDuplicates(head):
 # %% 17  Trees                       / 17
 
 # %% 3  Balanced Trees               /  3
-# %% 9  Stacks                       /  9
+# %% 9  Stacks - Maximum Element
+
+# =============================================================================
+# 1 x  -Push the element x into the stack.
+# 2    -Delete the element present at the top of the stack.
+# 3    -Print the maximum element in the stack.
+
+# 11 of 27 test cases failed due to timeout with the code when I tested
+# the whole thestack for its max each time there was a 3 query
+# The solution was to track the max with variable themax, which required
+#  a testing of a new themax for each new addition to thestack (query 1)
+#  and each deletion of a value from thestack.
+# then each 3 query only needed to append themax.
+
+# The code below works for all 27 test cases
+# =============================================================================
+
+
+def getMax(operations):
+    result = []
+    thestack = []
+    themax = 1  # min value that will be stored in stack
+    for op in operations:
+        if op[0] == '1':
+            val = int(op.split()[1])
+            thestack.append(val)
+            themax = max(themax, val)
+        elif op[0] == '2':
+            val = thestack.pop()
+            if val == themax:
+                themax = max(thestack + [1])
+                # need to be sure we do not try to find max of empty
+                # stack, so we add a [1]
+        elif op[0] == '3':
+            result.append(themax)
+    return result
+
+
+
+# %% 9  Stacks - Equal Stacks
+
+
 
 # %% 5  Queues                       / 5
 # %% 4  Heap - QHEAP1
