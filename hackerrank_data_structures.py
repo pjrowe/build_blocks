@@ -11,23 +11,27 @@ hackerrank_data_structures.py
  n  Category                     Done
 --  --------                  -------
  6  Arrays                      6 /  6
-15  Linked Lists               10 / 15 - mostly easy
-17  Trees                       2 / 17 - one third easy
+13  Linked Lists               13 / 15 - mostly easy
+                                      (different #s every time I check)
+17  Trees                       2 / 10 - one third easy
  3  Balanced Trees                /  3 - medium and hard
  9  Stacks                      3 /  9 - few easy
  5  Queues                        /  5 - more difficult
- 4  Heap                          /  4 - 2 easy, 2 hard
+ 4  Heap                        1 /  4 - 2 easy, 2 hard
  3  Multiple Choice             3 /  3
-    --62                      -------
-                                22 / 62 ; finish at least 30 of these
+    --53                      -------
+                               29 / 55 ; finish at least 25 of these
 
- 4  Disjoint Set                 /  4 hard
- 2  Trie                         /  2 hard
-53  Advanced                     / 53 none are easy, 4 medium, rest hard
+ 4  Disjoint Set                  /  4 hard
+ 2  Trie                          /  2 hard
+53  Advanced                      / 53 none are easy, 4 medium, rest hard
 -----59                       ---------
-                               0 / 59
+                                0 / 59
 
-Total                         22 /121
+Total                          22 /109
+
+
+PROBLEM SOLVING   TOTAL       159 / 563
 """
 
 # %% 6  Arrays                      4 / 6  only one difficult
@@ -149,18 +153,37 @@ if __name__ == '__main__':
     fptr.close()
 
 
+# %% 15  Linked Lists - Compare two linked lists
+
+
+def compare_lists(llist1, llist2):
+    node1 = llist1
+    node2 = llist2
+
+    while node1 and node2:  # shortest llist will stop advancement
+        if node1.data == node2.data:
+            pass
+        else:
+            return 0
+        node1 = node1.next
+        node2 = node2.next
+    return node1 == node2
+    # the nodes must be equal, i.e., null, if the lists are equal
+
+
 # %% 15  Linked Lists - Reverse a LL
+
 
 def reverse(head):
     node = head
     prior = node.next
     node.next = None
     while prior:
+        a = node
         node = prior
         prior = node.next
-        node.next =
-    prior.next = node
-    return prior
+        node.next = a
+    return node
 
 
 # %% 15  Linked Lists - Print in Reverse
