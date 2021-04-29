@@ -13,6 +13,11 @@ Reference
 - https://www.hackerrank.com/pjrowe?hr_r=1
 - https://realpython.com/
 
+Other good resources for python
+
+---------
+
+- https://www.geeksforgeeks.org/python-programming-examples/
 
 Verified Skills on Hackerrank 
 
