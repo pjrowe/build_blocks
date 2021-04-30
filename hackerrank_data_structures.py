@@ -11,7 +11,7 @@ hackerrank_data_structures.py
  n  Category                     Done
 --  --------                  -------
  6  Arrays                      6 /  6
-13  Linked Lists               13 / 15 - mostly easy
+13  Linked Lists               14 / 15 - mostly easy
                                       (different #s every time I check)
 17  Trees                       2 / 10 - one third easy
  3  Balanced Trees                /  3 - medium and hard
@@ -20,7 +20,7 @@ hackerrank_data_structures.py
  4  Heap                        1 /  4 - 2 easy, 2 hard
  3  Multiple Choice             3 /  3
     --53                      -------
-                               29 / 55 ; finish at least 25 of these
+                               30 / 55 ; finish at least 25 of these
 
  4  Disjoint Set                  /  4 hard
  2  Trie                          /  2 hard
@@ -28,7 +28,7 @@ hackerrank_data_structures.py
 -----59                       ---------
                                 0 / 59
 
-Total                          22 /109
+Total                          30 / 114
 
 
 PROBLEM SOLVING   TOTAL       159 / 563
@@ -111,6 +111,52 @@ if __name__ == '__main__':
     fptr.write('\n'.join(map(str, result)))
     fptr.write('\n')
     fptr.close()
+
+
+# %% Linked Lists - Merge two sorted linked lists
+# Given pointers to the heads of two sorted linked lists, merge them
+# into a single, sorted linked list. Either head pointer may be null
+# meaning that the corresponding list is empty.
+
+def mergeLists(head1, head2):
+    if not head2:
+        return head1
+    elif not head1:
+        return head2
+    else:
+        if head1.data <= head2.data:
+            mergedhead = head1
+            prior = head1
+            node1 = head1.next
+            node2 = head2
+
+        else:
+            mergedhead = head2
+            prior = head2
+            node1 = head2.next
+            node2 = head1
+
+        while node1 and node2:
+            if node1.data <= node2.data:
+                prior = node1
+                node1 = node1.next
+            elif node2.data < node1.data:
+                prior.next = node2
+                prior = node2
+                node1, node2 = node2, node1
+                node1 = node1.next
+
+        # when exits while loop, one or both of the lists has run out
+        # of nodes
+        if not node1 and node2:
+            # in this case, connect list to node that isn't empty, node2
+            prior.next = node2
+        elif not node2 and node1:
+            # in this case, connect list to node that isn't empty, node1
+            prior.next = node1
+        # no need to account for case when both node1 and node2 are empty
+    return mergedhead
+
 
 # %% Linked Lists - Get Node Value
 # =============================================================================
