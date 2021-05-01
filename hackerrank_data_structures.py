@@ -15,7 +15,7 @@ hackerrank_data_structures.py
                                       (different #s every time I check)
 17  Trees                       2 / 10 - one third easy
  3  Balanced Trees                /  3 - medium and hard
- 9  Stacks                      3 /  9 - few easy
+ 9  Stacks                      4 /  9 - few easy
  5  Queues                        /  5 - more difficult
  4  Heap                        1 /  4 - 2 easy, 2 hard
  3  Multiple Choice             3 /  3
@@ -28,7 +28,7 @@ hackerrank_data_structures.py
 -----59                       ---------
                                 0 / 59
 
-Total                          30 / 114
+Total                          31 / 114
 
 
 PROBLEM SOLVING   TOTAL       159 / 563
@@ -317,7 +317,191 @@ def removeDuplicates(head):
 # %% 17  Trees                       / 17
 
 # %% 3  Balanced Trees               /  3
-# %% 9  Stacks - Maximum Element
+
+# %% 9  Stacks - Equal Stacks - FAIL #1
+# 1 of 31 test cases (#14) failed on timing; long arrays take too long
+
+import itertools
+
+
+def equalStacks(h1, h2, h3):
+    h1.reverse()
+    h2.reverse()
+    h3.reverse()
+
+    h1cum = list(itertools.accumulate(h1))
+    h2cum = list(itertools.accumulate(h2))
+    h3cum = list(itertools.accumulate(h3))
+
+    l1 = len(h1cum)
+    l2 = len(h2cum)
+    l3 = len(h3cum)
+
+    h1cum.reverse()
+    h2cum.reverse()
+    h3cum.reverse()
+    print(h1cum)
+    minlen = min(l1, l2, l3)
+    if minlen == 0:
+        return 0
+    elif l1 == minlen:
+        for item in h1cum:
+            if item in h2cum and item in h3cum:
+                return item
+    elif l2 == minlen:
+        for item in h2cum:
+            if item in h1cum and item in h3cum:
+                return item
+    elif l3 == minlen:
+        for item in h3cum:
+            if item in h2cum and item in h1cum:
+                return item
+    return 0
+
+# %% 9  Stacks - Equal Stacks - FAIL #2
+# this fails on case 23, just one test case; the stacks are very different
+# in size; largest is 59,000 long and shortest is 393 elements
+
+def equalStacks(h1, h2, h3):
+    h1.reverse()
+    h2.reverse()
+    h3.reverse()
+
+    h1cum = list(itertools.accumulate(h1))
+    h2cum = list(itertools.accumulate(h2))
+    h3cum = list(itertools.accumulate(h3))
+
+    l1 = len(h1cum)
+    l2 = len(h2cum)
+    l3 = len(h3cum)
+
+    print(h1cum)
+    minlen = min(l1, l2, l3)
+    if minlen == 0:
+        return 0
+    elif l1 == minlen:
+        h1cum.reverse()
+        for item in h1cum:
+            while item < h2cum[-1]:
+                h2cum.pop()
+                # cut size of h2cum down until we can reverse it and
+                # search
+            while item < h3cum[-1]:
+                h3cum.pop()
+            if item in h2cum and item in h3cum:
+                return item
+    elif l2 == minlen:
+        h2cum.reverse()
+        for item in h2cum:
+            while item < h1cum[-1]:
+                h1cum.pop()
+            while item < h3cum[-1]:
+                h3cum.pop()
+            if item in h1cum and item in h3cum:
+                return item
+    elif l3 == minlen:
+        h3cum.reverse()
+        for item in h3cum:
+            while item < h1cum[-1]:
+                h1cum.pop()
+            while item < h2cum[-1]:
+                h2cum.pop()
+            if item in h2cum and item in h1cum:
+                return item
+    return 0
+
+
+# %% 9  Stacks - Equal Stacks - THIS ONE WORKS!!
+# TRICK IS NOT TRYING TO TRIM STACKS DOWN, BUT TO TURN INTO a set,
+# so the 'in' operation in O(1) instead of O(n)
+
+
+def equalStacks(h1, h2, h3):
+    h1.reverse()
+    h2.reverse()
+    h3.reverse()
+
+    h1cum = list(itertools.accumulate(h1))
+    h2cum = list(itertools.accumulate(h2))
+    h3cum = list(itertools.accumulate(h3))
+
+    l1 = len(h1cum)
+    l2 = len(h2cum)
+    l3 = len(h3cum)
+
+    print(h1cum)
+    minlen = min(l1, l2, l3)
+    if minlen == 0:
+        return 0
+    elif l1 == minlen:
+        h1cum.reverse()
+        h2 = set(h2cum)
+        h3 = set(h3cum)
+        for item in h1cum:
+            if item in h2 and item in h3:
+                return item
+    elif l2 == minlen:
+        h2cum.reverse()
+        h1 = set(h1cum)
+        h3 = set(h3cum)
+        for item in h2cum:
+            if item in h1 and item in h3:
+                return item
+    elif l3 == minlen:
+        h3cum.reverse()
+        h1 = set(h1cum)
+        h2 = set(h2cum)
+        for item in h3cum:
+            if item in h2 and item in h1:
+                return item
+    return 0
+
+
+# %% 9  Stacks - Equal Stacks - FAIL #3
+# this times out on cases 14 and 24 as well, even though we are
+# reversing one fewer stack
+import itertools
+
+
+def equalStacks(h1, h2, h3):
+    h1.reverse()
+    h2.reverse()
+    h3.reverse()
+
+    h1cum = list(itertools.accumulate(h1))
+    h2cum = list(itertools.accumulate(h2))
+    h3cum = list(itertools.accumulate(h3))
+
+    l1 = len(h1cum)
+    l2 = len(h2cum)
+    l3 = len(h3cum)
+
+    minlen = min(l1, l2, l3)
+    if minlen == 0:
+        return 0
+    elif l1 == minlen:
+        h2cum.reverse()
+        h3cum.reverse()
+        while len(h1cum) > 0:
+            item = h1cum.pop()
+            if item in h2cum and item in h3cum:
+                return item
+    elif l2 == minlen:
+        h1cum.reverse()
+        h3cum.reverse()
+        while len(h2cum) > 0:
+            item = h2cum.pop()
+            if item in h1cum and item in h3cum:
+                return item
+    elif l3 == minlen:
+        h2cum.reverse()
+        h1cum.reverse()
+        while len(h3cum) > 0:
+            item = h3cum.pop()
+            if item in h2cum and item in h1cum:
+                return item
+    return 0
+# %% 9  Stacks -  Maximum Element
 
 # =============================================================================
 # 1 x  -Push the element x into the stack.
