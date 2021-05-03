@@ -46,6 +46,25 @@ May 2, 2021
 # read name
 # echo "Welcome $name"
 
+# Looping and skipping
+for number in {1..99..2}
+do
+    echo $number
+done
+
+for number in {1..50}
+do
+    echo $number
+done
+
+
+read x
+read y
+
+echo $((x + y))
+echo $((x - y))
+echo $((x * y))
+echo $((x / y))
 # %% Linux Shell - Text Processing -
 
 # %% Linux Shell - Arrays in Bash -
