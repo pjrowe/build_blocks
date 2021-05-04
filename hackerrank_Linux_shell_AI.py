@@ -5,12 +5,12 @@ May 2, 2021
 - mostly easy and medium
 =============================================================================
 
-11 Bash                       2 / 11
+11 Bash                       8 / 11
 31 Text Processing            0 / 31
  8 Arrays in Bash             0 / 8
 14 Grep Sed Awk               0 / 14
 ---                           ------
-64                            2 / 64
+64                            8 / 64
 
 
 2. Artificial Intelligence - 150 exercises
@@ -65,6 +65,83 @@ echo $((x + y))
 echo $((x - y))
 echo $((x * y))
 echo $((x / y))
+
+
+read X
+read Y
+if [ "$X" == "$Y" ] then
+echo "X is equal to Y"
+if [ "$X" -gt "$Y" ] then
+echo "X is greater than Y"
+else
+echo "X is less than Y"
+fi
+
+# Comparing numbers
+
+# First try : elegant, but for some reason yields errors
+# probably because all three comparisons are evaluated
+read x
+read y
+[[ $x -gt $y ]] && echo 'X is greater than Y'
+[[ $x -eq $y ]] && echo 'X is equal to Y'
+[[ $x -lt $y ]] && echo 'X is less than Y'
+
+# works
+read x
+read y
+if (($x > $y)); then
+    echo "X is greater than Y"
+elif (($x == $y)); then
+    echo "X is equal to Y"
+else
+    echo "X is less than Y"
+fi
+
+
+# Getting started with conditionals
+
+# this doesn't work for some reason
+read y
+if (($y == N)); then
+    echo "NO"
+elif (($y == n)); then
+    echo "NO"
+else
+    echo "YES"
+fi
+
+# this works
+read char
+echo -e "YES\nNO\n" | grep -i $char
+
+
+# More on conditionals
+# WORKS!
+read x
+read y
+read z
+if (($x == $y && $x == $z)); then
+    echo 'EQUILATERAL'
+elif (($x == $y && $x != $z)); then
+    echo 'ISOSCELES'
+elif (($z == $y && $x != $z)); then
+    echo 'ISOSCELES'
+else
+    echo 'SCALENE'
+fi
+
+# WORKS!
+read x
+read y
+read z
+if (($x == $y && $x == $z)); then
+    echo 'EQUILATERAL'
+elif (($x == $y && $x != $z )) || (($z == $y && $x != $z)); then
+    echo 'ISOSCELES'
+else
+    echo 'SCALENE'
+fi
 # %% Linux Shell - Text Processing -
 
 # %% Linux Shell - Arrays in Bash -
