@@ -5,7 +5,7 @@ May 2, 2021
 - mostly easy and medium
 =============================================================================
 
-11 Bash                       8 / 11
+11 Bash                       10 / 11
 31 Text Processing            0 / 31
  8 Arrays in Bash             0 / 8
 14 Grep Sed Awk               0 / 14
@@ -45,7 +45,6 @@ May 2, 2021
 
 # read name
 # echo "Welcome $name"
-
 # Looping and skipping
 for number in {1..99..2}
 do
@@ -142,6 +141,33 @@ elif (($x == $y && $x != $z )) || (($z == $y && $x != $z)); then
 else
     echo 'SCALENE'
 fi
+
+# Linux Shell - BASH - Arithmetic operations
+# read in math expression and round result to 3 decimal places
+# bc = basic calculator
+# https://linuxhint.com/what-is-bc-bash-script/
+printf "%.3f" "$(bc -l)"
+
+# Linux Shell - BASH - Compute the Average
+# read in array, compute average
+read n
+arr=($(cat))
+arr=${arr[*]}
+printf "%.3f" $(echo $((${arr// /+}))/$n | bc -l)
+
+
+cut -c3  # prints out 3rd character of each input line of input text file
+cut -c2,7  # prints out 2nd and 7th characters
+cut -c2-7  # prints out 2nd thru 7th characters
+cut -c1-4  # prints chars 1-4
+cut -c13-  # prints char 13 onward
+
+cut -f1-3  # prints fields 1-3 of tab separated text
+
+cut -w4  # prints char 13 onward
+
+cut -d " " -f4  # print 4th word in line, delimiter is space
+
 # %% Linux Shell - Text Processing -
 
 # %% Linux Shell - Arrays in Bash -
