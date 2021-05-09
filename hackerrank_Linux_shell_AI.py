@@ -6,11 +6,11 @@ May 2, 2021
 =============================================================================
 
 11 Bash                       10 / 11
-31 Text Processing            0 / 31
- 8 Arrays in Bash             0 / 8
-14 Grep Sed Awk               0 / 14
+32 Text Processing            30 / 32
+ 8 Arrays in Bash              0 /  8
+14 Grep Sed Awk                0 / 14
 ---                           ------
-64                            8 / 64
+65                            40 / 65
 
 
 2. Artificial Intelligence - 150 exercises
@@ -23,13 +23,13 @@ May 2, 2021
  6 Games                      0 /  6 no easy
 /// 46
 
-25 Statistics and Machine L   6 / 25
-24 Digital Image Analysis     4 / 24
-25 Natural Language Processing
+25 Statistics and Machine L    6 / 25
+24 Digital Image Analysis      4 / 24
+25 Natural Lang Processing     0 / 25
 30 Probability & Statistics   30 / 30
 ///104
 -------                       --------
-150                          39 / 150
+150                           40 / 150
 
 
 """
@@ -167,6 +167,47 @@ cut -f1-3  # prints fields 1-3 of tab separated text
 cut -w4  # prints char 13 onward
 
 cut -d " " -f4  # print 4th word in line, delimiter is space
+cut -d " " -f 1-3  # print out words 1-3
+cut -f 2- # print out fields 2 to end (tab is default delimiter)
+
+head -n 20  # prints first 20 lines of input
+head -c 20  # prints first 20 characters of input
+head -n 22 | tail -n +12  # print lines 12-22 inclusive; + starts counting from beginning
+tail -n 20  # porint last 20 lines
+tail -c 20  # porint last 20 chars
+
+tr "()" "[]"  # replace () with []s
+
+tr -d [:lower:]
+tr -d a-z
+tr -s " "
+
+sort
+sort -r
+sort -n  # numbers
+sort -nr   # reverse, numbers
+sort -t$'\t' -k2 -rn   # sort by second column, separator is tab, descending
+sort -t$'\t' -k2 -n   # sort by second column, separator is tab, ascending
+sort -t$'|' -k2 -rn   # sort by second column, separator is tab, descending
+
+uniq  # gets rid of consecutive duplicates
+
+uniq -c|cut -b 7-
+uniq -ic|cut -b 7-  # csae insensitive
+uniq -u  # only print those that are not followed by exact duplicate
+# =============================================================================
+# Usage: cut [OPTIONS] [FILE]...
+# Print selected fields from each input FILE to stdout
+# 	-b LIST	Output only bytes from LIST
+# 	-c LIST	Output only characters from LIST
+# 	-d CHAR	Use CHAR instead of tab as the field delimiter
+# 	-s	Output only the lines containing delimiter
+# 	-f N	Print only these fields
+# 	-n	Ignored
+# =============================================================================
+paste -s -d";"
+# where -s = serial -d";" = delimiter separated by ;
+paste -sd ';;\n'
 
 # %% Linux Shell - Text Processing -
 
