@@ -225,8 +225,109 @@ echo ${#arr[@]}
 # or
 wc -l
 
+# =============================================================================
+# 'Sed' command #3
+# Sed - An Introduction and a tutorial
+https://www.grymoire.com/Unix/Sed.html#uh-10a
 
+# The TLDP Guide
+https://tldp.org/LDP/abs/html/x23170.html
+
+# Some Practical Examples
+https://www.folkstalk.com/2012/01/sed-command-in-unix-examples.html
+
+# A StackOverflow question on a slightly modified version of this task where the solution involves backreferences.
+https://stackoverflow.com/questions/2232200/regular-expression-in-sed-for-masking-credit-card
+
+# A ttuorial from TheGeekStuff detailing the use of groups and backreferences.
+https://www.thegeekstuff.com/2009/10/unix-sed-tutorial-advanced-sed-substitution-examples/
+
+# Backreferences
+https://www.thegeekstuff.com/2009/10/unix-sed-tutorial-advanced-sed-substitution-examples/
+
+# Substitute the first occurrence of 'editor' with 'tool'.
+echo "My favorite programming editor is Emacs. Another editor I like is Vim." | sed -e s/editor/tool/
+# My favorite programming tool is Emacs. Another editor I like is Vim.
+
+# Substitute all the occurrences of 'editor' with 'tool'.
+echo "My favorite programming editor is Emacs. Another editor I like is Vim." | sed -e s/editor/tool/g
+# My favorite programming tool is Emacs. Another tool I like is Vim.
+
+# Substitute the second occurrence of 'editor' with 'tool'.
+echo "My favorite programming editor is Emacs. Another editor I like is Vim." | sed -e s/editor/tool/2
+# My favorite programming editor is Emacs. Another tool I like is Vim.
+
+# Highlight all the occurrences of 'editor' by wrapping them up in brace brackets.
+echo "My favorite programming editor is Emacs. Another editor I like is Vim." | sed -e s/editor/{&}/g
+# My favorite programming {editor} is Emacs. Another {editor} I like is Vim.
+
+sed -e 's/[tT]hy/{&}/g'  # replace input string of thy with {thy} ignore case
+
+sed 's/[0-9]\+ /**** /g'  # mask first 3 groups of cc # with *, let last one go
+# 1234 5678 9101 1234 ==> **** **** **** 1234
+
+
+
+
+# =============================================================================
 # %% Linux Shell - Grep Sed Awk
 # https://tldp.org/LDP/abs/html/textproc.html
 # https://www.thegeekstuff.com/2009/03/15-practical-unix-grep-command-examples/
 # https://tldp.org/LDP/Bash-Beginners-Guide/html/sect_04_02.html
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# =============================================================================
