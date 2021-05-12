@@ -10,8 +10,7 @@ May 2, 2021
  8 Arrays in Bash              5 /  8
 14 Grep Sed Awk                0 / 14
 ---                           ------
-65                            47 / 65
-
+65                            50 / 65 77%
 """
 
 # %% Linux Shell - BASH Language - Let's Echo
@@ -48,12 +47,12 @@ echo $((x / y))
 
 read X
 read Y
-if [ "$X" == "$Y" ] then
-echo "X is equal to Y"
-if [ "$X" -gt "$Y" ] then
-echo "X is greater than Y"
+if [ "$X" == "$Y" ]; then
+  echo "X is equal to Y"
+if [ "$X" -gt "$Y" ]; then
+  echo "X is greater than Y"
 else
-echo "X is less than Y"
+  echo "X is less than Y"
 fi
 
 # Comparing numbers
@@ -131,7 +130,7 @@ printf "%.3f" "$(bc -l)"
 # Linux Shell - BASH - Compute the Average
 # read in array, compute average
 read n
-arr=($(cat))
+arr = ($(cat))
 arr=${arr[*]}
 printf "%.3f" $(echo $((${arr// /+}))/$n | bc -l)
 
@@ -152,7 +151,9 @@ cut -f 2- # print out fields 2 to end (tab is default delimiter)
 
 head -n 20  # prints first 20 lines of input
 head -c 20  # prints first 20 characters of input
-head -n 22 | tail -n +12  # print lines 12-22 inclusive; + starts counting from beginning
+
+# print lines 12-22 inclusive; + starts counting from beginning
+head -n 22 | tail -n +12
 tail -n 20  # porint last 20 lines
 tail -c 20  # porint last 20 chars
 
@@ -236,7 +237,8 @@ https://tldp.org/LDP/abs/html/x23170.html
 # Some Practical Examples
 https://www.folkstalk.com/2012/01/sed-command-in-unix-examples.html
 
-# A StackOverflow question on a slightly modified version of this task where the solution involves backreferences.
+# A StackOverflow question on a slightly modified version of this task where
+# the solution involves backreferences.
 https://stackoverflow.com/questions/2232200/regular-expression-in-sed-for-masking-credit-card
 
 # A ttuorial from TheGeekStuff detailing the use of groups and backreferences.
@@ -257,7 +259,8 @@ echo "My favorite programming editor is Emacs. Another editor I like is Vim." | 
 echo "My favorite programming editor is Emacs. Another editor I like is Vim." | sed -e s/editor/tool/2
 # My favorite programming editor is Emacs. Another tool I like is Vim.
 
-# Highlight all the occurrences of 'editor' by wrapping them up in brace brackets.
+# Highlight all the occurrences of 'editor' by wrapping them up in brace
+# brackets.
 echo "My favorite programming editor is Emacs. Another editor I like is Vim." | sed -e s/editor/{&}/g
 # My favorite programming {editor} is Emacs. Another {editor} I like is Vim.
 
@@ -266,6 +269,13 @@ sed -e 's/[tT]hy/{&}/g'  # replace input string of thy with {thy} ignore case
 sed 's/[0-9]\+ /**** /g'  # mask first 3 groups of cc # with *, let last one go
 # 1234 5678 9101 1234 ==> **** **** **** 1234
 
+sed -e 's/the /this /1'
+# replace first occurrence of 'the' with 'this' case sensitive
+
+sed -e 's/[tT][hH][yY]/your/g'
+# For each line in a given input file, transform all the occurrences of the
+#  word 'thy' with 'your'. The search should be case insensitive, i.e.
+# 'thy', 'Thy', 'tHy' etc. should be transformed to 'your'.
 
 
 
@@ -274,14 +284,15 @@ sed 's/[0-9]\+ /**** /g'  # mask first 3 groups of cc # with *, let last one go
 # https://tldp.org/LDP/abs/html/textproc.html
 # https://www.thegeekstuff.com/2009/03/15-practical-unix-grep-command-examples/
 # https://tldp.org/LDP/Bash-Beginners-Guide/html/sect_04_02.html
+# https://www.gnu.org/software/sed/manual/html_node/Regular-Expressions.html
 
+# grep A
+# print only lines with any of the 4 words: the, that, then, those
+grep -Eiw 'th(e|ose|en|at)'
 
-
-
-
-
-
-
+# print out lines with consecutive repeated digits, can have space between
+grep -E '(1 1|11|2 2|33|3 3|44|4 4|55|5 5|66|6 6|77|7 7|88|8 8|99|9 9|00|0 0)'
+# grep B
 
 
 
