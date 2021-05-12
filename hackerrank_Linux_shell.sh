@@ -8,9 +8,9 @@ May 2, 2021
 11 Bash                       10 / 11
 32 Text Processing            32 / 32
  8 Arrays in Bash              5 /  8
-14 Grep Sed Awk                0 / 14
+14 Grep Sed Awk                6 / 14
 ---                           ------
-65                            50 / 65 77%
+65                            53 / 65 77%
 """
 
 # %% Linux Shell - BASH Language - Let's Echo
