@@ -8,9 +8,9 @@ May 2, 2021
 11 Bash                       10 / 11
 32 Text Processing            32 / 32
  8 Arrays in Bash              5 /  8
-14 Grep Sed Awk                6 / 14
+14 Grep Sed Awk                10 / 14
 ---                           ------
-65                            53 / 65 77%
+65                            57 / 65 88%
 """
 
 # %% Linux Shell - BASH Language - Let's Echo
@@ -49,7 +49,7 @@ read X
 read Y
 if [ "$X" == "$Y" ]; then
   echo "X is equal to Y"
-if [ "$X" -gt "$Y" ]; then
+if [ "$X" -gt "$Y" ]; t
   echo "X is greater than Y"
 else
   echo "X is less than Y"
@@ -287,19 +287,46 @@ sed -e 's/[tT][hH][yY]/your/g'
 # https://www.gnu.org/software/sed/manual/html_node/Regular-Expressions.html
 
 # grep A
+grep '\bthe\b'  # only lines with the in it, case sensitive
+
 # print only lines with any of the 4 words: the, that, then, those
-grep -Eiw 'th(e|ose|en|at)'
 
 # print out lines with consecutive repeated digits, can have space between
 grep -E '(1 1|11|2 2|33|3 3|44|4 4|55|5 5|66|6 6|77|7 7|88|8 8|99|9 9|00|0 0)'
 # grep B
 
+# AWK - field processor, parse each field on each line,
+# while grep returns each line
+# https://www.thegeekstuff.com/2010/01/awk-introduction-tutorial-7-awk-print-examples/
+# https://www.thegeekstuff.com/2010/02/awk-conditional-statements/
+# can mimic grep with awk by returning full lines
+# https://youtu.be/az6vd0tGhJI
+awk '{ print }' test.txt  # returns full line, each lines
+awk '{ print $1 }' test.txt  # returns just column 1
+awk '{ print $2 }' test.txt  # returns just column 2, blank when no col 2
+awk '{ print $1,$2 }' test.txt  # returns column 1 and 2, separated
+awk '{ print $1$2 }' test.txt  # returns just column 2, no space
 
+awk '/test/ { print $1$2 }' test.txt  # returns lines with 'test'
+awk '/[a-z]/ { print $1$2 }' test.txt  # returns lines with any text
+awk '/[0-9]/ { print $1$2 }' test.txt  # returns lines with any number
+awk '/^[0-9]/ { print $1$2 }' test.txt  # returns lines start w/ any number
 
+# conditionals:
+awk '{ if($1 ~ /123/) print $1$2 }' test.txt  # returns lines start w/ any number
+awk '{ if($2 ~ /[0-9]/) print $1$2 }' test.txt  # returns lines with col 2 a #
 
+grep -i test test.txt | awk '/^[0-9]/{ print }'  #
+awk '{ print $2 }' test.txt  # uses white space as sperator of coluns
+awk -F: '{ print $2 }' test.txt  # uses white : as sperator of coluns
 
-
-
+# IF not all scores are available for student in column 1; there should be total
+# of 4 fields
+awk '{if (NF < 4){print "Not all scores are available for "$1}}'
+# print student: Fail if any of 3 tests are <50, otherwise Pass
+awk '{print $1, ":", ($2<50||$3<50||$4<50) ? "Fail" : "Pass"}'
+#
+awk '{avg=($2+$3+$4)/3; print $0, ":", (avg<50)?"FAIL":(avg<80)?"B":"A"}'
 
 
 
